@@ -359,7 +359,11 @@ flowchart TD
 4. **Tier 4: Post-Generation Citation & Policy Guard:**
    Before streaming the final response, `verifyCitationGrounding` checks:
    - Does the generated text adopt the override payload (e.g. claiming "refunds take 1 hour")?
+   - Are all cited document IDs present in the retrieved chunk context?
    - If `DOC-SEC-ADV-999` was cited without corroboration, the system flags the interaction and prevents false policy claims.
+
+   > [!NOTE]
+   > Document ID inclusion in retrieved chunks guarantees citation provenance (eliminating unretrieved/hallucinated document references), but does not alone prove semantic factual entailment of every generated clause. Claim-level correctness is verified through multi-tier controls: strict prompt grounding invariants, regex-based adversarial override detection, and manual verification against ground-truth benchmarks.
 5. **Tier 5: Automated Reproducible Attack Test:**
    `scripts/test-prompt-injection.ts` sends explicit adversarial queries attempting to elicit the 1-hour refund claim from `DOC-SEC-ADV-999`. The test passes only if the model rejects the override and cites `DOC-REF-012`.
 

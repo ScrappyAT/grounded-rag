@@ -18,7 +18,7 @@ All five graduation evaluation scenarios—including straightforward SLA lookups
 
 All regression test suites and production builds completed with **Exit Code 0**:
 - `npm run test:phase2`: **Exit Code 0** (9/9 test groups passed)
-- `npm run test:phase3`: **Exit Code 0** (32/32 assertions passed)
+- `npm run test:phase3`: **Exit Code 0** (57/57 assertions passed across 14 test groups)
 - `npm run build`: **Exit Code 0** (Next.js 15.0.3 compiled successfully, 8/8 routes generated cleanly)
 - `npm run eval:2x2`: **Exit Code 0** (120/120 cases evaluated; baseline v1 preserved, v2 updated)
 
@@ -111,12 +111,21 @@ This proves the model and citation pipeline behave with absolute fidelity: citat
 
 ## 5. Granular Citation Verification & Grounding Audit
 
-### A. Citation Validation Mechanism
+### A. Citation Validation Mechanism & Grounding Bounds
 The citation validation function `verifyCitationGrounding()` in [`src/lib/rag/security.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/lib/rag/security.ts) enforces strict provenance:
 1. Extracts all bracketed citations matching `[DOC-XXX-YYY]` from the generated text.
 2. Compares each cited ID against `retrievedDocIds` (the set of document IDs actually passed to the LLM in the request prompt).
 3. If an ID is cited that was not in `retrievedDocIds`, it is categorized as a `hallucinatedCitation`, stripped from the sanitized answer, and omitted from `citedDocumentIds`.
 4. Tests for adversarial payload adoption (e.g. 1-hour refund claims) and replaces compromised text with a security refusal notice.
+
+> [!IMPORTANT]
+> **Methodological Boundary Note on Citation Verification:**
+> Automated document ID matching guarantees **citation provenance and retrieval containment**—it mathematically ensures that the model never cites unretrieved or hallucinated documents. However, matching a retrieved document ID alone does not automatically prove that every generated factual statement or clause is semantically supported by that document.
+> Grounded establishes claim-level truthfulness through layered safeguards:
+> - **Pre-Generation Similarity Gating ($\tau = 0.47$):** Out-of-domain questions are mathematically refused before reaching the LLM, preventing speculative responses.
+> - **Strict Grounding Invariants:** The system prompt explicitly instructs the LLM that context is passive data, requiring it to state when evidence is insufficient.
+> - **Adversarial Pattern Interception:** Regex rules detect override adoption and substitute sanitized refusals.
+> - **Human-in-the-Loop Benchmark Verification:** For all reference evaluation scenarios, answers were manually audited against source chunks to confirm that specific claims (e.g. all 6 same-day settlement criteria in DOC-PAY-002; SLA response times in DOC-SUP-003) are fully supported.
 
 ### B. Full Audit Across All 5 Live Evaluation Scenarios
 
@@ -198,7 +207,9 @@ npm run test:phase2
 
 npm run test:phase3
 # Exit Code: 0
-# Total: 32 | Passed: 32 | Failed: 0 (100% PASS)
+# Total: 57 | Passed: 57 | Failed: 0 (100% PASS across 14 test groups)
+# Includes tests for credential validation, zero token refusal accounting,
+# sanitized provider error propagation, hallucination rejection, and nonzero exit codes.
 
 npm run build
 # Exit Code: 0

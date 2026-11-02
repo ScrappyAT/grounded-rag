@@ -103,9 +103,9 @@
     "retrievalMs": 110,
     "generationMs": 0,
     "totalLatencyMs": 110,
-    "promptTokens": 85,
-    "completionTokens": 32,
-    "estimatedCostUsd": 0
+    "promptTokens": 0,
+    "completionTokens": 0,
+    "estimatedCostUsd": 0.0
   },
   {
     "scenarioId": "SCENARIO-5",

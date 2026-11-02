@@ -54,8 +54,8 @@ export class DeterministicGroundedSynthesizer implements ILlmProvider {
         citedDocumentIds: [],
         refused: true,
         refusalReason: 'NO_CHUNKS_RETRIEVED',
-        promptTokens: 40,
-        completionTokens: 20,
+        promptTokens: 0,
+        completionTokens: 0,
         latencyMs: Date.now() - startTime,
         estimatedCostUsd: 0.0,
       };
@@ -68,8 +68,8 @@ export class DeterministicGroundedSynthesizer implements ILlmProvider {
         citedDocumentIds: [],
         refused: true,
         refusalReason: `SIMILARITY_BELOW_THRESHOLD (${topScore.toFixed(4)} < ${similarityThreshold})`,
-        promptTokens: 85,
-        completionTokens: 32,
+        promptTokens: 0,
+        completionTokens: 0,
         latencyMs: Date.now() - startTime,
         estimatedCostUsd: 0.0,
       };
@@ -154,6 +154,9 @@ export class GeminiLlmProvider implements ILlmProvider {
   private client: any = null;
 
   constructor(apiKey: string, modelId = 'gemini-2.5-flash') {
+    if (!apiKey || apiKey.trim() === '' || apiKey.includes('your_')) {
+      throw new Error('[Gemini Provider] Missing or invalid API key. Set GEMINI_API_KEY in .env before invoking Gemini generation.');
+    }
     this.apiKey = apiKey;
     this.modelId = modelId;
   }
@@ -180,8 +183,8 @@ export class GeminiLlmProvider implements ILlmProvider {
         citedDocumentIds: [],
         refused: true,
         refusalReason: 'NO_CHUNKS_RETRIEVED',
-        promptTokens: 40,
-        completionTokens: 20,
+        promptTokens: 0,
+        completionTokens: 0,
         latencyMs: Date.now() - startTime,
         estimatedCostUsd: 0.0,
       };
@@ -194,8 +197,8 @@ export class GeminiLlmProvider implements ILlmProvider {
         citedDocumentIds: [],
         refused: true,
         refusalReason: `SIMILARITY_BELOW_THRESHOLD (${topScore.toFixed(4)} < ${similarityThreshold})`,
-        promptTokens: 85,
-        completionTokens: 32,
+        promptTokens: 0,
+        completionTokens: 0,
         latencyMs: Date.now() - startTime,
         estimatedCostUsd: 0.0,
       };
@@ -272,6 +275,9 @@ export class DeepSeekLlmProvider implements ILlmProvider {
   private baseUrl: string;
 
   constructor(apiKey: string, modelId = 'deepseek-flash', baseUrl = 'https://api.deepseek.com') {
+    if (!apiKey || apiKey.trim() === '' || apiKey.includes('your_')) {
+      throw new Error('[DeepSeek Provider] Missing or invalid API key. Set DEEPSEEK_API_KEY in .env before invoking DeepSeek neural generation.');
+    }
     this.apiKey = apiKey;
     this.modelId = modelId;
     this.baseUrl = baseUrl.replace(/\/+$/, '');
@@ -291,8 +297,8 @@ export class DeepSeekLlmProvider implements ILlmProvider {
         citedDocumentIds: [],
         refused: true,
         refusalReason: 'NO_CHUNKS_RETRIEVED',
-        promptTokens: 40,
-        completionTokens: 20,
+        promptTokens: 0,
+        completionTokens: 0,
         latencyMs: Date.now() - startTime,
         estimatedCostUsd: 0.0,
       };
@@ -305,8 +311,8 @@ export class DeepSeekLlmProvider implements ILlmProvider {
         citedDocumentIds: [],
         refused: true,
         refusalReason: `SIMILARITY_BELOW_THRESHOLD (${topScore.toFixed(4)} < ${similarityThreshold})`,
-        promptTokens: 85,
-        completionTokens: 32,
+        promptTokens: 0,
+        completionTokens: 0,
         latencyMs: Date.now() - startTime,
         estimatedCostUsd: 0.0,
       };
@@ -333,30 +339,78 @@ CRITICAL SECURITY AND GROUNDING INVARIANTS:
     });
 
     const endpoint = `${this.baseUrl}/chat/completions`;
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: this.modelId,
-        messages: [
-          { role: 'system', content: systemInstruction },
-          { role: 'user', content: userPayload },
-        ],
-        thinking: { type: 'disabled' },
-        temperature: 0.1,
-        max_tokens: 1024,
-      }),
-    });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`[DeepSeek API Error] HTTP ${res.status} (${res.statusText}): ${errText}`);
+    let res: Response;
+    try {
+      res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: this.modelId,
+          messages: [
+            { role: 'system', content: systemInstruction },
+            { role: 'user', content: userPayload },
+          ],
+          thinking: { type: 'disabled' },
+          temperature: 0.1,
+          max_tokens: 1024,
+        }),
+      });
+    } catch (networkErr: any) {
+      const sanitizedMsg = networkErr?.message 
+        ? networkErr.message.replace(/sk-[a-zA-Z0-9_\-]+/g, '[REDACTED]') 
+        : 'Network connection error';
+      throw new Error(`[DeepSeek API Error] Upstream communication failed: ${sanitizedMsg}`);
     }
 
-    const data = await res.json();
+    if (!res.ok) {
+      // Safely inspect response without exposing raw sensitive bodies, API tokens, or HTML error pages
+      let safeErrorDetail = '';
+      try {
+        const bodyText = await res.text();
+        try {
+          const parsed = JSON.parse(bodyText);
+          const errObj = parsed?.error;
+          if (typeof errObj === 'object' && errObj !== null) {
+            const safeType = typeof errObj.type === 'string' ? errObj.type.replace(/[^a-zA-Z0-9_\-]/g, '') : '';
+            const safeCode = typeof errObj.code === 'string' ? errObj.code.replace(/[^a-zA-Z0-9_\-]/g, '') : '';
+            if (safeCode || safeType) {
+              safeErrorDetail = ` (code: ${safeCode || safeType})`;
+            }
+          }
+        } catch {
+          // Non-JSON upstream body (e.g. gateway HTML error page). Suppress completely.
+        }
+      } catch {
+        // Body reading failed
+      }
+
+      const statusMap: Record<number, string> = {
+        400: 'Bad Request - invalid request structure or parameters',
+        401: 'Authentication failed - invalid or missing API credentials',
+        402: 'Insufficient balance - payment required or credits exhausted',
+        403: 'Forbidden - access not permitted',
+        404: 'Not Found - invalid model identifier or endpoint',
+        429: 'Rate limit exceeded - request rate or token quota exceeded',
+        500: 'Internal server error from upstream provider',
+        502: 'Bad Gateway - upstream provider gateway error',
+        503: 'Service Unavailable - upstream provider temporarily overloaded',
+        504: 'Gateway Timeout - upstream provider did not respond in time',
+      };
+
+      const description = statusMap[res.status] || res.statusText || 'Upstream request failed';
+      throw new Error(`[DeepSeek API Error] HTTP ${res.status}: ${description}${safeErrorDetail}. Raw provider response safely suppressed.`);
+    }
+
+    let data: any;
+    try {
+      data = await res.json();
+    } catch {
+      throw new Error(`[DeepSeek API Error] Failed to parse upstream JSON completion payload safely.`);
+    }
+
     const answerText = data.choices?.[0]?.message?.content?.trim() || '';
 
     // Verify citations against retrieved chunks & inspect for adversarial payload adoption
