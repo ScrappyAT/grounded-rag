@@ -1,0 +1,52 @@
+{
+  "name": "grounded-rag",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Grounded: A RAG-powered document intelligence assistant with verifiable source citations",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "worker": "tsx src/lib/queue/worker.ts",
+    "corpus:generate": "tsx scripts/generate-corpus.ts",
+    "corpus:verify": "tsx scripts/verify-corpus.ts",
+    "db:init": "tsx scripts/init-db.ts",
+    "ingest": "tsx scripts/run-ingest.ts",
+    "test:phase2": "tsx scripts/run-phase2-tests.ts",
+    "test:phase3": "tsx scripts/run-phase3-tests.ts",
+    "audit:groundtruth": "tsx scripts/audit-ground-truth-semantic.ts",
+    "calibrate:threshold": "tsx scripts/calibrate-threshold-independent.ts",
+    "eval:2x2": "tsx scripts/run-2x2-evaluation.ts",
+    "eval:phase4-5": "tsx scripts/run-phase4-5-eval.ts",
+    "verify:app": "tsx scripts/verify-running-app.ts"
+  },
+  "dependencies": {
+    "@google/genai": "^2.32.0",
+    "@xenova/transformers": "^2.17.2",
+    "bullmq": "^5.21.2",
+    "gray-matter": "^4.0.3",
+    "ioredis": "^5.4.1",
+    "lucide-react": "^0.454.0",
+    "next": "15.0.3",
+    "pdf-parse": "^1.1.1",
+    "pdfkit": "^0.15.1",
+    "pg": "^8.13.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "unpdf": "^2.1.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/pdf-parse": "^1.1.4",
+    "@types/pdfkit": "^0.13.7",
+    "@types/pg": "^8.11.10",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

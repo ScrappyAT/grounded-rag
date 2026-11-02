@@ -1,0 +1,163 @@
+[
+  {
+    "id": "CAL-01",
+    "category": "Customer Support",
+    "question": "What is the escalation procedure when a Priority merchant reports continuous webhook delivery failures?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-SUP-002",
+    "notes": "Calibration Q1: Technical support escalation"
+  },
+  {
+    "id": "CAL-02",
+    "category": "Customer Support",
+    "question": "What documents must a retail customer submit to dispute an unrecognized card debit transaction?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-SUP-015",
+    "notes": "Calibration Q2: Support dispute intake"
+  },
+  {
+    "id": "CAL-03",
+    "category": "Accounts & KYC",
+    "question": "What is the maximum account balance permitted for a Tier 1 individual customer wallet?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-ACC-003",
+    "notes": "Calibration Q3: Tier 1 balance restriction"
+  },
+  {
+    "id": "CAL-04",
+    "category": "Accounts & KYC",
+    "question": "How can a corporate customer rotate their production API secret keys in the developer dashboard?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-ACC-025",
+    "notes": "Calibration Q4: Developer credentials"
+  },
+  {
+    "id": "CAL-05",
+    "category": "Payments & Settlements",
+    "question": "What is the cut-off time for same-day RTGS high-value interbank transfers?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-PAY-003",
+    "notes": "Calibration Q5: RTGS settlement cut-off"
+  },
+  {
+    "id": "CAL-06",
+    "category": "Payments & Settlements",
+    "question": "What interchange processing fee is levied on international Mastercard and Visa transactions?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-PAY-009",
+    "notes": "Calibration Q6: Card interchange schedule"
+  },
+  {
+    "id": "CAL-07",
+    "category": "Refunds & Disputes",
+    "question": "What is the maximum timeline allowed for a merchant to respond to a pre-arbitration chargeback notice?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-REF-015",
+    "notes": "Calibration Q7: Pre-arbitration response window"
+  },
+  {
+    "id": "CAL-08",
+    "category": "Refunds & Disputes",
+    "question": "Are transaction processing fees returned to the merchant when a customer initiates a partial refund?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-REF-009",
+    "notes": "Calibration Q8: Partial refund fee rule"
+  },
+  {
+    "id": "CAL-09",
+    "category": "Fraud & Security",
+    "question": "What velocity thresholds trigger an automated temporary transaction hold on business accounts?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-SEC-004",
+    "notes": "Calibration Q9: Fraud velocity rules"
+  },
+  {
+    "id": "CAL-10",
+    "category": "Fraud & Security",
+    "question": "How often must external penetration testing be conducted across ApexPay core payment APIs?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-SEC-011",
+    "notes": "Calibration Q10: Penetration test cadence"
+  },
+  {
+    "id": "CAL-11",
+    "category": "Product Operations",
+    "question": "What is the sandbox mock card number used to simulate an insufficient funds payment failure?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-OPS-008",
+    "notes": "Calibration Q11: Sandbox simulator card"
+  },
+  {
+    "id": "CAL-12",
+    "category": "Product Operations",
+    "question": "What is the guaranteed uptime SLA target for the ApexPay Checkout hosted payment page?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-OPS-015",
+    "notes": "Calibration Q12: Hosted page uptime SLA"
+  },
+  {
+    "id": "CAL-13",
+    "category": "Compliance & Legal",
+    "question": "Under what statutory conditions is ApexPay legally obligated to disclose merchant transaction records?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-POL-012",
+    "notes": "Calibration Q13: Legal subpoena disclosure"
+  },
+  {
+    "id": "CAL-14",
+    "category": "HR & Internal",
+    "question": "What is the annual education and professional certification stipend for engineering personnel?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-HR-008",
+    "notes": "Calibration Q14: Training stipend"
+  },
+  {
+    "id": "CAL-15",
+    "category": "HR & Internal",
+    "question": "What is the policy regarding remote work eligibility for probation-period employees?",
+    "is_answerable": true,
+    "target_doc_id": "DOC-HR-002",
+    "notes": "Calibration Q15: Probation remote work"
+  },
+  {
+    "id": "CAL-16",
+    "category": "Unanswerable / Out of Corpus",
+    "question": "Can senior directors charter private jet aircraft for quarterly business reviews?",
+    "is_answerable": false,
+    "target_doc_id": null,
+    "notes": "Calibration Unanswerable #1: Private jet travel"
+  },
+  {
+    "id": "CAL-17",
+    "category": "Unanswerable / Out of Corpus",
+    "question": "Does ApexPay support physical gold bullion vault storage for wealth management clients?",
+    "is_answerable": false,
+    "target_doc_id": null,
+    "notes": "Calibration Unanswerable #2: Gold bullion storage"
+  },
+  {
+    "id": "CAL-18",
+    "category": "Unanswerable / Out of Corpus",
+    "question": "Is gym membership and personal fitness coaching fully subsidized for all remote workers?",
+    "is_answerable": false,
+    "target_doc_id": null,
+    "notes": "Calibration Unanswerable #3: Gym coaching subsidy"
+  },
+  {
+    "id": "CAL-19",
+    "category": "Unanswerable / Out of Corpus",
+    "question": "What are the rules for booking the corporate entertainment yacht for client networking dinners?",
+    "is_answerable": false,
+    "target_doc_id": null,
+    "notes": "Calibration Unanswerable #4: Corporate yacht booking"
+  },
+  {
+    "id": "CAL-20",
+    "category": "Unanswerable / Out of Corpus",
+    "question": "Does ApexPay issue satellite satellite-phone terminals to field sales representatives?",
+    "is_answerable": false,
+    "target_doc_id": null,
+    "notes": "Calibration Unanswerable #5: Satellite phone hardware"
+  }
+]
+

@@ -1,0 +1,154 @@
+{
+  "calibrationDataset": {
+    "total": 20,
+    "answerable": 15,
+    "unanswerable": 5,
+    "minAnswerable": 0.4662236472631127,
+    "maxAnswerable": 0.7229868439420327,
+    "meanAnswerable": 0.5809286253783787,
+    "minUnanswerable": 0.3290058366666746,
+    "maxUnanswerable": 0.493677034031903,
+    "meanUnanswerable": 0.42601004816858035,
+    "separationGap": -0.027453386768790278
+  },
+  "sensitivitySweep": [
+    {
+      "tau": 0.35,
+      "fr": 0,
+      "fa": 4,
+      "totalErrors": 4,
+      "frRate": 0,
+      "faRate": 80
+    },
+    {
+      "tau": 0.37,
+      "fr": 0,
+      "fa": 4,
+      "totalErrors": 4,
+      "frRate": 0,
+      "faRate": 80
+    },
+    {
+      "tau": 0.39,
+      "fr": 0,
+      "fa": 4,
+      "totalErrors": 4,
+      "frRate": 0,
+      "faRate": 80
+    },
+    {
+      "tau": 0.41,
+      "fr": 0,
+      "fa": 3,
+      "totalErrors": 3,
+      "frRate": 0,
+      "faRate": 60
+    },
+    {
+      "tau": 0.43,
+      "fr": 0,
+      "fa": 3,
+      "totalErrors": 3,
+      "frRate": 0,
+      "faRate": 60
+    },
+    {
+      "tau": 0.45,
+      "fr": 0,
+      "fa": 3,
+      "totalErrors": 3,
+      "frRate": 0,
+      "faRate": 60
+    },
+    {
+      "tau": 0.47,
+      "fr": 1,
+      "fa": 1,
+      "totalErrors": 2,
+      "frRate": 6.666666666666667,
+      "faRate": 20
+    },
+    {
+      "tau": 0.49,
+      "fr": 1,
+      "fa": 1,
+      "totalErrors": 2,
+      "frRate": 6.666666666666667,
+      "faRate": 20
+    },
+    {
+      "tau": 0.51,
+      "fr": 3,
+      "fa": 0,
+      "totalErrors": 3,
+      "frRate": 20,
+      "faRate": 0
+    },
+    {
+      "tau": 0.53,
+      "fr": 6,
+      "fa": 0,
+      "totalErrors": 6,
+      "frRate": 40,
+      "faRate": 0
+    },
+    {
+      "tau": 0.55,
+      "fr": 7,
+      "fa": 0,
+      "totalErrors": 7,
+      "frRate": 46.666666666666664,
+      "faRate": 0
+    },
+    {
+      "tau": 0.57,
+      "fr": 7,
+      "fa": 0,
+      "totalErrors": 7,
+      "frRate": 46.666666666666664,
+      "faRate": 0
+    },
+    {
+      "tau": 0.59,
+      "fr": 8,
+      "fa": 0,
+      "totalErrors": 8,
+      "frRate": 53.333333333333336,
+      "faRate": 0
+    },
+    {
+      "tau": 0.61,
+      "fr": 9,
+      "fa": 0,
+      "totalErrors": 9,
+      "frRate": 60,
+      "faRate": 0
+    },
+    {
+      "tau": 0.63,
+      "fr": 10,
+      "fa": 0,
+      "totalErrors": 10,
+      "frRate": 66.66666666666666,
+      "faRate": 0
+    },
+    {
+      "tau": 0.65,
+      "fr": 12,
+      "fa": 0,
+      "totalErrors": 12,
+      "frRate": 80,
+      "faRate": 0
+    }
+  ],
+  "selectedThreshold": 0.47,
+  "outOfSampleValidation": {
+    "total": 30,
+    "answerableCount": 25,
+    "unanswerableCount": 5,
+    "falseRefusals": 0,
+    "falseAcceptances": 0,
+    "recallAt5": 1,
+    "refusalAccuracy": 1
+  }
+}
