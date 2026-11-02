@@ -356,6 +356,7 @@ This is the revised text for version 1.1 with completely changed policies.
   if (failed > 0) {
     process.exit(1);
   }
+  process.exit(0);
 }
 
 if (require.main === module) {

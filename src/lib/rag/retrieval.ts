@@ -10,6 +10,7 @@ export interface RetrievalOptions {
   corpusVersion?: string;
   modelId?: string;
   dimensions?: number;
+  maxChunksPerDoc?: number;
 }
 
 export interface RetrievedChunk {
@@ -85,6 +86,8 @@ export async function retrieveChunks(
     LIMIT $9
   `;
 
+  const fetchLimit = options.maxChunksPerDoc ? Math.max(topK * 4, 30) : topK;
+
   const rows = await query(sql, [
     vectorString,
     modelId,
@@ -94,10 +97,10 @@ export async function retrieveChunks(
     category,
     statusFilter,
     corpusVersion,
-    topK,
+    fetchLimit,
   ]);
 
-  return rows.map((r: any) => ({
+  const rawChunks: RetrievedChunk[] = rows.map((r: any) => ({
     id: r.id,
     document_id: r.document_id,
     doc_title: r.doc_title,
@@ -116,5 +119,35 @@ export async function retrieveChunks(
     similarity: parseFloat(r.similarity),
     metadata: typeof r.metadata === 'string' ? JSON.parse(r.metadata) : r.metadata || {},
   }));
+
+  if (options.maxChunksPerDoc && options.maxChunksPerDoc > 0) {
+    const docCounts = new Map<string, number>();
+    const diversified: RetrievedChunk[] = [];
+    const skipped: RetrievedChunk[] = [];
+
+    for (const chunk of rawChunks) {
+      const count = docCounts.get(chunk.document_id) || 0;
+      if (count < options.maxChunksPerDoc) {
+        docCounts.set(chunk.document_id, count + 1);
+        diversified.push(chunk);
+        if (diversified.length >= topK) break;
+      } else {
+        skipped.push(chunk);
+      }
+    }
+
+    // Safety: If distinct documents are exhausted before reaching topK,
+    // backfill from skipped chunks to ensure relevant chunks are not discarded.
+    if (diversified.length < topK && skipped.length > 0) {
+      for (const chunk of skipped) {
+        diversified.push(chunk);
+        if (diversified.length >= topK) break;
+      }
+    }
+
+    return diversified;
+  }
+
+  return rawChunks;
 }
 

@@ -53,12 +53,20 @@ interface ChatMessage {
   threshold?: number;
   citations?: Citation[];
   retrievedChunks?: RetrievedChunk[];
+  llmProvider?: string;
+  llmModel?: string;
+  isNeuralLLM?: boolean;
   metrics?: {
     latencyMs: number;
     promptTokens: number;
     completionTokens: number;
     estimatedCostUsd: number;
-    modelId: string;
+    embeddingModel?: string;
+    embeddingDimensions?: number;
+    llmProvider?: string;
+    llmModel?: string;
+    isNeuralLLM?: boolean;
+    modelId?: string;
   };
   timestamp: string;
 }
@@ -136,6 +144,9 @@ export default function GroundedChatPage() {
         threshold: data.threshold,
         citations: data.citations || [],
         retrievedChunks: data.retrievedChunks || [],
+        llmProvider: data.llmProvider,
+        llmModel: data.llmModel,
+        isNeuralLLM: data.isNeuralLLM,
         metrics: data.metrics,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
@@ -395,7 +406,7 @@ export default function GroundedChatPage() {
 
                 {/* Performance & Token Metrics */}
                 {msg.metrics && (
-                  <div className="mt-3 pt-2 text-[11px] text-slate-400 flex flex-wrap items-center gap-3 border-t border-slate-800/40">
+                  <div className="mt-3 pt-2 text-[11px] text-slate-400 flex flex-wrap items-center gap-2.5 border-t border-slate-800/40">
                     <span className="flex items-center gap-1">
                       <Clock className="h-3 w-3 text-slate-400" />
                       {msg.metrics.latencyMs}ms
@@ -406,7 +417,21 @@ export default function GroundedChatPage() {
                       {msg.metrics.promptTokens + msg.metrics.completionTokens} tokens
                     </span>
                     <span>•</span>
-                    <span>Cost: ${msg.metrics.estimatedCostUsd.toFixed(5)}</span>
+                    <span>Cost: ${msg.metrics.estimatedCostUsd.toFixed(6)}</span>
+                    <span>•</span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide uppercase ${
+                      msg.metrics.llmProvider === 'deepseek' || msg.llmProvider === 'deepseek'
+                        ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-600/70'
+                        : msg.metrics.llmProvider === 'gemini' || msg.llmProvider === 'gemini'
+                        ? 'bg-purple-950/90 text-purple-300 border border-purple-600/70'
+                        : 'bg-amber-950/90 text-amber-300 border border-amber-600/70'
+                    }`}>
+                      {msg.metrics.llmProvider === 'deepseek' || msg.llmProvider === 'deepseek'
+                        ? `DeepSeek (${msg.metrics.llmModel || msg.llmModel || 'deepseek-flash'} · Neural)`
+                        : msg.metrics.llmProvider === 'gemini' || msg.llmProvider === 'gemini'
+                        ? `Gemini (${msg.metrics.llmModel || msg.llmModel || 'gemini-2.5-flash'} · Neural)`
+                        : 'Deterministic Fallback'}
+                    </span>
                   </div>
                 )}
               </div>

@@ -17,13 +17,17 @@ async function runPhase45Eval() {
   console.log('   Grounded RAG — Phase 4.5 Generation Verification Harness     ');
   console.log('================================================================\n');
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  const isKeyConfigured = Boolean(apiKey && apiKey.trim() && !apiKey.includes('your_'));
+  const provider = (process.env.LLM_PROVIDER || 'deepseek').toLowerCase();
+  const deepseekKey = process.env.DEEPSEEK_API_KEY;
+  const geminiKey = process.env.GEMINI_API_KEY;
+  const isKeyConfigured = provider === 'deepseek'
+    ? Boolean(deepseekKey && deepseekKey.trim() && !deepseekKey.includes('your_'))
+    : Boolean(geminiKey && geminiKey.trim() && !geminiKey.includes('your_'));
   const llm = createLlmProvider();
 
   console.log(`Active Generation Provider: ${llm.providerName}`);
   console.log(`Model Identifier:           ${llm.modelId}`);
-  console.log(`Gemini API Key Configured:  ${isKeyConfigured ? 'YES (Live Neural Generation)' : 'NO (Using Grounded Extractive Fallback)'}`);
+  console.log(`API Key Configured:         ${isKeyConfigured ? 'YES (Live Neural Generation)' : 'NO'}`);
   console.log(`Semantic Embedding Model:   Xenova/all-MiniLM-L6-v2 (384 dimensions)\n`);
 
   const scenarios: ScenarioCase[] = [
@@ -128,9 +132,12 @@ async function runPhase45Eval() {
   }
 
   const exportPath = path.resolve(__dirname, '..', 'evaluation', 'phase-4-5-results.json');
+  const deepseekExportPath = path.resolve(__dirname, '..', 'evaluation', 'deepseek-evaluation-results.json');
   fs.writeFileSync(exportPath, JSON.stringify(results, null, 2), 'utf8');
+  fs.writeFileSync(deepseekExportPath, JSON.stringify(results, null, 2), 'utf8');
   console.log(`\n================================================================`);
   console.log(`Phase 4.5 evaluation results saved to ${exportPath}`);
+  console.log(`DeepSeek evaluation results saved to ${deepseekExportPath}`);
   console.log(`================================================================\n`);
 
   await dbPool.end();

@@ -134,19 +134,22 @@ A key operational insight addressed in Revision 2 is the runtime model of **Bull
 
 | Model Role | Model Identifier | Provider | Output Dimensions | Pricing (Paid / Free Tier Notes) |
 | :--- | :--- | :--- | :--- | :--- |
-| **Embeddings** | `gemini-embedding-001` | Google AI Studio | **768** (MRL downscaled from 3072) | $0.15 / 1M input tokens. Free tier: 15 RPM. Supports `outputDimensionality: 768`. |
-| **Answer Generation** | `gemini-2.5-flash` | Google AI Studio | N/A (1M context) | $0.075 / 1M input, $0.30 / 1M output tokens. Free tier: 15 RPM, 1M TPM. |
-| **Local Fallback** | `all-MiniLM-L6-v2` | Transformers.js (Local) | **384** | $0.00 (Runs 100% offline via ONNX Runtime in Node.js). |
+| **Primary Neural Generation** | `deepseek-flash` | DeepSeek API (OpenAI-compatible) | N/A (1M context) | Off-peak: $0.15/1M input, $0.60/1M output. Non-thinking mode configured for deterministic grounded RAG. |
+| **Embeddings** | `Xenova/all-MiniLM-L6-v2` | Transformers.js (Local ONNX) | **384** | $0.00 (Runs 100% offline via local CPU ONNX runtime). Normalized float32 unit vectors. |
+| **Alternative Cloud Generation** | `gemini-2.5-flash` | Google AI Studio | N/A (1M context) | $0.075 / 1M input, $0.30 / 1M output. Free tier: 15 RPM, 1M TPM. |
+| **Offline Test Synthesizer** | `grounded-local-synthesizer-v1` | Deterministic In-Memory | N/A | $0.00 (Used for hermetic unit testing & offline regression). |
 
 ### Dimension-Compatibility & Safe Caching Design
 To prevent vector dimension collisions and database errors when changing models:
 1. **Configuration Envelope:**
    ```typescript
    export const AI_CONFIG = {
-     provider: process.env.EMBEDDING_PROVIDER || 'gemini', // 'gemini' | 'local'
-     modelId: process.env.EMBEDDING_MODEL || 'gemini-embedding-001',
-     dimensions: parseInt(process.env.EMBEDDING_DIMENSIONS || '768', 10),
-     generationModel: process.env.LLM_MODEL || 'gemini-2.5-flash',
+     embeddingProvider: process.env.EMBEDDING_PROVIDER || 'local',
+     embeddingModel: process.env.EMBEDDING_MODEL || 'Xenova/all-MiniLM-L6-v2',
+     embeddingDimensions: parseInt(process.env.EMBEDDING_DIMENSIONS || '384', 10),
+     llmProvider: process.env.LLM_PROVIDER || 'deepseek', // 'deepseek' | 'gemini' | 'mock'
+     llmModel: process.env.LLM_MODEL || 'deepseek-flash',
+     deepseekBaseUrl: process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com',
    };
    ```
 2. **Compound Cache Key:**

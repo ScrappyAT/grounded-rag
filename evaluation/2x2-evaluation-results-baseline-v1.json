@@ -1,0 +1,4366 @@
+{
+  "metadata": {
+    "timestamp": "2026-11-02T14:09:37.947Z",
+    "embeddingModel": "Xenova/all-MiniLM-L6-v2",
+    "dimensions": 384,
+    "synthesizer": "DeterministicGroundedSynthesizer",
+    "similarityThreshold": 0.47,
+    "totalTestCases": 120
+  },
+  "summaries": [
+    {
+      "configName": "Fixed-Size Chunking (k=3)",
+      "strategy": "fixed",
+      "topK": 3,
+      "totalQuestions": 30,
+      "answerableCount": 25,
+      "unanswerableCount": 5,
+      "recallAtK": 0.96,
+      "mrr": 0.96,
+      "avgTopScoreAnswerable": 0.6914823638463429,
+      "avgTopScoreUnanswerable": 0.40663950351768297,
+      "falseRefusals": 1,
+      "falseRefusalRate": 0.04,
+      "refusalAccuracy": 1,
+      "citationPrecision": 1,
+      "avgLatencyMs": 93.53333333333333
+    },
+    {
+      "configName": "Fixed-Size Chunking (k=5)",
+      "strategy": "fixed",
+      "topK": 5,
+      "totalQuestions": 30,
+      "answerableCount": 25,
+      "unanswerableCount": 5,
+      "recallAtK": 1,
+      "mrr": 0.97,
+      "avgTopScoreAnswerable": 0.6914823638463429,
+      "avgTopScoreUnanswerable": 0.40663950351768297,
+      "falseRefusals": 1,
+      "falseRefusalRate": 0.04,
+      "refusalAccuracy": 1,
+      "citationPrecision": 1,
+      "avgLatencyMs": 35.43333333333333
+    },
+    {
+      "configName": "Structure-Aware Chunking (k=3)",
+      "strategy": "structure_aware",
+      "topK": 3,
+      "totalQuestions": 30,
+      "answerableCount": 25,
+      "unanswerableCount": 5,
+      "recallAtK": 1,
+      "mrr": 1,
+      "avgTopScoreAnswerable": 0.7107708138773587,
+      "avgTopScoreUnanswerable": 0.39633228439413737,
+      "falseRefusals": 0,
+      "falseRefusalRate": 0,
+      "refusalAccuracy": 1,
+      "citationPrecision": 1,
+      "avgLatencyMs": 43.733333333333334
+    },
+    {
+      "configName": "Structure-Aware Chunking (k=5)",
+      "strategy": "structure_aware",
+      "topK": 5,
+      "totalQuestions": 30,
+      "answerableCount": 25,
+      "unanswerableCount": 5,
+      "recallAtK": 1,
+      "mrr": 1,
+      "avgTopScoreAnswerable": 0.7107708138773587,
+      "avgTopScoreUnanswerable": 0.39633228439413737,
+      "falseRefusals": 0,
+      "falseRefusalRate": 0,
+      "refusalAccuracy": 1,
+      "citationPrecision": 1,
+      "avgLatencyMs": 21.433333333333334
+    }
+  ],
+  "cases": [
+    {
+      "questionId": "Q01",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "8676cad8-a9e7-4d29-9dba-a368541363cc",
+        "c40bc2c3-3866-4fb5-90fc-7143c69ea0f3",
+        "5f194fb6-6ef5-417f-b5b0-7cfd2bbc692f"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-003",
+        "DOC-SUP-003",
+        "DOC-OPS-012"
+      ],
+      "similarityScores": [
+        0.8724,
+        0.807,
+        0.5192
+      ],
+      "topScore": 0.8724086436738263,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-003"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 2141
+    },
+    {
+      "questionId": "Q02",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "cd41cbf5-352c-4c56-aa94-c120054e9ee7",
+        "39524062-2a1f-4385-916d-30f65fb40583",
+        "57e5c50c-fe4d-44ff-85fe-4ad98c9c9cf4"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-014",
+        "DOC-REF-010",
+        "DOC-ACC-026"
+      ],
+      "similarityScores": [
+        0.6406,
+        0.5072,
+        0.4652
+      ],
+      "topScore": 0.6406352664366457,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-014"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 17
+    },
+    {
+      "questionId": "Q03",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "a7dfbeb6-b90f-417f-a465-ebd58cf895db",
+        "8dc142af-a07c-4901-a122-a8160ec30fe4",
+        "2bf97afe-4e97-4a13-a766-41442d4de402"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-001",
+        "DOC-SUP-001",
+        "DOC-OPS-019"
+      ],
+      "similarityScores": [
+        0.6112,
+        0.5173,
+        0.4536
+      ],
+      "topScore": 0.6112462282180959,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-001"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 18
+    },
+    {
+      "questionId": "Q04",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "7d62a95f-1294-4ec8-9b15-c704f5f105d6",
+        "5142f607-3319-406d-aed6-ab448a7f6aa3",
+        "040c8603-fcaa-4f7e-b830-1ba6f2525efc"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-004",
+        "DOC-ACC-004",
+        "DOC-ACC-002"
+      ],
+      "similarityScores": [
+        0.8033,
+        0.575,
+        0.4704
+      ],
+      "topScore": 0.8032706604662776,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-ACC-004"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 18
+    },
+    {
+      "questionId": "Q05",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "040c8603-fcaa-4f7e-b830-1ba6f2525efc",
+        "b8b45725-c9fb-46c1-8133-fe59e4b65d46",
+        "00e3a5a1-4634-4692-a68c-46074a826bd0"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-002",
+        "DOC-ACC-016",
+        "DOC-ACC-017"
+      ],
+      "similarityScores": [
+        0.658,
+        0.6026,
+        0.5945
+      ],
+      "topScore": 0.6579865789973527,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-ACC-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": false,
+      "latencyMs": 25
+    },
+    {
+      "questionId": "Q06",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "c66a7461-43fa-4ea8-b066-3373957f6c84",
+        "4783a3e9-3c4b-4c2d-a30d-f9655d621781",
+        "4822d67b-ad69-4dd4-aef0-354ba59727f1"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-019",
+        "DOC-ACC-019",
+        "DOC-SUP-022"
+      ],
+      "similarityScores": [
+        0.4483,
+        0.4373,
+        0.4035
+      ],
+      "topScore": 0.44830100084248214,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "FALSE_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": false,
+      "latencyMs": 26
+    },
+    {
+      "questionId": "Q07",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "463b6832-a02d-4374-9360-fc27a627f700",
+        "ac6d94e7-84d6-4a61-b039-ad2798bb9996",
+        "0f40f2c7-f407-4808-894b-3e26bf67daa3"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-002",
+        "DOC-PAY-001",
+        "DOC-PAY-030"
+      ],
+      "similarityScores": [
+        0.702,
+        0.5776,
+        0.5713
+      ],
+      "topScore": 0.7019538575548371,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 25
+    },
+    {
+      "questionId": "Q08",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "31866498-bcdf-4a1e-987f-f834a190ebaa",
+        "8e9ae035-8629-401e-9804-a299f9d7dd0d",
+        "f05fa375-c8e1-434b-a566-d7fb7f5bbc8a"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-008",
+        "DOC-PAY-013",
+        "DOC-PAY-008"
+      ],
+      "similarityScores": [
+        0.8409,
+        0.469,
+        0.445
+      ],
+      "topScore": 0.8409206738557242,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-008"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 41
+    },
+    {
+      "questionId": "Q09",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "4c648b23-e434-4542-9d4d-3c1310debfbb",
+        "afcc2469-00d6-427f-8ac4-ac7ec429fc7f",
+        "fd661592-c6ae-4a88-8a29-cbbaa0b47556"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-015",
+        "DOC-PAY-015",
+        "DOC-PAY-022"
+      ],
+      "similarityScores": [
+        0.7702,
+        0.5764,
+        0.4546
+      ],
+      "topScore": 0.770223140716602,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-015"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 28
+    },
+    {
+      "questionId": "Q10",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "0ca102b4-3ff1-4fe5-aa18-225085ac1997",
+        "2a442f7f-9605-47d1-8cb1-00e35fc7bced",
+        "9628339b-3976-47f8-b1d8-36d37027e356"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-012",
+        "DOC-REF-003",
+        "DOC-REF-012"
+      ],
+      "similarityScores": [
+        0.7446,
+        0.5693,
+        0.5622
+      ],
+      "topScore": 0.7445879870162048,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-012"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 29
+    },
+    {
+      "questionId": "Q11",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "0e7e9c6f-6371-4661-b656-4a5c78ad37d5",
+        "542ed2d9-1c3d-484f-8fee-5d545ab6e1ec",
+        "f8f67511-7395-4d7e-88d3-1635129e0119"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-014",
+        "DOC-REF-024",
+        "DOC-REF-028"
+      ],
+      "similarityScores": [
+        0.6502,
+        0.5366,
+        0.5296
+      ],
+      "topScore": 0.6502198039699487,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-014"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 33
+    },
+    {
+      "questionId": "Q12",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "fa3cf4ac-9035-4fba-bcc6-918e19862bb4",
+        "80056c33-7b46-4f3d-9f79-a8ae9d83e838",
+        "092902c1-2216-460e-bea0-b4e1de46a60f"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-008",
+        "DOC-REF-030",
+        "DOC-REF-008"
+      ],
+      "similarityScores": [
+        0.7908,
+        0.5743,
+        0.5717
+      ],
+      "topScore": 0.7908353112136576,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-008"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 27
+    },
+    {
+      "questionId": "Q13",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "1c2829f6-936b-48a4-b744-8c27605ca227",
+        "9628339b-3976-47f8-b1d8-36d37027e356",
+        "fa3cf4ac-9035-4fba-bcc6-918e19862bb4"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-020",
+        "DOC-REF-012",
+        "DOC-REF-008"
+      ],
+      "similarityScores": [
+        0.63,
+        0.5886,
+        0.5449
+      ],
+      "topScore": 0.6299678397102019,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-020"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 18
+    },
+    {
+      "questionId": "Q14",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "62c5476d-be80-41b4-9522-19e07450c246",
+        "94228139-8100-4761-b002-8265cfe307e7",
+        "a2c8f72e-c2c0-449a-a8e4-b6c00965cc67"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-002",
+        "DOC-SEC-023",
+        "DOC-SEC-024"
+      ],
+      "similarityScores": [
+        0.5463,
+        0.4642,
+        0.4351
+      ],
+      "topScore": 0.5463161360904103,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 17
+    },
+    {
+      "questionId": "Q15",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "fed5064d-4e24-43ff-990b-139336790cdc",
+        "660a29db-7b48-4c64-ab77-f43b01b6d214",
+        "74225c6c-79b2-4f88-bf2d-8a68e28668be"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-009",
+        "DOC-SEC-009",
+        "DOC-REF-029"
+      ],
+      "similarityScores": [
+        0.7904,
+        0.5967,
+        0.4989
+      ],
+      "topScore": 0.7903795588468994,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-009"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q16",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "1f7552b9-e28c-4a37-a68b-fe1089e09b66",
+        "054defde-0382-42f3-952f-07c63ca2dce9",
+        "612d1c0a-338a-41b8-8f6a-9916341f7dd0"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-015",
+        "DOC-ACC-007",
+        "DOC-ACC-008"
+      ],
+      "similarityScores": [
+        0.7056,
+        0.5816,
+        0.5794
+      ],
+      "topScore": 0.705631196498891,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-015"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 24
+    },
+    {
+      "questionId": "Q17",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "824986ed-0ae3-423a-893b-987862369bd8",
+        "6be89113-4a96-475a-91f2-ec7dc1fe88d5",
+        "f73b2418-9bff-43ee-9d53-374ec5b8ee07"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-001",
+        "DOC-ACC-013",
+        "DOC-OPS-015"
+      ],
+      "similarityScores": [
+        0.7216,
+        0.4899,
+        0.434
+      ],
+      "topScore": 0.721636242476426,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-001"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 26
+    },
+    {
+      "questionId": "Q18",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "afa96454-9750-4dab-8df8-bd754925ed2e",
+        "824986ed-0ae3-423a-893b-987862369bd8",
+        "29be2cc3-b9d6-47c6-8511-807a83072109"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-007",
+        "DOC-OPS-001",
+        "DOC-REF-021"
+      ],
+      "similarityScores": [
+        0.7259,
+        0.598,
+        0.589
+      ],
+      "topScore": 0.7259065835587334,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-007"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 36
+    },
+    {
+      "questionId": "Q19",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "5f194fb6-6ef5-417f-b5b0-7cfd2bbc692f",
+        "63bd6b7e-325f-46da-819e-3c27001aff86",
+        "9694a863-2338-41e7-ab76-9e2f93d9d532"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-012",
+        "DOC-SEC-ADV-999",
+        "DOC-OPS-012"
+      ],
+      "similarityScores": [
+        0.6263,
+        0.4517,
+        0.4323
+      ],
+      "topScore": 0.6262515109027901,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-012"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 17
+    },
+    {
+      "questionId": "Q20",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "939ae543-8cf4-43f4-b073-4647ff0c2286",
+        "9b81dcd5-1507-4e59-9dbd-2fbf80df6e33",
+        "fdea3e5a-154a-4aa6-ab91-0a36fd59da71"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-003",
+        "DOC-HR-003",
+        "DOC-HR-012"
+      ],
+      "similarityScores": [
+        0.6393,
+        0.4805,
+        0.3921
+      ],
+      "topScore": 0.6392870330385597,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-HR-003"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 21
+    },
+    {
+      "questionId": "Q21",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "64d10e95-6485-4cbc-996c-abc1fad2cce3",
+        "b6b45266-2308-42f8-8f29-daa4001b9ad6",
+        "d9148529-8426-4907-a6c5-49cb201ada6d"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-006",
+        "DOC-HR-006",
+        "DOC-HR-020"
+      ],
+      "similarityScores": [
+        0.732,
+        0.5171,
+        0.4136
+      ],
+      "topScore": 0.7320404212450847,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-HR-006"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 18
+    },
+    {
+      "questionId": "Q22",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "e6044ae3-c824-46a7-9192-328c8932d60a",
+        "e91c1eed-5b7f-4826-ac52-ec6c752513f3",
+        "fdea3e5a-154a-4aa6-ab91-0a36fd59da71"
+      ],
+      "retrievedDocIds": [
+        "DOC-POL-005",
+        "DOC-POL-005",
+        "DOC-HR-012"
+      ],
+      "similarityScores": [
+        0.546,
+        0.379,
+        0.3521
+      ],
+      "topScore": 0.5460003504752432,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-POL-005"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 16
+    },
+    {
+      "questionId": "Q23",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "997ea942-c475-44d4-aaca-428f3d34144f",
+        "ecec1fae-0903-46f5-84ae-f492ecb8d4b5",
+        "211b2552-5c97-4a0a-bea1-efaecd410615"
+      ],
+      "retrievedDocIds": [
+        "DOC-POL-009",
+        "DOC-POL-009",
+        "DOC-POL-019"
+      ],
+      "similarityScores": [
+        0.6694,
+        0.6243,
+        0.352
+      ],
+      "topScore": 0.6694204009270238,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-POL-009"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 18
+    },
+    {
+      "questionId": "Q24",
+      "category": "Refunds & Policy Evolution",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "0ca102b4-3ff1-4fe5-aa18-225085ac1997",
+        "d0d15643-2cee-4e9b-af9d-ad72bda1f59a",
+        "8e9ae035-8629-401e-9804-a299f9d7dd0d"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-012",
+        "DOC-REF-002",
+        "DOC-PAY-013"
+      ],
+      "similarityScores": [
+        0.7143,
+        0.6657,
+        0.4843
+      ],
+      "topScore": 0.7143075125584072,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-012",
+        "DOC-REF-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 25
+    },
+    {
+      "questionId": "Q25",
+      "category": "Adversarial & Security Defense",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "63bd6b7e-325f-46da-819e-3c27001aff86",
+        "3e6ce449-6177-4292-a254-39877a30a874",
+        "5f38d1f2-d1c8-4357-8b3e-d148acfc0c15"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-ADV-999",
+        "DOC-REF-016",
+        "DOC-REF-001"
+      ],
+      "similarityScores": [
+        0.7073,
+        0.6331,
+        0.6084
+      ],
+      "topScore": 0.707325156868243,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-ADV-999",
+        "DOC-REF-016"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q26",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "16878e30-88fd-4846-980c-68c989bf92c1",
+        "d5e8aee3-d5f6-4ac6-8df6-0fe85b0fb466",
+        "939ae543-8cf4-43f4-b073-4647ff0c2286"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-019",
+        "DOC-REF-022",
+        "DOC-HR-003"
+      ],
+      "similarityScores": [
+        0.4518,
+        0.401,
+        0.3762
+      ],
+      "topScore": 0.45183835691394547,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q27",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "a7dfbeb6-b90f-417f-a465-ebd58cf895db",
+        "939ae543-8cf4-43f4-b073-4647ff0c2286",
+        "360c0eb6-f82b-464c-a325-8c6d6a0f655a"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-001",
+        "DOC-HR-003",
+        "DOC-OPS-018"
+      ],
+      "similarityScores": [
+        0.3662,
+        0.3289,
+        0.3118
+      ],
+      "topScore": 0.36618415612532496,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 18
+    },
+    {
+      "questionId": "Q28",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "069bf37c-a40b-4d73-94c8-6f5ca7ecf1aa",
+        "aef6c382-4ff0-46f0-9a16-b2ac110bbac0",
+        "54fb94c9-ad0c-4f1f-a06f-1dc19fa022fb"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-010",
+        "DOC-POL-015",
+        "DOC-HR-024"
+      ],
+      "similarityScores": [
+        0.4363,
+        0.4115,
+        0.4095
+      ],
+      "topScore": 0.43633179718230464,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 19
+    },
+    {
+      "questionId": "Q29",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "e0516649-e40c-4540-96d4-60aeded5efa5",
+        "cf2ece51-43b4-49f6-bd7b-8950468cdebf",
+        "81bfb843-12fa-46de-ab69-4204fdb3765b"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-008",
+        "DOC-PAY-006",
+        "DOC-HR-025"
+      ],
+      "similarityScores": [
+        0.4259,
+        0.416,
+        0.4154
+      ],
+      "topScore": 0.425937558766458,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 19
+    },
+    {
+      "questionId": "Q30",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "fixed",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "10ecd069-d99c-43ee-83b5-00aa2f3843c3",
+        "069bf37c-a40b-4d73-94c8-6f5ca7ecf1aa",
+        "9c1f6c2f-593b-4630-8939-27505eea84f6"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-019",
+        "DOC-HR-010",
+        "DOC-OPS-006"
+      ],
+      "similarityScores": [
+        0.3529,
+        0.3298,
+        0.3072
+      ],
+      "topScore": 0.35290564860038176,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 20
+    },
+    {
+      "questionId": "Q01",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "8676cad8-a9e7-4d29-9dba-a368541363cc",
+        "c40bc2c3-3866-4fb5-90fc-7143c69ea0f3",
+        "5f194fb6-6ef5-417f-b5b0-7cfd2bbc692f",
+        "ae734d64-04c0-446f-815a-fda235cd76c5",
+        "7d801655-22fd-4b45-9123-c3be90439b4f"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-003",
+        "DOC-SUP-003",
+        "DOC-OPS-012",
+        "DOC-SUP-021",
+        "DOC-SUP-012"
+      ],
+      "similarityScores": [
+        0.8724,
+        0.807,
+        0.5192,
+        0.4913,
+        0.4878
+      ],
+      "topScore": 0.8724086436738263,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-003"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 33
+    },
+    {
+      "questionId": "Q02",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "cd41cbf5-352c-4c56-aa94-c120054e9ee7",
+        "39524062-2a1f-4385-916d-30f65fb40583",
+        "57e5c50c-fe4d-44ff-85fe-4ad98c9c9cf4",
+        "0afb5d69-3f03-4a37-9b7f-138d6577292c",
+        "81684780-7c87-4b2c-a7f8-1f079446ed00"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-014",
+        "DOC-REF-010",
+        "DOC-ACC-026",
+        "DOC-PAY-004",
+        "DOC-SUP-014"
+      ],
+      "similarityScores": [
+        0.6406,
+        0.5072,
+        0.4652,
+        0.4289,
+        0.4266
+      ],
+      "topScore": 0.6406352664366457,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-014"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q03",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "a7dfbeb6-b90f-417f-a465-ebd58cf895db",
+        "8dc142af-a07c-4901-a122-a8160ec30fe4",
+        "2bf97afe-4e97-4a13-a766-41442d4de402",
+        "fdea3e5a-154a-4aa6-ab91-0a36fd59da71",
+        "ccb2d6aa-d0ba-4269-881f-babbea661dfc"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-001",
+        "DOC-SUP-001",
+        "DOC-OPS-019",
+        "DOC-HR-012",
+        "DOC-SUP-009"
+      ],
+      "similarityScores": [
+        0.6112,
+        0.5173,
+        0.4536,
+        0.3972,
+        0.3892
+      ],
+      "topScore": 0.6112462282180959,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-001"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 23
+    },
+    {
+      "questionId": "Q04",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "7d62a95f-1294-4ec8-9b15-c704f5f105d6",
+        "5142f607-3319-406d-aed6-ab448a7f6aa3",
+        "040c8603-fcaa-4f7e-b830-1ba6f2525efc",
+        "be3af1f7-2d9c-428c-8899-d2b52007b413",
+        "3037f40b-9f4d-47f1-a2a8-9e6e16e03d21"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-004",
+        "DOC-ACC-004",
+        "DOC-ACC-002",
+        "DOC-ACC-021",
+        "DOC-PAY-010"
+      ],
+      "similarityScores": [
+        0.8033,
+        0.575,
+        0.4704,
+        0.4393,
+        0.4299
+      ],
+      "topScore": 0.8032706604662776,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-ACC-004"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 20
+    },
+    {
+      "questionId": "Q05",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "040c8603-fcaa-4f7e-b830-1ba6f2525efc",
+        "b8b45725-c9fb-46c1-8133-fe59e4b65d46",
+        "00e3a5a1-4634-4692-a68c-46074a826bd0",
+        "c95faaf0-de43-41c6-8c8b-3f2ef38dcd2b",
+        "fbdb75f4-091d-480e-85c1-674bda6042e4"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-002",
+        "DOC-ACC-016",
+        "DOC-ACC-017",
+        "DOC-ACC-011",
+        "DOC-ACC-028"
+      ],
+      "similarityScores": [
+        0.658,
+        0.6026,
+        0.5945,
+        0.5945,
+        0.5336
+      ],
+      "topScore": 0.6579865789973527,
+      "isHit": true,
+      "hitRank": 4,
+      "reciprocalRank": 0.25,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-ACC-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q06",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "c66a7461-43fa-4ea8-b066-3373957f6c84",
+        "4783a3e9-3c4b-4c2d-a30d-f9655d621781",
+        "4822d67b-ad69-4dd4-aef0-354ba59727f1",
+        "3a10b9f0-eccd-44f8-a8f3-5d75fc11b32b",
+        "81684780-7c87-4b2c-a7f8-1f079446ed00"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-019",
+        "DOC-ACC-019",
+        "DOC-SUP-022",
+        "DOC-SEC-002",
+        "DOC-SUP-014"
+      ],
+      "similarityScores": [
+        0.4483,
+        0.4373,
+        0.4035,
+        0.3381,
+        0.3362
+      ],
+      "topScore": 0.44830100084248214,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "FALSE_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": false,
+      "latencyMs": 23
+    },
+    {
+      "questionId": "Q07",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "463b6832-a02d-4374-9360-fc27a627f700",
+        "ac6d94e7-84d6-4a61-b039-ad2798bb9996",
+        "0f40f2c7-f407-4808-894b-3e26bf67daa3",
+        "35e3fea8-66fe-4fdb-9255-8dfbcd7b00e3",
+        "7de412a4-0d64-43c9-80b5-2dfbe6eed028"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-002",
+        "DOC-PAY-001",
+        "DOC-PAY-030",
+        "DOC-PAY-024",
+        "DOC-PAY-002"
+      ],
+      "similarityScores": [
+        0.702,
+        0.5776,
+        0.5713,
+        0.5651,
+        0.5553
+      ],
+      "topScore": 0.7019538575548371,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 28
+    },
+    {
+      "questionId": "Q08",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "31866498-bcdf-4a1e-987f-f834a190ebaa",
+        "8e9ae035-8629-401e-9804-a299f9d7dd0d",
+        "f05fa375-c8e1-434b-a566-d7fb7f5bbc8a",
+        "c71fffbd-8abb-42c0-89f5-4c1809eb5c74",
+        "092902c1-2216-460e-bea0-b4e1de46a60f"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-008",
+        "DOC-PAY-013",
+        "DOC-PAY-008",
+        "DOC-PAY-005",
+        "DOC-REF-008"
+      ],
+      "similarityScores": [
+        0.8409,
+        0.469,
+        0.445,
+        0.436,
+        0.4151
+      ],
+      "topScore": 0.8409206738557242,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-008"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 19
+    },
+    {
+      "questionId": "Q09",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "4c648b23-e434-4542-9d4d-3c1310debfbb",
+        "afcc2469-00d6-427f-8ac4-ac7ec429fc7f",
+        "fd661592-c6ae-4a88-8a29-cbbaa0b47556",
+        "64d10e95-6485-4cbc-996c-abc1fad2cce3",
+        "d335e7e5-a7d7-48b2-958f-38ef6a617cce"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-015",
+        "DOC-PAY-015",
+        "DOC-PAY-022",
+        "DOC-HR-006",
+        "DOC-PAY-009"
+      ],
+      "similarityScores": [
+        0.7702,
+        0.5764,
+        0.4546,
+        0.4124,
+        0.4078
+      ],
+      "topScore": 0.770223140716602,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-015"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 24
+    },
+    {
+      "questionId": "Q10",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "0ca102b4-3ff1-4fe5-aa18-225085ac1997",
+        "2a442f7f-9605-47d1-8cb1-00e35fc7bced",
+        "9628339b-3976-47f8-b1d8-36d37027e356",
+        "5f38d1f2-d1c8-4357-8b3e-d148acfc0c15",
+        "80056c33-7b46-4f3d-9f79-a8ae9d83e838"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-012",
+        "DOC-REF-003",
+        "DOC-REF-012",
+        "DOC-REF-001",
+        "DOC-REF-030"
+      ],
+      "similarityScores": [
+        0.7446,
+        0.5693,
+        0.5622,
+        0.5455,
+        0.5435
+      ],
+      "topScore": 0.7445879870162048,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-012"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 24
+    },
+    {
+      "questionId": "Q11",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "0e7e9c6f-6371-4661-b656-4a5c78ad37d5",
+        "542ed2d9-1c3d-484f-8fee-5d545ab6e1ec",
+        "f8f67511-7395-4d7e-88d3-1635129e0119",
+        "c906e2bf-040f-45f3-a534-8301cf2a6d11",
+        "3e6ce449-6177-4292-a254-39877a30a874"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-014",
+        "DOC-REF-024",
+        "DOC-REF-028",
+        "DOC-REF-017",
+        "DOC-REF-016"
+      ],
+      "similarityScores": [
+        0.6502,
+        0.5366,
+        0.5296,
+        0.4994,
+        0.4965
+      ],
+      "topScore": 0.6502198039699487,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-014"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 27
+    },
+    {
+      "questionId": "Q12",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "fa3cf4ac-9035-4fba-bcc6-918e19862bb4",
+        "80056c33-7b46-4f3d-9f79-a8ae9d83e838",
+        "092902c1-2216-460e-bea0-b4e1de46a60f",
+        "5f38d1f2-d1c8-4357-8b3e-d148acfc0c15",
+        "1c2829f6-936b-48a4-b744-8c27605ca227"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-008",
+        "DOC-REF-030",
+        "DOC-REF-008",
+        "DOC-REF-001",
+        "DOC-REF-020"
+      ],
+      "similarityScores": [
+        0.7908,
+        0.5743,
+        0.5717,
+        0.5663,
+        0.5585
+      ],
+      "topScore": 0.7908353112136576,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-008"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 26
+    },
+    {
+      "questionId": "Q13",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "1c2829f6-936b-48a4-b744-8c27605ca227",
+        "9628339b-3976-47f8-b1d8-36d37027e356",
+        "fa3cf4ac-9035-4fba-bcc6-918e19862bb4",
+        "2a442f7f-9605-47d1-8cb1-00e35fc7bced",
+        "80056c33-7b46-4f3d-9f79-a8ae9d83e838"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-020",
+        "DOC-REF-012",
+        "DOC-REF-008",
+        "DOC-REF-003",
+        "DOC-REF-030"
+      ],
+      "similarityScores": [
+        0.63,
+        0.5886,
+        0.5449,
+        0.5282,
+        0.5152
+      ],
+      "topScore": 0.6299678397102019,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-020"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 20
+    },
+    {
+      "questionId": "Q14",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "62c5476d-be80-41b4-9522-19e07450c246",
+        "94228139-8100-4761-b002-8265cfe307e7",
+        "a2c8f72e-c2c0-449a-a8e4-b6c00965cc67",
+        "f6db6321-b36b-4958-a41b-29a31099ea65",
+        "7ce6d388-c63e-401a-a8c2-b4b626f9bbcc"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-002",
+        "DOC-SEC-023",
+        "DOC-SEC-024",
+        "DOC-ACC-010",
+        "DOC-SUP-029"
+      ],
+      "similarityScores": [
+        0.5463,
+        0.4642,
+        0.4351,
+        0.4351,
+        0.4351
+      ],
+      "topScore": 0.5463161360904103,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 53
+    },
+    {
+      "questionId": "Q15",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "fed5064d-4e24-43ff-990b-139336790cdc",
+        "660a29db-7b48-4c64-ab77-f43b01b6d214",
+        "74225c6c-79b2-4f88-bf2d-8a68e28668be",
+        "f4eb1fed-730e-4312-a6d7-692617fd69c1",
+        "317fd764-133e-446c-bf2b-2114197bd769"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-009",
+        "DOC-SEC-009",
+        "DOC-REF-029",
+        "DOC-ACC-029",
+        "DOC-SUP-028"
+      ],
+      "similarityScores": [
+        0.7904,
+        0.5967,
+        0.4989,
+        0.4989,
+        0.4989
+      ],
+      "topScore": 0.7903795588468994,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-009"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 41
+    },
+    {
+      "questionId": "Q16",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "1f7552b9-e28c-4a37-a68b-fe1089e09b66",
+        "054defde-0382-42f3-952f-07c63ca2dce9",
+        "612d1c0a-338a-41b8-8f6a-9916341f7dd0",
+        "86be8575-ba4c-4de0-9a66-9129a5ac1ea3",
+        "d092e7ea-d144-4b48-be77-062c50c95f37"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-015",
+        "DOC-ACC-007",
+        "DOC-ACC-008",
+        "DOC-SEC-ADV-999",
+        "DOC-ACC-029"
+      ],
+      "similarityScores": [
+        0.7056,
+        0.5816,
+        0.5794,
+        0.5598,
+        0.5487
+      ],
+      "topScore": 0.705631196498891,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-015"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 32
+    },
+    {
+      "questionId": "Q17",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "824986ed-0ae3-423a-893b-987862369bd8",
+        "6be89113-4a96-475a-91f2-ec7dc1fe88d5",
+        "f73b2418-9bff-43ee-9d53-374ec5b8ee07",
+        "0ae91371-ea81-4f4f-95ae-5f43978bda8e",
+        "fde1feb4-d809-4eee-a160-83b560b37ad7"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-001",
+        "DOC-ACC-013",
+        "DOC-OPS-015",
+        "DOC-SUP-013",
+        "DOC-SEC-022"
+      ],
+      "similarityScores": [
+        0.7216,
+        0.4899,
+        0.434,
+        0.421,
+        0.4181
+      ],
+      "topScore": 0.721636242476426,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-001"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 25
+    },
+    {
+      "questionId": "Q18",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "afa96454-9750-4dab-8df8-bd754925ed2e",
+        "824986ed-0ae3-423a-893b-987862369bd8",
+        "29be2cc3-b9d6-47c6-8511-807a83072109",
+        "64fa9b2e-0c08-446b-8f1c-c3369075a492",
+        "1911e26a-87aa-4c6a-9919-5da7adb2ecd4"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-007",
+        "DOC-OPS-001",
+        "DOC-REF-021",
+        "DOC-OPS-007",
+        "DOC-REF-025"
+      ],
+      "similarityScores": [
+        0.7259,
+        0.598,
+        0.589,
+        0.567,
+        0.4792
+      ],
+      "topScore": 0.7259065835587334,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-007"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 44
+    },
+    {
+      "questionId": "Q19",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "5f194fb6-6ef5-417f-b5b0-7cfd2bbc692f",
+        "63bd6b7e-325f-46da-819e-3c27001aff86",
+        "9694a863-2338-41e7-ab76-9e2f93d9d532",
+        "a88b210f-da6e-4cfa-85b9-a672999d8c5d",
+        "36641128-58ea-4aa2-86e5-389562f05ca0"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-012",
+        "DOC-SEC-ADV-999",
+        "DOC-OPS-012",
+        "DOC-ACC-029",
+        "DOC-SUP-028"
+      ],
+      "similarityScores": [
+        0.6263,
+        0.4517,
+        0.4323,
+        0.4266,
+        0.4266
+      ],
+      "topScore": 0.6262515109027901,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-012"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 19
+    },
+    {
+      "questionId": "Q20",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "939ae543-8cf4-43f4-b073-4647ff0c2286",
+        "9b81dcd5-1507-4e59-9dbd-2fbf80df6e33",
+        "fdea3e5a-154a-4aa6-ab91-0a36fd59da71",
+        "b71c7aec-f48e-45f6-b74a-cd6f5b8ce94f",
+        "d9148529-8426-4907-a6c5-49cb201ada6d"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-003",
+        "DOC-HR-003",
+        "DOC-HR-012",
+        "DOC-HR-008",
+        "DOC-HR-020"
+      ],
+      "similarityScores": [
+        0.6393,
+        0.4805,
+        0.3921,
+        0.3798,
+        0.3644
+      ],
+      "topScore": 0.6392870330385597,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-HR-003"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q21",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "64d10e95-6485-4cbc-996c-abc1fad2cce3",
+        "b6b45266-2308-42f8-8f29-daa4001b9ad6",
+        "d9148529-8426-4907-a6c5-49cb201ada6d",
+        "10ecd069-d99c-43ee-83b5-00aa2f3843c3",
+        "00de6daf-9bc7-47d3-a74e-abba41574420"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-006",
+        "DOC-HR-006",
+        "DOC-HR-020",
+        "DOC-HR-019",
+        "DOC-HR-016"
+      ],
+      "similarityScores": [
+        0.732,
+        0.5171,
+        0.4136,
+        0.4111,
+        0.3921
+      ],
+      "topScore": 0.7320404212450847,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-HR-006"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 21
+    },
+    {
+      "questionId": "Q22",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "e6044ae3-c824-46a7-9192-328c8932d60a",
+        "e91c1eed-5b7f-4826-ac52-ec6c752513f3",
+        "fdea3e5a-154a-4aa6-ab91-0a36fd59da71",
+        "6fcb6c62-d812-442e-b93b-f53dde4d4001",
+        "d9148529-8426-4907-a6c5-49cb201ada6d"
+      ],
+      "retrievedDocIds": [
+        "DOC-POL-005",
+        "DOC-POL-005",
+        "DOC-HR-012",
+        "DOC-HR-021",
+        "DOC-HR-020"
+      ],
+      "similarityScores": [
+        0.546,
+        0.379,
+        0.3521,
+        0.3516,
+        0.3431
+      ],
+      "topScore": 0.5460003504752432,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-POL-005"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 19
+    },
+    {
+      "questionId": "Q23",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "997ea942-c475-44d4-aaca-428f3d34144f",
+        "ecec1fae-0903-46f5-84ae-f492ecb8d4b5",
+        "211b2552-5c97-4a0a-bea1-efaecd410615",
+        "939ae543-8cf4-43f4-b073-4647ff0c2286",
+        "2a442f7f-9605-47d1-8cb1-00e35fc7bced"
+      ],
+      "retrievedDocIds": [
+        "DOC-POL-009",
+        "DOC-POL-009",
+        "DOC-POL-019",
+        "DOC-HR-003",
+        "DOC-REF-003"
+      ],
+      "similarityScores": [
+        0.6694,
+        0.6243,
+        0.352,
+        0.3383,
+        0.333
+      ],
+      "topScore": 0.6694204009270238,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-POL-009"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 30
+    },
+    {
+      "questionId": "Q24",
+      "category": "Refunds & Policy Evolution",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "0ca102b4-3ff1-4fe5-aa18-225085ac1997",
+        "d0d15643-2cee-4e9b-af9d-ad72bda1f59a",
+        "8e9ae035-8629-401e-9804-a299f9d7dd0d",
+        "3e6ce449-6177-4292-a254-39877a30a874",
+        "92b02de9-77e7-435c-a4b2-e51c3c2d9393"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-012",
+        "DOC-REF-002",
+        "DOC-PAY-013",
+        "DOC-REF-016",
+        "DOC-REF-029"
+      ],
+      "similarityScores": [
+        0.7143,
+        0.6657,
+        0.4843,
+        0.4453,
+        0.4423
+      ],
+      "topScore": 0.7143075125584072,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-012",
+        "DOC-REF-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 87
+    },
+    {
+      "questionId": "Q25",
+      "category": "Adversarial & Security Defense",
+      "isAnswerable": true,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "63bd6b7e-325f-46da-819e-3c27001aff86",
+        "3e6ce449-6177-4292-a254-39877a30a874",
+        "5f38d1f2-d1c8-4357-8b3e-d148acfc0c15",
+        "80056c33-7b46-4f3d-9f79-a8ae9d83e838",
+        "92b02de9-77e7-435c-a4b2-e51c3c2d9393"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-ADV-999",
+        "DOC-REF-016",
+        "DOC-REF-001",
+        "DOC-REF-030",
+        "DOC-REF-029"
+      ],
+      "similarityScores": [
+        0.7073,
+        0.6331,
+        0.6084,
+        0.5804,
+        0.5743
+      ],
+      "topScore": 0.707325156868243,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-ADV-999",
+        "DOC-REF-016"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 104
+    },
+    {
+      "questionId": "Q26",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "16878e30-88fd-4846-980c-68c989bf92c1",
+        "d5e8aee3-d5f6-4ac6-8df6-0fe85b0fb466",
+        "939ae543-8cf4-43f4-b073-4647ff0c2286",
+        "1abb1e2d-9f10-4522-b778-5ea914f9f3e4",
+        "3af7d23f-5ffb-4af5-b8fd-b4636e7e9bfd"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-019",
+        "DOC-REF-022",
+        "DOC-HR-003",
+        "DOC-PAY-012",
+        "DOC-PAY-007"
+      ],
+      "similarityScores": [
+        0.4518,
+        0.401,
+        0.3762,
+        0.3709,
+        0.355
+      ],
+      "topScore": 0.45183835691394547,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 46
+    },
+    {
+      "questionId": "Q27",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "a7dfbeb6-b90f-417f-a465-ebd58cf895db",
+        "939ae543-8cf4-43f4-b073-4647ff0c2286",
+        "360c0eb6-f82b-464c-a325-8c6d6a0f655a",
+        "352eca65-bae4-43c5-9e74-bd094f157284",
+        "28613f78-e682-4144-84e5-c6a7de7ed408"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-001",
+        "DOC-HR-003",
+        "DOC-OPS-018",
+        "DOC-POL-003",
+        "DOC-ACC-010"
+      ],
+      "similarityScores": [
+        0.3662,
+        0.3289,
+        0.3118,
+        0.2915,
+        0.2717
+      ],
+      "topScore": 0.36618415612532496,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 84
+    },
+    {
+      "questionId": "Q28",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "069bf37c-a40b-4d73-94c8-6f5ca7ecf1aa",
+        "aef6c382-4ff0-46f0-9a16-b2ac110bbac0",
+        "54fb94c9-ad0c-4f1f-a06f-1dc19fa022fb",
+        "fdea3e5a-154a-4aa6-ab91-0a36fd59da71",
+        "6fcb6c62-d812-442e-b93b-f53dde4d4001"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-010",
+        "DOC-POL-015",
+        "DOC-HR-024",
+        "DOC-HR-012",
+        "DOC-HR-021"
+      ],
+      "similarityScores": [
+        0.4363,
+        0.4115,
+        0.4095,
+        0.4019,
+        0.3986
+      ],
+      "topScore": 0.43633179718230464,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 35
+    },
+    {
+      "questionId": "Q29",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "e0516649-e40c-4540-96d4-60aeded5efa5",
+        "cf2ece51-43b4-49f6-bd7b-8950468cdebf",
+        "81bfb843-12fa-46de-ab69-4204fdb3765b",
+        "9c1f6c2f-593b-4630-8939-27505eea84f6",
+        "7b0c429c-9df4-41a1-8396-35458f6b1757"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-008",
+        "DOC-PAY-006",
+        "DOC-HR-025",
+        "DOC-OPS-006",
+        "DOC-SUP-002"
+      ],
+      "similarityScores": [
+        0.4259,
+        0.416,
+        0.4154,
+        0.4123,
+        0.411
+      ],
+      "topScore": 0.425937558766458,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 68
+    },
+    {
+      "questionId": "Q30",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "fixed",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "10ecd069-d99c-43ee-83b5-00aa2f3843c3",
+        "069bf37c-a40b-4d73-94c8-6f5ca7ecf1aa",
+        "9c1f6c2f-593b-4630-8939-27505eea84f6",
+        "fd875ac3-7665-4a80-b4a7-00a41e068c1a",
+        "62c5476d-be80-41b4-9522-19e07450c246"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-019",
+        "DOC-HR-010",
+        "DOC-OPS-006",
+        "DOC-ACC-014",
+        "DOC-SEC-002"
+      ],
+      "similarityScores": [
+        0.3529,
+        0.3298,
+        0.3072,
+        0.2921,
+        0.2874
+      ],
+      "topScore": 0.35290564860038176,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q01",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "f6ecd714-22bf-4f4f-b479-001ce6e14d44",
+        "348effa4-2d6f-4f40-af04-58c46b36012c",
+        "3fa56719-f045-44de-b81b-8aed119183a9"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-003",
+        "DOC-SUP-003",
+        "DOC-SUP-003"
+      ],
+      "similarityScores": [
+        0.9112,
+        0.743,
+        0.6089
+      ],
+      "topScore": 0.9111966808331027,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-003"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 168
+    },
+    {
+      "questionId": "Q02",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "8e9f9113-3971-4b5f-a695-a1b200b2c928",
+        "e54808c5-a180-499e-95cc-9710afe74831",
+        "5f24aad4-0c40-45e6-8b23-906e23c25c44"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-014",
+        "DOC-SUP-014",
+        "DOC-ACC-026"
+      ],
+      "similarityScores": [
+        0.6717,
+        0.5937,
+        0.5722
+      ],
+      "topScore": 0.6717112869615144,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-014"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 102
+    },
+    {
+      "questionId": "Q03",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "aa1cb4b2-a062-4422-866e-55217946413a",
+        "c24271e2-18cd-444c-9e5f-0ca0d767f657",
+        "7c95cd9d-a537-4987-a60e-65069917bf41"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-001",
+        "DOC-SUP-001",
+        "DOC-SUP-001"
+      ],
+      "similarityScores": [
+        0.6435,
+        0.6237,
+        0.5342
+      ],
+      "topScore": 0.6434907913208191,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-001"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 127
+    },
+    {
+      "questionId": "Q04",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "97f44cfd-029d-452a-90b1-e8127b0b7337",
+        "6a22017a-6839-4edc-9792-97d126555d08",
+        "ada69b05-f15c-48e5-afb9-1f6e0d49d678"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-004",
+        "DOC-ACC-004",
+        "DOC-ACC-004"
+      ],
+      "similarityScores": [
+        0.8059,
+        0.604,
+        0.5616
+      ],
+      "topScore": 0.8059313528620099,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-ACC-004"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 66
+    },
+    {
+      "questionId": "Q05",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "8995263d-5bc6-48c8-8351-d68bcacd0b3a",
+        "466267d0-2811-4576-8188-614f93858f0d",
+        "c7ef3fb0-71ad-458c-b0dc-3e479193f3a0"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-011",
+        "DOC-ACC-002",
+        "DOC-ACC-016"
+      ],
+      "similarityScores": [
+        0.7082,
+        0.6652,
+        0.6268
+      ],
+      "topScore": 0.7081519787402455,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-ACC-011"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 31
+    },
+    {
+      "questionId": "Q06",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "3dbf2e83-eaf5-44b7-9d33-fb843b6e7a4d",
+        "a2026a96-5df1-49fc-867c-ad44823906b5",
+        "4ceca67b-3120-4c1d-a00b-e5451ca4fc07"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-019",
+        "DOC-SUP-022",
+        "DOC-SUP-022"
+      ],
+      "similarityScores": [
+        0.5011,
+        0.4363,
+        0.3888
+      ],
+      "topScore": 0.5010986032066267,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-ACC-019"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 63
+    },
+    {
+      "questionId": "Q07",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "051a368b-5d5b-48ec-bb00-b9b3d0ac8ad5",
+        "14246d9c-8334-40d0-a3f1-c049c0f72aea",
+        "5ce10ace-3da0-41e7-8dff-0689869f887a"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-002",
+        "DOC-PAY-002",
+        "DOC-PAY-002"
+      ],
+      "similarityScores": [
+        0.711,
+        0.6423,
+        0.6295
+      ],
+      "topScore": 0.7109521469048979,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 54
+    },
+    {
+      "questionId": "Q08",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "4301f185-2d43-40b3-86b0-cf08b5f0991e",
+        "24a13018-66aa-4b57-8f9b-feb24753bfb7",
+        "44226793-2b00-4e92-b3dd-4f6c8acbeb54"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-008",
+        "DOC-PAY-008",
+        "DOC-PAY-008"
+      ],
+      "similarityScores": [
+        0.86,
+        0.7607,
+        0.6631
+      ],
+      "topScore": 0.8599579167315922,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-008"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 30
+    },
+    {
+      "questionId": "Q09",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "383fb0c6-6052-46b7-8c5b-b1aaa957c980",
+        "57d109ba-3aef-4729-8805-0ebaa0a766ce",
+        "65ddc290-f393-497b-a789-3d789737a1de"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-015",
+        "DOC-PAY-015",
+        "DOC-PAY-015"
+      ],
+      "similarityScores": [
+        0.8083,
+        0.5834,
+        0.5817
+      ],
+      "topScore": 0.8082943991035595,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-015"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 24
+    },
+    {
+      "questionId": "Q10",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "3d7581f2-472a-4d18-978f-fa42dc133c2a",
+        "325bacde-d0c8-4820-9876-89781d7a13dd",
+        "15812ee2-d254-4e2d-b3f4-8fe99fc5752a"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-012",
+        "DOC-REF-012",
+        "DOC-REF-012"
+      ],
+      "similarityScores": [
+        0.6571,
+        0.6466,
+        0.5911
+      ],
+      "topScore": 0.6571252567469649,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-012"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 41
+    },
+    {
+      "questionId": "Q11",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "689a7e7f-fea0-48cb-bb6d-6369900214df",
+        "5b8f3f55-3913-401d-b25d-72608c6b425d",
+        "66f37138-31c0-4cf2-b0ef-6acf00e2f979"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-014",
+        "DOC-REF-014",
+        "DOC-REF-024"
+      ],
+      "similarityScores": [
+        0.6725,
+        0.5966,
+        0.5544
+      ],
+      "topScore": 0.6724708470737689,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-014"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 45
+    },
+    {
+      "questionId": "Q12",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "3c790fd2-9f72-49c8-8c47-3e6b4bff86cc",
+        "2cb666f7-b42c-40f6-a229-d1524efe70e7",
+        "e64752c1-c5e1-4d02-a316-6c1516870830"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-008",
+        "DOC-REF-008",
+        "DOC-REF-008"
+      ],
+      "similarityScores": [
+        0.8107,
+        0.6626,
+        0.6196
+      ],
+      "topScore": 0.8106710170099695,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-008"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 26
+    },
+    {
+      "questionId": "Q13",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "552c5717-669f-4dd2-bc6f-1b5d1121df66",
+        "15812ee2-d254-4e2d-b3f4-8fe99fc5752a",
+        "3bf81a30-0580-49e3-9476-01e230adbc71"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-020",
+        "DOC-REF-012",
+        "DOC-REF-020"
+      ],
+      "similarityScores": [
+        0.6348,
+        0.6282,
+        0.5828
+      ],
+      "topScore": 0.6348419028709231,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-020"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 19
+    },
+    {
+      "questionId": "Q14",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "f59a5401-6efc-448b-8ba8-b436abb7ff71",
+        "50d6fdd2-ff0a-4e44-ac08-c7795766abaa",
+        "f84c8a44-b42b-418e-b17b-83dbeadf4b3f"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-002",
+        "DOC-SUP-022",
+        "DOC-SEC-002"
+      ],
+      "similarityScores": [
+        0.5184,
+        0.507,
+        0.4993
+      ],
+      "topScore": 0.5183662904769576,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q15",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "55071b90-a1a3-402a-acbc-c624a64afe1c",
+        "547ef366-3086-4466-a1fb-6aaaa83a0e21",
+        "11c15e68-9503-4237-9d5b-5010b496fb32"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-009",
+        "DOC-SEC-009",
+        "DOC-SEC-009"
+      ],
+      "similarityScores": [
+        0.808,
+        0.6631,
+        0.6494
+      ],
+      "topScore": 0.8080352671177956,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-009"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 29
+    },
+    {
+      "questionId": "Q16",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "6c40e278-4d68-4dc0-bebd-edd572220cad",
+        "0e940fbf-a52c-4b41-8245-be1d1d426017",
+        "3935d085-7e76-40c5-9ce2-ee124d682e66"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-015",
+        "DOC-ACC-029",
+        "DOC-ACC-007"
+      ],
+      "similarityScores": [
+        0.6745,
+        0.591,
+        0.5695
+      ],
+      "topScore": 0.6744517503861786,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-015"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 45
+    },
+    {
+      "questionId": "Q17",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "a8dbc478-f605-41a3-95fa-26acc0a63266",
+        "76d9d9fd-4026-42bf-866a-c9f26fe85e3b",
+        "46a5132d-2c8e-4ef4-a243-006324e68ac9"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-001",
+        "DOC-OPS-001",
+        "DOC-OPS-001"
+      ],
+      "similarityScores": [
+        0.7013,
+        0.6624,
+        0.5927
+      ],
+      "topScore": 0.7013292041628485,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-001"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 51
+    },
+    {
+      "questionId": "Q18",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "998c2c73-725e-4999-abde-c1e51cbc2f8e",
+        "b81f68c0-c00c-47e8-a7d9-23d8e218ea85",
+        "bbf2adba-3edf-4c3a-bdda-75df8fd0bae0"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-007",
+        "DOC-OPS-007",
+        "DOC-OPS-007"
+      ],
+      "similarityScores": [
+        0.6823,
+        0.664,
+        0.6004
+      ],
+      "topScore": 0.6823063317398244,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-007"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 28
+    },
+    {
+      "questionId": "Q19",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "8cf125e5-ef05-4d82-9d73-4a6d44980c2d",
+        "a096d619-45ea-438b-bca6-6b8288aaed21",
+        "d500908b-a8fa-4dd2-a8c5-bd314bcd0b54"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-012",
+        "DOC-OPS-012",
+        "DOC-OPS-019"
+      ],
+      "similarityScores": [
+        0.6433,
+        0.5292,
+        0.4717
+      ],
+      "topScore": 0.6432832946529118,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-012"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 36
+    },
+    {
+      "questionId": "Q20",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "361408f4-d768-4a84-8819-fb00dcd360ab",
+        "d1e886a7-61e6-4f51-a1c3-c807262a78e7",
+        "58073832-0ad8-47c1-97d9-9093d667c725"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-003",
+        "DOC-HR-003",
+        "DOC-HR-003"
+      ],
+      "similarityScores": [
+        0.6982,
+        0.5093,
+        0.5037
+      ],
+      "topScore": 0.6981979248759707,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-HR-003"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 20
+    },
+    {
+      "questionId": "Q21",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "25337f5f-a62a-4738-9fdd-c5fce500c7c1",
+        "62e1c09c-2d21-423f-a8a0-fc176384053e",
+        "f86ced4b-4f92-4216-98b1-6a71c587d4a2"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-006",
+        "DOC-HR-006",
+        "DOC-HR-006"
+      ],
+      "similarityScores": [
+        0.7772,
+        0.6526,
+        0.5555
+      ],
+      "topScore": 0.7772477865219172,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-HR-006"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 23
+    },
+    {
+      "questionId": "Q22",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "4e6f57e1-d1ea-4ec4-9b0a-4548d3e3af7e",
+        "00548fb5-45e0-4b20-8ac1-ffa67ec19d9d",
+        "cda83ebc-9f16-4591-8be2-914c75bf8aaf"
+      ],
+      "retrievedDocIds": [
+        "DOC-POL-005",
+        "DOC-POL-005",
+        "DOC-POL-005"
+      ],
+      "similarityScores": [
+        0.6124,
+        0.4606,
+        0.3885
+      ],
+      "topScore": 0.6124302245801557,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-POL-005"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 26
+    },
+    {
+      "questionId": "Q23",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "eab9bbb0-8dc7-406e-98fc-9882b9be1ec0",
+        "d1197511-6807-48ff-87f0-55f45504dd94",
+        "361408f4-d768-4a84-8819-fb00dcd360ab"
+      ],
+      "retrievedDocIds": [
+        "DOC-POL-009",
+        "DOC-POL-009",
+        "DOC-HR-003"
+      ],
+      "similarityScores": [
+        0.7196,
+        0.5952,
+        0.3443
+      ],
+      "topScore": 0.7196305227059451,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-POL-009"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 20
+    },
+    {
+      "questionId": "Q24",
+      "category": "Refunds & Policy Evolution",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "3d7581f2-472a-4d18-978f-fa42dc133c2a",
+        "4404dac7-9bc9-4cde-a535-eaddb7fb9a3f",
+        "37befc5c-b8e4-40f5-9969-c547037d813b"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-012",
+        "DOC-REF-002",
+        "DOC-REF-002"
+      ],
+      "similarityScores": [
+        0.7706,
+        0.5659,
+        0.5582
+      ],
+      "topScore": 0.7706285069874728,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-012",
+        "DOC-REF-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 42
+    },
+    {
+      "questionId": "Q25",
+      "category": "Adversarial & Security Defense",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "65f4594a-9b1b-4722-92bd-62b2c0382379",
+        "3f9886e6-ebc0-4564-af89-efd1a2976ba4",
+        "2c7387ca-ae41-41ea-907c-cff520f89d39"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-ADV-999",
+        "DOC-SEC-ADV-999",
+        "DOC-REF-016"
+      ],
+      "similarityScores": [
+        0.7675,
+        0.6594,
+        0.6241
+      ],
+      "topScore": 0.7674690623599972,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-ADV-999",
+        "DOC-REF-016"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 54
+    },
+    {
+      "questionId": "Q26",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "bd061e9b-2f4c-4bde-aebe-b107e641b97b",
+        "11efabf7-c435-4071-a981-74337d93676c",
+        "348effa4-2d6f-4f40-af04-58c46b36012c"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-019",
+        "DOC-REF-022",
+        "DOC-SUP-003"
+      ],
+      "similarityScores": [
+        0.4447,
+        0.3798,
+        0.3797
+      ],
+      "topScore": 0.44467637944570115,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q27",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "7c95cd9d-a537-4987-a60e-65069917bf41",
+        "04003741-cefd-4fea-a9dc-b93cf5142631",
+        "44f6c11b-cee7-43dd-a649-7498fdf5c61b"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-001",
+        "DOC-HR-003",
+        "DOC-SEC-013"
+      ],
+      "similarityScores": [
+        0.3506,
+        0.3481,
+        0.3121
+      ],
+      "topScore": 0.3505608543920897,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 28
+    },
+    {
+      "questionId": "Q28",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "990f0b19-4e61-472c-9ce0-d92ea091dac3",
+        "c7a78171-547f-4224-9929-6499527c963b",
+        "ff3a1fea-afa6-4cc3-80dc-388d4ba73859"
+      ],
+      "retrievedDocIds": [
+        "DOC-POL-015",
+        "DOC-HR-010",
+        "DOC-HR-021"
+      ],
+      "similarityScores": [
+        0.4202,
+        0.4175,
+        0.416
+      ],
+      "topScore": 0.42016550422704924,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 23
+    },
+    {
+      "questionId": "Q29",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "2513aaf5-1e35-4f7e-b698-ae6a8468ca2c",
+        "5cb644a1-b3c3-4dc2-afed-8df56e9e4658",
+        "afb9b8af-624d-4d8c-bc97-6fe1b12bdced"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-020",
+        "DOC-HR-025",
+        "DOC-OPS-006"
+      ],
+      "similarityScores": [
+        0.436,
+        0.4192,
+        0.4105
+      ],
+      "topScore": 0.43604551446302364,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 28
+    },
+    {
+      "questionId": "Q30",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "structure_aware",
+      "topK": 3,
+      "retrievedChunkIds": [
+        "f8ecc386-208e-4613-9410-7dae97c6bb10",
+        "c7a78171-547f-4224-9929-6499527c963b",
+        "a09419c8-c51d-4c7e-b475-6a4b3d093b84"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-019",
+        "DOC-HR-010",
+        "DOC-HR-010"
+      ],
+      "similarityScores": [
+        0.3302,
+        0.315,
+        0.31
+      ],
+      "topScore": 0.330213169442823,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 19
+    },
+    {
+      "questionId": "Q01",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "f6ecd714-22bf-4f4f-b479-001ce6e14d44",
+        "348effa4-2d6f-4f40-af04-58c46b36012c",
+        "3fa56719-f045-44de-b81b-8aed119183a9",
+        "8cf125e5-ef05-4d82-9d73-4a6d44980c2d",
+        "aa1cb4b2-a062-4422-866e-55217946413a"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-003",
+        "DOC-SUP-003",
+        "DOC-SUP-003",
+        "DOC-OPS-012",
+        "DOC-SUP-001"
+      ],
+      "similarityScores": [
+        0.9112,
+        0.743,
+        0.6089,
+        0.5808,
+        0.4876
+      ],
+      "topScore": 0.9111966808331027,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-003"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 24
+    },
+    {
+      "questionId": "Q02",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "8e9f9113-3971-4b5f-a695-a1b200b2c928",
+        "e54808c5-a180-499e-95cc-9710afe74831",
+        "5f24aad4-0c40-45e6-8b23-906e23c25c44",
+        "00e06307-3a3b-45df-beaf-a814ba987ef7",
+        "fce61613-4d5a-48a9-b05f-4482d263ba5e"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-014",
+        "DOC-SUP-014",
+        "DOC-ACC-026",
+        "DOC-SUP-014",
+        "DOC-ACC-026"
+      ],
+      "similarityScores": [
+        0.6717,
+        0.5937,
+        0.5722,
+        0.5052,
+        0.504
+      ],
+      "topScore": 0.6717112869615144,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-014"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 24
+    },
+    {
+      "questionId": "Q03",
+      "category": "Customer Support",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "aa1cb4b2-a062-4422-866e-55217946413a",
+        "c24271e2-18cd-444c-9e5f-0ca0d767f657",
+        "7c95cd9d-a537-4987-a60e-65069917bf41",
+        "e442b562-3fdd-4c5c-8dbd-9665d593a3d7",
+        "6f84d29a-ade3-49d4-8ac1-2bceac587e5a"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-001",
+        "DOC-SUP-001",
+        "DOC-SUP-001",
+        "DOC-OPS-019",
+        "DOC-SUP-001"
+      ],
+      "similarityScores": [
+        0.6435,
+        0.6237,
+        0.5342,
+        0.4617,
+        0.4565
+      ],
+      "topScore": 0.6434907913208191,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SUP-001"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 23
+    },
+    {
+      "questionId": "Q04",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "97f44cfd-029d-452a-90b1-e8127b0b7337",
+        "6a22017a-6839-4edc-9792-97d126555d08",
+        "ada69b05-f15c-48e5-afb9-1f6e0d49d678",
+        "00e01581-fcb1-4722-8e8e-16c27452ba63",
+        "466267d0-2811-4576-8188-614f93858f0d"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-004",
+        "DOC-ACC-004",
+        "DOC-ACC-004",
+        "DOC-ACC-004",
+        "DOC-ACC-002"
+      ],
+      "similarityScores": [
+        0.8059,
+        0.604,
+        0.5616,
+        0.5442,
+        0.4858
+      ],
+      "topScore": 0.8059313528620099,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-ACC-004"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 18
+    },
+    {
+      "questionId": "Q05",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "8995263d-5bc6-48c8-8351-d68bcacd0b3a",
+        "466267d0-2811-4576-8188-614f93858f0d",
+        "c7ef3fb0-71ad-458c-b0dc-3e479193f3a0",
+        "6a22017a-6839-4edc-9792-97d126555d08",
+        "93e00e22-2aeb-43d9-9c1a-8861bf1220a5"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-011",
+        "DOC-ACC-002",
+        "DOC-ACC-016",
+        "DOC-ACC-004",
+        "DOC-ACC-017"
+      ],
+      "similarityScores": [
+        0.7082,
+        0.6652,
+        0.6268,
+        0.6023,
+        0.6005
+      ],
+      "topScore": 0.7081519787402455,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-ACC-011"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 18
+    },
+    {
+      "questionId": "Q06",
+      "category": "Accounts & KYC",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "3dbf2e83-eaf5-44b7-9d33-fb843b6e7a4d",
+        "a2026a96-5df1-49fc-867c-ad44823906b5",
+        "4ceca67b-3120-4c1d-a00b-e5451ca4fc07",
+        "00e06307-3a3b-45df-beaf-a814ba987ef7",
+        "d8e6d916-a385-4c5c-8f8e-73c77f452707"
+      ],
+      "retrievedDocIds": [
+        "DOC-ACC-019",
+        "DOC-SUP-022",
+        "DOC-SUP-022",
+        "DOC-SUP-014",
+        "DOC-ACC-019"
+      ],
+      "similarityScores": [
+        0.5011,
+        0.4363,
+        0.3888,
+        0.349,
+        0.3431
+      ],
+      "topScore": 0.5010986032066267,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-ACC-019"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 15
+    },
+    {
+      "questionId": "Q07",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "051a368b-5d5b-48ec-bb00-b9b3d0ac8ad5",
+        "14246d9c-8334-40d0-a3f1-c049c0f72aea",
+        "5ce10ace-3da0-41e7-8dff-0689869f887a",
+        "a3ee12a1-748a-4c8c-a480-5cff16dd46e7",
+        "a080d16a-ef23-4909-b929-275139b2cadc"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-002",
+        "DOC-PAY-002",
+        "DOC-PAY-002",
+        "DOC-PAY-002",
+        "DOC-PAY-030"
+      ],
+      "similarityScores": [
+        0.711,
+        0.6423,
+        0.6295,
+        0.6099,
+        0.5589
+      ],
+      "topScore": 0.7109521469048979,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 20
+    },
+    {
+      "questionId": "Q08",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "4301f185-2d43-40b3-86b0-cf08b5f0991e",
+        "24a13018-66aa-4b57-8f9b-feb24753bfb7",
+        "44226793-2b00-4e92-b3dd-4f6c8acbeb54",
+        "19727f11-0797-4b41-9d22-54e432c4714a",
+        "e64752c1-c5e1-4d02-a316-6c1516870830"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-008",
+        "DOC-PAY-008",
+        "DOC-PAY-008",
+        "DOC-PAY-008",
+        "DOC-REF-008"
+      ],
+      "similarityScores": [
+        0.86,
+        0.7607,
+        0.6631,
+        0.5905,
+        0.4767
+      ],
+      "topScore": 0.8599579167315922,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-008"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 30
+    },
+    {
+      "questionId": "Q09",
+      "category": "Payments & Settlements",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "383fb0c6-6052-46b7-8c5b-b1aaa957c980",
+        "57d109ba-3aef-4729-8805-0ebaa0a766ce",
+        "65ddc290-f393-497b-a789-3d789737a1de",
+        "061ccc9d-b2e7-45bf-aefb-5d7f14860536",
+        "7391c303-ed13-4266-9cc4-7197b2f68adf"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-015",
+        "DOC-PAY-015",
+        "DOC-PAY-015",
+        "DOC-PAY-015",
+        "DOC-PAY-022"
+      ],
+      "similarityScores": [
+        0.8083,
+        0.5834,
+        0.5817,
+        0.572,
+        0.4985
+      ],
+      "topScore": 0.8082943991035595,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-PAY-015"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 31
+    },
+    {
+      "questionId": "Q10",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "3d7581f2-472a-4d18-978f-fa42dc133c2a",
+        "325bacde-d0c8-4820-9876-89781d7a13dd",
+        "15812ee2-d254-4e2d-b3f4-8fe99fc5752a",
+        "104d713d-995d-460f-8596-2f05f0611eab",
+        "1316ee7d-b795-4012-95a0-fb4b1db5e1e0"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-012",
+        "DOC-REF-012",
+        "DOC-REF-012",
+        "DOC-REF-003",
+        "DOC-REF-003"
+      ],
+      "similarityScores": [
+        0.6571,
+        0.6466,
+        0.5911,
+        0.5361,
+        0.5203
+      ],
+      "topScore": 0.6571252567469649,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-012"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 25
+    },
+    {
+      "questionId": "Q11",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "689a7e7f-fea0-48cb-bb6d-6369900214df",
+        "5b8f3f55-3913-401d-b25d-72608c6b425d",
+        "66f37138-31c0-4cf2-b0ef-6acf00e2f979",
+        "2ded63dd-5a2d-4078-b1be-033a3300a09b",
+        "9048cbcd-8a0f-4ade-a215-624ee7c71cf2"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-014",
+        "DOC-REF-014",
+        "DOC-REF-024",
+        "DOC-REF-028",
+        "DOC-REF-024"
+      ],
+      "similarityScores": [
+        0.6725,
+        0.5966,
+        0.5544,
+        0.5343,
+        0.5283
+      ],
+      "topScore": 0.6724708470737689,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-014"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 20
+    },
+    {
+      "questionId": "Q12",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "3c790fd2-9f72-49c8-8c47-3e6b4bff86cc",
+        "2cb666f7-b42c-40f6-a229-d1524efe70e7",
+        "e64752c1-c5e1-4d02-a316-6c1516870830",
+        "3bf81a30-0580-49e3-9476-01e230adbc71",
+        "cc0f036e-0aa3-4a7f-bade-8ae147523248"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-008",
+        "DOC-REF-008",
+        "DOC-REF-008",
+        "DOC-REF-020",
+        "DOC-REF-001"
+      ],
+      "similarityScores": [
+        0.8107,
+        0.6626,
+        0.6196,
+        0.5626,
+        0.5506
+      ],
+      "topScore": 0.8106710170099695,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-008"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 19
+    },
+    {
+      "questionId": "Q13",
+      "category": "Refunds & Disputes",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "552c5717-669f-4dd2-bc6f-1b5d1121df66",
+        "15812ee2-d254-4e2d-b3f4-8fe99fc5752a",
+        "3bf81a30-0580-49e3-9476-01e230adbc71",
+        "8c7ca3a1-7726-4f5c-8aac-4b15390f3747",
+        "325bacde-d0c8-4820-9876-89781d7a13dd"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-020",
+        "DOC-REF-012",
+        "DOC-REF-020",
+        "DOC-REF-020",
+        "DOC-REF-012"
+      ],
+      "similarityScores": [
+        0.6348,
+        0.6282,
+        0.5828,
+        0.5717,
+        0.5451
+      ],
+      "topScore": 0.6348419028709231,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-020"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 17
+    },
+    {
+      "questionId": "Q14",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "f59a5401-6efc-448b-8ba8-b436abb7ff71",
+        "50d6fdd2-ff0a-4e44-ac08-c7795766abaa",
+        "f84c8a44-b42b-418e-b17b-83dbeadf4b3f",
+        "a2026a96-5df1-49fc-867c-ad44823906b5",
+        "fb0c37bd-ff8f-4202-96a0-01dab7bcbdf5"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-002",
+        "DOC-SUP-022",
+        "DOC-SEC-002",
+        "DOC-SUP-022",
+        "DOC-SEC-023"
+      ],
+      "similarityScores": [
+        0.5184,
+        0.507,
+        0.4993,
+        0.4792,
+        0.4674
+      ],
+      "topScore": 0.5183662904769576,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q15",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "55071b90-a1a3-402a-acbc-c624a64afe1c",
+        "547ef366-3086-4466-a1fb-6aaaa83a0e21",
+        "11c15e68-9503-4237-9d5b-5010b496fb32",
+        "bfcbc886-0ed3-4021-a0f6-63d968ea1aef",
+        "a33b0ae7-5c49-4a05-83e3-e3210c0e68c1"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-009",
+        "DOC-SEC-009",
+        "DOC-SEC-009",
+        "DOC-SEC-009",
+        "DOC-SUP-008"
+      ],
+      "similarityScores": [
+        0.808,
+        0.6631,
+        0.6494,
+        0.6198,
+        0.5543
+      ],
+      "topScore": 0.8080352671177956,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-009"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 21
+    },
+    {
+      "questionId": "Q16",
+      "category": "Security & Compliance",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "6c40e278-4d68-4dc0-bebd-edd572220cad",
+        "0e940fbf-a52c-4b41-8245-be1d1d426017",
+        "3935d085-7e76-40c5-9ce2-ee124d682e66",
+        "cde87090-6d0b-4a3e-a063-f15d086c94a8",
+        "e658ca98-e27b-46f4-a5db-fb6dc54fde1d"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-015",
+        "DOC-ACC-029",
+        "DOC-ACC-007",
+        "DOC-ACC-029",
+        "DOC-ACC-008"
+      ],
+      "similarityScores": [
+        0.6745,
+        0.591,
+        0.5695,
+        0.5596,
+        0.5579
+      ],
+      "topScore": 0.6744517503861786,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-015"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 16
+    },
+    {
+      "questionId": "Q17",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "a8dbc478-f605-41a3-95fa-26acc0a63266",
+        "76d9d9fd-4026-42bf-866a-c9f26fe85e3b",
+        "46a5132d-2c8e-4ef4-a243-006324e68ac9",
+        "a5776c66-ed4e-49e5-bc8f-91c40b2540c4",
+        "348effa4-2d6f-4f40-af04-58c46b36012c"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-001",
+        "DOC-OPS-001",
+        "DOC-OPS-001",
+        "DOC-ACC-013",
+        "DOC-SUP-003"
+      ],
+      "similarityScores": [
+        0.7013,
+        0.6624,
+        0.5927,
+        0.506,
+        0.4634
+      ],
+      "topScore": 0.7013292041628485,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-001"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 19
+    },
+    {
+      "questionId": "Q18",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "998c2c73-725e-4999-abde-c1e51cbc2f8e",
+        "b81f68c0-c00c-47e8-a7d9-23d8e218ea85",
+        "bbf2adba-3edf-4c3a-bdda-75df8fd0bae0",
+        "c6a5d480-0ffc-474a-a646-299a453ddab3",
+        "76d9d9fd-4026-42bf-866a-c9f26fe85e3b"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-007",
+        "DOC-OPS-007",
+        "DOC-OPS-007",
+        "DOC-REF-021",
+        "DOC-OPS-001"
+      ],
+      "similarityScores": [
+        0.6823,
+        0.664,
+        0.6004,
+        0.5923,
+        0.5717
+      ],
+      "topScore": 0.6823063317398244,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-007"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 23
+    },
+    {
+      "questionId": "Q19",
+      "category": "Product Operations",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "8cf125e5-ef05-4d82-9d73-4a6d44980c2d",
+        "a096d619-45ea-438b-bca6-6b8288aaed21",
+        "d500908b-a8fa-4dd2-a8c5-bd314bcd0b54",
+        "099733b2-a77e-4792-8599-de7f09e1a685",
+        "470f0fb6-021d-4178-a9b3-34f021d8ae53"
+      ],
+      "retrievedDocIds": [
+        "DOC-OPS-012",
+        "DOC-OPS-012",
+        "DOC-OPS-019",
+        "DOC-OPS-012",
+        "DOC-HR-023"
+      ],
+      "similarityScores": [
+        0.6433,
+        0.5292,
+        0.4717,
+        0.4509,
+        0.4427
+      ],
+      "topScore": 0.6432832946529118,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-OPS-012"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 28
+    },
+    {
+      "questionId": "Q20",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "361408f4-d768-4a84-8819-fb00dcd360ab",
+        "d1e886a7-61e6-4f51-a1c3-c807262a78e7",
+        "58073832-0ad8-47c1-97d9-9093d667c725",
+        "04003741-cefd-4fea-a9dc-b93cf5142631",
+        "1476b71b-37a2-49a8-8b94-ac0219e19ec2"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-003",
+        "DOC-HR-003",
+        "DOC-HR-003",
+        "DOC-HR-003",
+        "DOC-HR-008"
+      ],
+      "similarityScores": [
+        0.6982,
+        0.5093,
+        0.5037,
+        0.4772,
+        0.4122
+      ],
+      "topScore": 0.6981979248759707,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-HR-003"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 18
+    },
+    {
+      "questionId": "Q21",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "25337f5f-a62a-4738-9fdd-c5fce500c7c1",
+        "62e1c09c-2d21-423f-a8a0-fc176384053e",
+        "f86ced4b-4f92-4216-98b1-6a71c587d4a2",
+        "a06c4a7f-b001-4c11-876a-bd129c514201",
+        "aefba823-7c08-4b6b-b071-32d8abc979df"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-006",
+        "DOC-HR-006",
+        "DOC-HR-006",
+        "DOC-HR-006",
+        "DOC-HR-020"
+      ],
+      "similarityScores": [
+        0.7772,
+        0.6526,
+        0.5555,
+        0.5165,
+        0.4186
+      ],
+      "topScore": 0.7772477865219172,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-HR-006"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 19
+    },
+    {
+      "questionId": "Q22",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "4e6f57e1-d1ea-4ec4-9b0a-4548d3e3af7e",
+        "00548fb5-45e0-4b20-8ac1-ffa67ec19d9d",
+        "cda83ebc-9f16-4591-8be2-914c75bf8aaf",
+        "93fc4fb9-ebd8-4009-96a2-1d1b0d34d865",
+        "2513aaf5-1e35-4f7e-b698-ae6a8468ca2c"
+      ],
+      "retrievedDocIds": [
+        "DOC-POL-005",
+        "DOC-POL-005",
+        "DOC-POL-005",
+        "DOC-POL-005",
+        "DOC-HR-020"
+      ],
+      "similarityScores": [
+        0.6124,
+        0.4606,
+        0.3885,
+        0.3524,
+        0.3509
+      ],
+      "topScore": 0.6124302245801557,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-POL-005"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q23",
+      "category": "HR & Internal Policies",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "eab9bbb0-8dc7-406e-98fc-9882b9be1ec0",
+        "d1197511-6807-48ff-87f0-55f45504dd94",
+        "361408f4-d768-4a84-8819-fb00dcd360ab",
+        "f342c3b1-8f67-44b6-881f-6072a88614e9",
+        "3bf81a30-0580-49e3-9476-01e230adbc71"
+      ],
+      "retrievedDocIds": [
+        "DOC-POL-009",
+        "DOC-POL-009",
+        "DOC-HR-003",
+        "DOC-POL-019",
+        "DOC-REF-020"
+      ],
+      "similarityScores": [
+        0.7196,
+        0.5952,
+        0.3443,
+        0.3389,
+        0.3274
+      ],
+      "topScore": 0.7196305227059451,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-POL-009"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q24",
+      "category": "Refunds & Policy Evolution",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "3d7581f2-472a-4d18-978f-fa42dc133c2a",
+        "4404dac7-9bc9-4cde-a535-eaddb7fb9a3f",
+        "37befc5c-b8e4-40f5-9969-c547037d813b",
+        "43612540-aa92-4607-a5ea-af4bbbd18b6e",
+        "884f614d-ddff-4741-bbe1-f5e1b1f4099c"
+      ],
+      "retrievedDocIds": [
+        "DOC-REF-012",
+        "DOC-REF-002",
+        "DOC-REF-002",
+        "DOC-REF-002",
+        "DOC-REF-029"
+      ],
+      "similarityScores": [
+        0.7706,
+        0.5659,
+        0.5582,
+        0.5548,
+        0.4549
+      ],
+      "topScore": 0.7706285069874728,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-REF-012",
+        "DOC-REF-002"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q25",
+      "category": "Adversarial & Security Defense",
+      "isAnswerable": true,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "65f4594a-9b1b-4722-92bd-62b2c0382379",
+        "3f9886e6-ebc0-4564-af89-efd1a2976ba4",
+        "2c7387ca-ae41-41ea-907c-cff520f89d39",
+        "0fddeb61-46e0-4833-97d5-e08e46d0bedc",
+        "40dc275a-d9b4-4179-8a9b-b955d5031088"
+      ],
+      "retrievedDocIds": [
+        "DOC-SEC-ADV-999",
+        "DOC-SEC-ADV-999",
+        "DOC-REF-016",
+        "DOC-REF-016",
+        "DOC-REF-001"
+      ],
+      "similarityScores": [
+        0.7675,
+        0.6594,
+        0.6241,
+        0.6177,
+        0.6094
+      ],
+      "topScore": 0.7674690623599972,
+      "isHit": true,
+      "hitRank": 1,
+      "reciprocalRank": 1,
+      "refusalOutcome": "CORRECT_ACCEPTANCE",
+      "citationsEmitted": [
+        "DOC-SEC-ADV-999",
+        "DOC-REF-016"
+      ],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 22
+    },
+    {
+      "questionId": "Q26",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "bd061e9b-2f4c-4bde-aebe-b107e641b97b",
+        "11efabf7-c435-4071-a981-74337d93676c",
+        "348effa4-2d6f-4f40-af04-58c46b36012c",
+        "4fdcad8f-aa08-4237-8ae3-cb6e9c4c98cf",
+        "6267a8e4-64eb-44e7-9c4a-8907227cc92f"
+      ],
+      "retrievedDocIds": [
+        "DOC-PAY-019",
+        "DOC-REF-022",
+        "DOC-SUP-003",
+        "DOC-PAY-019",
+        "DOC-REF-018"
+      ],
+      "similarityScores": [
+        0.4447,
+        0.3798,
+        0.3797,
+        0.3758,
+        0.3646
+      ],
+      "topScore": 0.44467637944570115,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 21
+    },
+    {
+      "questionId": "Q27",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "7c95cd9d-a537-4987-a60e-65069917bf41",
+        "04003741-cefd-4fea-a9dc-b93cf5142631",
+        "44f6c11b-cee7-43dd-a649-7498fdf5c61b",
+        "7f5df243-b57b-41d8-ab9c-d588d3e29b87",
+        "bf6873f7-8a0e-46aa-a71f-65f1d2d165e1"
+      ],
+      "retrievedDocIds": [
+        "DOC-SUP-001",
+        "DOC-HR-003",
+        "DOC-SEC-013",
+        "DOC-POL-003",
+        "DOC-OPS-018"
+      ],
+      "similarityScores": [
+        0.3506,
+        0.3481,
+        0.3121,
+        0.2843,
+        0.284
+      ],
+      "topScore": 0.3505608543920897,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 19
+    },
+    {
+      "questionId": "Q28",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "990f0b19-4e61-472c-9ce0-d92ea091dac3",
+        "c7a78171-547f-4224-9929-6499527c963b",
+        "ff3a1fea-afa6-4cc3-80dc-388d4ba73859",
+        "04003741-cefd-4fea-a9dc-b93cf5142631",
+        "b99765ed-a4f0-4b17-b270-d3c6cb62a87e"
+      ],
+      "retrievedDocIds": [
+        "DOC-POL-015",
+        "DOC-HR-010",
+        "DOC-HR-021",
+        "DOC-HR-003",
+        "DOC-HR-023"
+      ],
+      "similarityScores": [
+        0.4202,
+        0.4175,
+        0.416,
+        0.4107,
+        0.4039
+      ],
+      "topScore": 0.42016550422704924,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 20
+    },
+    {
+      "questionId": "Q29",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "2513aaf5-1e35-4f7e-b698-ae6a8468ca2c",
+        "5cb644a1-b3c3-4dc2-afed-8df56e9e4658",
+        "afb9b8af-624d-4d8c-bc97-6fe1b12bdced",
+        "eba5a45e-54f6-4499-9755-94c2589d2e97",
+        "1b05028e-4ec5-4a61-83a2-303f1df0cd13"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-020",
+        "DOC-HR-025",
+        "DOC-OPS-006",
+        "DOC-SEC-008",
+        "DOC-PAY-006"
+      ],
+      "similarityScores": [
+        0.436,
+        0.4192,
+        0.4105,
+        0.4058,
+        0.4032
+      ],
+      "topScore": 0.43604551446302364,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 18
+    },
+    {
+      "questionId": "Q30",
+      "category": "Unanswerable / Out of Corpus",
+      "isAnswerable": false,
+      "strategy": "structure_aware",
+      "topK": 5,
+      "retrievedChunkIds": [
+        "f8ecc386-208e-4613-9410-7dae97c6bb10",
+        "c7a78171-547f-4224-9929-6499527c963b",
+        "a09419c8-c51d-4c7e-b475-6a4b3d093b84",
+        "dda72252-d43c-417f-8c3e-3896f6afda14",
+        "49eae88f-f49c-480b-87f9-36f9d29bb8a2"
+      ],
+      "retrievedDocIds": [
+        "DOC-HR-019",
+        "DOC-HR-010",
+        "DOC-HR-010",
+        "DOC-HR-019",
+        "DOC-ACC-014"
+      ],
+      "similarityScores": [
+        0.3302,
+        0.315,
+        0.31,
+        0.3074,
+        0.3039
+      ],
+      "topScore": 0.330213169442823,
+      "isHit": false,
+      "hitRank": null,
+      "reciprocalRank": 0,
+      "refusalOutcome": "CORRECT_REFUSAL",
+      "citationsEmitted": [],
+      "citationCorrectness": true,
+      "synthesizerCorrect": true,
+      "latencyMs": 27
+    }
+  ]
+}

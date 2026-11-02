@@ -240,8 +240,12 @@ async function run2x2Evaluation() {
   };
 
   const outPath = path.resolve(__dirname, '..', 'evaluation', '2x2-evaluation-results.json');
+  const v2Path = path.resolve(__dirname, '..', 'evaluation', '2x2-evaluation-results-v2.json');
   fs.writeFileSync(outPath, JSON.stringify(exportPayload, null, 2), 'utf8');
+  fs.writeFileSync(v2Path, JSON.stringify(exportPayload, null, 2), 'utf8');
   console.log(`\nFull 120-case results written to: ${outPath}`);
+  console.log(`Version 2 results also archived to: ${v2Path}`);
+  console.log(`Original baseline preserved in: evaluation/2x2-evaluation-results-baseline-v1.json`);
 
   await dbPool.end();
 }
