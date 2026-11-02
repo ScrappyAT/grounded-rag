@@ -129,13 +129,19 @@ export async function POST(req: Request) {
       threshold: similarityThreshold,
       citations,
       retrievedChunks,
+      llmProvider: llm.providerName,
+      llmModel: llm.modelId,
+      isNeuralLLM: llm.providerName === 'deepseek' || llm.providerName === 'gemini',
       metrics: {
         latencyMs,
         promptTokens: result.promptTokens,
         completionTokens: result.completionTokens,
         estimatedCostUsd: result.estimatedCostUsd,
-        modelId: embeddingConfig.modelId,
-        dimensions: embeddingConfig.dimensions,
+        embeddingModel: embeddingConfig.modelId,
+        embeddingDimensions: embeddingConfig.dimensions,
+        llmProvider: llm.providerName,
+        llmModel: llm.modelId,
+        isNeuralLLM: llm.providerName === 'deepseek' || llm.providerName === 'gemini',
       },
     });
   } catch (err: any) {

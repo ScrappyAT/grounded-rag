@@ -160,3 +160,32 @@
 
 
 
+
+---
+
+## Phase 4.5: Genuine Neural LLM Integration (DeepSeek API)
+
+### Technical Decision: Integrating DeepSeek (`deepseek-flash`) for Genuine Neural LLM Generation
+> [!NOTE]
+> Write a short paragraph in your own words explaining why we integrated DeepSeek (`deepseek-flash`) using its official OpenAI-compatible endpoint. Explain how genuine neural generation was verified through live API calls on real credits, how prompt/completion tokens and micro-dollar costs were tracked, and why it is essential never to silently fall back to mock generation when a live provider is explicitly configured.
+
+**My Explanation:**
+*[Write in your own words here]*
+
+---
+
+### Technical Decision: Non-Thinking Mode vs Thinking Mode in Grounded Enterprise RAG
+> [!NOTE]
+> Write a short paragraph in your own words explaining the difference between DeepSeek's thinking (reasoning) mode and non-thinking mode (`thinking: { type: "disabled" }`). Why is non-thinking mode optimal for high-throughput grounded RAG assistants where authoritative context is already retrieved and structured, and how does it save output tokens and prevent multi-turn reasoning content schema errors?
+
+**My Explanation:**
+*[Write in your own words here]*
+
+---
+
+### Technical Decision: Preserving Empirical Baselines When Re-Indexing Policy Documents
+> [!NOTE]
+> Write a short paragraph in your own words explaining why we created a separate archival copy of our original 120-case retrieval baseline (`2x2-evaluation-results-baseline-v1.json`) before running the updated evaluation (`2x2-evaluation-results-v2.json`) after amending `DOC-PAY-002`. Why must machine learning benchmarks maintain historical baselines rather than silently overwriting past experimental runs?
+
+**My Explanation:**
+*[Write in your own words here]*

@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-11-02T14:09:37.947Z",
+    "timestamp": "2026-11-02T20:12:15.595Z",
     "embeddingModel": "Xenova/all-MiniLM-L6-v2",
     "dimensions": 384,
     "synthesizer": "DeterministicGroundedSynthesizer",
@@ -17,13 +17,13 @@
       "unanswerableCount": 5,
       "recallAtK": 0.96,
       "mrr": 0.96,
-      "avgTopScoreAnswerable": 0.6914823638463429,
+      "avgTopScoreAnswerable": 0.6931439901630292,
       "avgTopScoreUnanswerable": 0.40663950351768297,
       "falseRefusals": 1,
       "falseRefusalRate": 0.04,
       "refusalAccuracy": 1,
       "citationPrecision": 1,
-      "avgLatencyMs": 93.53333333333333
+      "avgLatencyMs": 112.53333333333333
     },
     {
       "configName": "Fixed-Size Chunking (k=5)",
@@ -34,13 +34,13 @@
       "unanswerableCount": 5,
       "recallAtK": 1,
       "mrr": 0.97,
-      "avgTopScoreAnswerable": 0.6914823638463429,
+      "avgTopScoreAnswerable": 0.6931439901630292,
       "avgTopScoreUnanswerable": 0.40663950351768297,
       "falseRefusals": 1,
       "falseRefusalRate": 0.04,
       "refusalAccuracy": 1,
       "citationPrecision": 1,
-      "avgLatencyMs": 35.43333333333333
+      "avgLatencyMs": 44.06666666666667
     },
     {
       "configName": "Structure-Aware Chunking (k=3)",
@@ -51,13 +51,13 @@
       "unanswerableCount": 5,
       "recallAtK": 1,
       "mrr": 1,
-      "avgTopScoreAnswerable": 0.7107708138773587,
+      "avgTopScoreAnswerable": 0.7121218773267664,
       "avgTopScoreUnanswerable": 0.39633228439413737,
       "falseRefusals": 0,
       "falseRefusalRate": 0,
       "refusalAccuracy": 1,
       "citationPrecision": 1,
-      "avgLatencyMs": 43.733333333333334
+      "avgLatencyMs": 40.56666666666667
     },
     {
       "configName": "Structure-Aware Chunking (k=5)",
@@ -68,13 +68,13 @@
       "unanswerableCount": 5,
       "recallAtK": 1,
       "mrr": 1,
-      "avgTopScoreAnswerable": 0.7107708138773587,
+      "avgTopScoreAnswerable": 0.7121218773267664,
       "avgTopScoreUnanswerable": 0.39633228439413737,
       "falseRefusals": 0,
       "falseRefusalRate": 0,
       "refusalAccuracy": 1,
       "citationPrecision": 1,
-      "avgLatencyMs": 21.433333333333334
+      "avgLatencyMs": 42.766666666666666
     }
   ],
   "cases": [
@@ -109,7 +109,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 2141
+      "latencyMs": 1608
     },
     {
       "questionId": "Q02",
@@ -142,7 +142,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 17
+      "latencyMs": 362
     },
     {
       "questionId": "Q03",
@@ -175,7 +175,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 18
+      "latencyMs": 65
     },
     {
       "questionId": "Q04",
@@ -208,7 +208,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 18
+      "latencyMs": 75
     },
     {
       "questionId": "Q05",
@@ -236,12 +236,10 @@
       "hitRank": null,
       "reciprocalRank": 0,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
-      "citationsEmitted": [
-        "DOC-ACC-002"
-      ],
+      "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": false,
-      "latencyMs": 25
+      "latencyMs": 55
     },
     {
       "questionId": "Q06",
@@ -272,7 +270,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": false,
-      "latencyMs": 26
+      "latencyMs": 51
     },
     {
       "questionId": "Q07",
@@ -281,7 +279,7 @@
       "strategy": "fixed",
       "topK": 3,
       "retrievedChunkIds": [
-        "463b6832-a02d-4374-9360-fc27a627f700",
+        "9b7253ad-6e18-4f1a-9c9c-fa4e09c6c93d",
         "ac6d94e7-84d6-4a61-b039-ad2798bb9996",
         "0f40f2c7-f407-4808-894b-3e26bf67daa3"
       ],
@@ -305,7 +303,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 25
+      "latencyMs": 42
     },
     {
       "questionId": "Q08",
@@ -334,11 +332,12 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-PAY-008"
+        "DOC-PAY-008",
+        "DOC-PAY-013"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 41
+      "latencyMs": 46
     },
     {
       "questionId": "Q09",
@@ -371,7 +370,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 28
+      "latencyMs": 79
     },
     {
       "questionId": "Q10",
@@ -380,21 +379,21 @@
       "strategy": "fixed",
       "topK": 3,
       "retrievedChunkIds": [
-        "0ca102b4-3ff1-4fe5-aa18-225085ac1997",
-        "2a442f7f-9605-47d1-8cb1-00e35fc7bced",
-        "9628339b-3976-47f8-b1d8-36d37027e356"
+        "333c761f-1f0c-4516-bf48-4ce97ca3ff1d",
+        "d0b6596e-dee9-4b40-90a1-89d55ab8acf4",
+        "2a442f7f-9605-47d1-8cb1-00e35fc7bced"
       ],
       "retrievedDocIds": [
         "DOC-REF-012",
-        "DOC-REF-003",
-        "DOC-REF-012"
+        "DOC-REF-012",
+        "DOC-REF-003"
       ],
       "similarityScores": [
-        0.7446,
-        0.5693,
-        0.5622
+        0.7229,
+        0.6966,
+        0.5693
       ],
-      "topScore": 0.7445879870162048,
+      "topScore": 0.7228806234264563,
       "isHit": true,
       "hitRank": 1,
       "reciprocalRank": 1,
@@ -404,7 +403,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 29
+      "latencyMs": 88
     },
     {
       "questionId": "Q11",
@@ -437,7 +436,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 33
+      "latencyMs": 52
     },
     {
       "questionId": "Q12",
@@ -447,18 +446,18 @@
       "topK": 3,
       "retrievedChunkIds": [
         "fa3cf4ac-9035-4fba-bcc6-918e19862bb4",
-        "80056c33-7b46-4f3d-9f79-a8ae9d83e838",
-        "092902c1-2216-460e-bea0-b4e1de46a60f"
+        "1aa93fe3-2c25-470d-8e1f-d1eea47b4626",
+        "80056c33-7b46-4f3d-9f79-a8ae9d83e838"
       ],
       "retrievedDocIds": [
         "DOC-REF-008",
-        "DOC-REF-030",
-        "DOC-REF-008"
+        "DOC-REF-012",
+        "DOC-REF-030"
       ],
       "similarityScores": [
         0.7908,
-        0.5743,
-        0.5717
+        0.6241,
+        0.5743
       ],
       "topScore": 0.7908353112136576,
       "isHit": true,
@@ -470,7 +469,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 27
+      "latencyMs": 81
     },
     {
       "questionId": "Q13",
@@ -479,31 +478,32 @@
       "strategy": "fixed",
       "topK": 3,
       "retrievedChunkIds": [
+        "1aa93fe3-2c25-470d-8e1f-d1eea47b4626",
         "1c2829f6-936b-48a4-b744-8c27605ca227",
-        "9628339b-3976-47f8-b1d8-36d37027e356",
-        "fa3cf4ac-9035-4fba-bcc6-918e19862bb4"
+        "d0b6596e-dee9-4b40-90a1-89d55ab8acf4"
       ],
       "retrievedDocIds": [
-        "DOC-REF-020",
         "DOC-REF-012",
-        "DOC-REF-008"
+        "DOC-REF-020",
+        "DOC-REF-012"
       ],
       "similarityScores": [
+        0.6913,
         0.63,
-        0.5886,
-        0.5449
+        0.5893
       ],
-      "topScore": 0.6299678397102019,
+      "topScore": 0.6912542169538718,
       "isHit": true,
       "hitRank": 1,
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
+        "DOC-REF-012",
         "DOC-REF-020"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 18
+      "latencyMs": 26
     },
     {
       "questionId": "Q14",
@@ -536,7 +536,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 17
+      "latencyMs": 46
     },
     {
       "questionId": "Q15",
@@ -569,7 +569,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 22
+      "latencyMs": 29
     },
     {
       "questionId": "Q16",
@@ -598,11 +598,13 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-SEC-015"
+        "DOC-SEC-015",
+        "DOC-ACC-007",
+        "DOC-ACC-008"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 24
+      "latencyMs": 50
     },
     {
       "questionId": "Q17",
@@ -631,11 +633,13 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-OPS-001"
+        "DOC-OPS-001",
+        "DOC-ACC-013",
+        "DOC-OPS-015"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 26
+      "latencyMs": 70
     },
     {
       "questionId": "Q18",
@@ -664,11 +668,12 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-OPS-007"
+        "DOC-OPS-007",
+        "DOC-OPS-001"
       ],
       "citationCorrectness": true,
-      "synthesizerCorrect": true,
-      "latencyMs": 36
+      "synthesizerCorrect": false,
+      "latencyMs": 29
     },
     {
       "questionId": "Q19",
@@ -701,7 +706,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 17
+      "latencyMs": 52
     },
     {
       "questionId": "Q20",
@@ -734,7 +739,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 21
+      "latencyMs": 47
     },
     {
       "questionId": "Q21",
@@ -767,7 +772,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 18
+      "latencyMs": 68
     },
     {
       "questionId": "Q22",
@@ -796,11 +801,12 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-POL-005"
+        "DOC-POL-005",
+        "DOC-HR-012"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 16
+      "latencyMs": 50
     },
     {
       "questionId": "Q23",
@@ -833,7 +839,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 18
+      "latencyMs": 47
     },
     {
       "questionId": "Q24",
@@ -842,7 +848,7 @@
       "strategy": "fixed",
       "topK": 3,
       "retrievedChunkIds": [
-        "0ca102b4-3ff1-4fe5-aa18-225085ac1997",
+        "333c761f-1f0c-4516-bf48-4ce97ca3ff1d",
         "d0d15643-2cee-4e9b-af9d-ad72bda1f59a",
         "8e9ae035-8629-401e-9804-a299f9d7dd0d"
       ],
@@ -852,11 +858,11 @@
         "DOC-PAY-013"
       ],
       "similarityScores": [
-        0.7143,
+        0.7163,
         0.6657,
         0.4843
       ],
-      "topScore": 0.7143075125584072,
+      "topScore": 0.7162691568216434,
       "isHit": true,
       "hitRank": 1,
       "reciprocalRank": 1,
@@ -867,7 +873,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 25
+      "latencyMs": 68
     },
     {
       "questionId": "Q25",
@@ -896,12 +902,11 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-SEC-ADV-999",
-        "DOC-REF-016"
+        "DOC-SEC-ADV-999"
       ],
       "citationCorrectness": true,
-      "synthesizerCorrect": true,
-      "latencyMs": 22
+      "synthesizerCorrect": false,
+      "latencyMs": 54
     },
     {
       "questionId": "Q26",
@@ -912,17 +917,17 @@
       "retrievedChunkIds": [
         "16878e30-88fd-4846-980c-68c989bf92c1",
         "d5e8aee3-d5f6-4ac6-8df6-0fe85b0fb466",
-        "939ae543-8cf4-43f4-b073-4647ff0c2286"
+        "cdc0d331-a707-4fe1-b432-bf801a087003"
       ],
       "retrievedDocIds": [
         "DOC-PAY-019",
         "DOC-REF-022",
-        "DOC-HR-003"
+        "DOC-PAY-002"
       ],
       "similarityScores": [
         0.4518,
         0.401,
-        0.3762
+        0.3932
       ],
       "topScore": 0.45183835691394547,
       "isHit": false,
@@ -932,7 +937,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 22
+      "latencyMs": 28
     },
     {
       "questionId": "Q27",
@@ -963,7 +968,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 18
+      "latencyMs": 26
     },
     {
       "questionId": "Q28",
@@ -994,7 +999,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 19
+      "latencyMs": 34
     },
     {
       "questionId": "Q29",
@@ -1025,7 +1030,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 19
+      "latencyMs": 26
     },
     {
       "questionId": "Q30",
@@ -1056,7 +1061,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 20
+      "latencyMs": 22
     },
     {
       "questionId": "Q01",
@@ -1091,11 +1096,14 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-SUP-003"
+        "DOC-SUP-003",
+        "DOC-OPS-012",
+        "DOC-SUP-021",
+        "DOC-SUP-012"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 33
+      "latencyMs": 39
     },
     {
       "questionId": "Q02",
@@ -1134,7 +1142,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 22
+      "latencyMs": 63
     },
     {
       "questionId": "Q03",
@@ -1173,7 +1181,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 23
+      "latencyMs": 24
     },
     {
       "questionId": "Q04",
@@ -1212,7 +1220,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 20
+      "latencyMs": 22
     },
     {
       "questionId": "Q05",
@@ -1247,11 +1255,11 @@
       "reciprocalRank": 0.25,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-ACC-002"
+        "DOC-ACC-011"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 22
+      "latencyMs": 50
     },
     {
       "questionId": "Q06",
@@ -1288,7 +1296,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": false,
-      "latencyMs": 23
+      "latencyMs": 14
     },
     {
       "questionId": "Q07",
@@ -1297,11 +1305,11 @@
       "strategy": "fixed",
       "topK": 5,
       "retrievedChunkIds": [
-        "463b6832-a02d-4374-9360-fc27a627f700",
+        "9b7253ad-6e18-4f1a-9c9c-fa4e09c6c93d",
         "ac6d94e7-84d6-4a61-b039-ad2798bb9996",
         "0f40f2c7-f407-4808-894b-3e26bf67daa3",
         "35e3fea8-66fe-4fdb-9255-8dfbcd7b00e3",
-        "7de412a4-0d64-43c9-80b5-2dfbe6eed028"
+        "cdc0d331-a707-4fe1-b432-bf801a087003"
       ],
       "retrievedDocIds": [
         "DOC-PAY-002",
@@ -1315,7 +1323,7 @@
         0.5776,
         0.5713,
         0.5651,
-        0.5553
+        0.5582
       ],
       "topScore": 0.7019538575548371,
       "isHit": true,
@@ -1327,7 +1335,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 28
+      "latencyMs": 38
     },
     {
       "questionId": "Q08",
@@ -1366,7 +1374,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 19
+      "latencyMs": 52
     },
     {
       "questionId": "Q09",
@@ -1405,7 +1413,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 24
+      "latencyMs": 49
     },
     {
       "questionId": "Q10",
@@ -1414,27 +1422,27 @@
       "strategy": "fixed",
       "topK": 5,
       "retrievedChunkIds": [
-        "0ca102b4-3ff1-4fe5-aa18-225085ac1997",
+        "333c761f-1f0c-4516-bf48-4ce97ca3ff1d",
+        "d0b6596e-dee9-4b40-90a1-89d55ab8acf4",
         "2a442f7f-9605-47d1-8cb1-00e35fc7bced",
-        "9628339b-3976-47f8-b1d8-36d37027e356",
         "5f38d1f2-d1c8-4357-8b3e-d148acfc0c15",
         "80056c33-7b46-4f3d-9f79-a8ae9d83e838"
       ],
       "retrievedDocIds": [
         "DOC-REF-012",
-        "DOC-REF-003",
         "DOC-REF-012",
+        "DOC-REF-003",
         "DOC-REF-001",
         "DOC-REF-030"
       ],
       "similarityScores": [
-        0.7446,
+        0.7229,
+        0.6966,
         0.5693,
-        0.5622,
         0.5455,
         0.5435
       ],
-      "topScore": 0.7445879870162048,
+      "topScore": 0.7228806234264563,
       "isHit": true,
       "hitRank": 1,
       "reciprocalRank": 1,
@@ -1444,7 +1452,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 24
+      "latencyMs": 47
     },
     {
       "questionId": "Q11",
@@ -1483,7 +1491,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 27
+      "latencyMs": 53
     },
     {
       "questionId": "Q12",
@@ -1493,24 +1501,24 @@
       "topK": 5,
       "retrievedChunkIds": [
         "fa3cf4ac-9035-4fba-bcc6-918e19862bb4",
+        "1aa93fe3-2c25-470d-8e1f-d1eea47b4626",
         "80056c33-7b46-4f3d-9f79-a8ae9d83e838",
         "092902c1-2216-460e-bea0-b4e1de46a60f",
-        "5f38d1f2-d1c8-4357-8b3e-d148acfc0c15",
-        "1c2829f6-936b-48a4-b744-8c27605ca227"
+        "5f38d1f2-d1c8-4357-8b3e-d148acfc0c15"
       ],
       "retrievedDocIds": [
         "DOC-REF-008",
+        "DOC-REF-012",
         "DOC-REF-030",
         "DOC-REF-008",
-        "DOC-REF-001",
-        "DOC-REF-020"
+        "DOC-REF-001"
       ],
       "similarityScores": [
         0.7908,
+        0.6241,
         0.5743,
         0.5717,
-        0.5663,
-        0.5585
+        0.5663
       ],
       "topScore": 0.7908353112136576,
       "isHit": true,
@@ -1522,7 +1530,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 26
+      "latencyMs": 50
     },
     {
       "questionId": "Q13",
@@ -1531,37 +1539,38 @@
       "strategy": "fixed",
       "topK": 5,
       "retrievedChunkIds": [
+        "1aa93fe3-2c25-470d-8e1f-d1eea47b4626",
         "1c2829f6-936b-48a4-b744-8c27605ca227",
-        "9628339b-3976-47f8-b1d8-36d37027e356",
+        "d0b6596e-dee9-4b40-90a1-89d55ab8acf4",
         "fa3cf4ac-9035-4fba-bcc6-918e19862bb4",
-        "2a442f7f-9605-47d1-8cb1-00e35fc7bced",
-        "80056c33-7b46-4f3d-9f79-a8ae9d83e838"
+        "2a442f7f-9605-47d1-8cb1-00e35fc7bced"
       ],
       "retrievedDocIds": [
+        "DOC-REF-012",
         "DOC-REF-020",
         "DOC-REF-012",
         "DOC-REF-008",
-        "DOC-REF-003",
-        "DOC-REF-030"
+        "DOC-REF-003"
       ],
       "similarityScores": [
+        0.6913,
         0.63,
-        0.5886,
+        0.5893,
         0.5449,
-        0.5282,
-        0.5152
+        0.5282
       ],
-      "topScore": 0.6299678397102019,
+      "topScore": 0.6912542169538718,
       "isHit": true,
       "hitRank": 1,
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
+        "DOC-REF-012",
         "DOC-REF-020"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 20
+      "latencyMs": 100
     },
     {
       "questionId": "Q14",
@@ -1600,7 +1609,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 53
+      "latencyMs": 56
     },
     {
       "questionId": "Q15",
@@ -1639,7 +1648,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 41
+      "latencyMs": 49
     },
     {
       "questionId": "Q16",
@@ -1674,11 +1683,15 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-SEC-015"
+        "DOC-SEC-015",
+        "DOC-ACC-007",
+        "DOC-ACC-008",
+        "DOC-ACC-029",
+        "DOC-SEC-ADV-999"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 32
+      "latencyMs": 46
     },
     {
       "questionId": "Q17",
@@ -1717,7 +1730,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 25
+      "latencyMs": 42
     },
     {
       "questionId": "Q18",
@@ -1752,11 +1765,12 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-OPS-007"
+        "DOC-OPS-007",
+        "DOC-OPS-001"
       ],
       "citationCorrectness": true,
-      "synthesizerCorrect": true,
-      "latencyMs": 44
+      "synthesizerCorrect": false,
+      "latencyMs": 60
     },
     {
       "questionId": "Q19",
@@ -1795,7 +1809,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 19
+      "latencyMs": 48
     },
     {
       "questionId": "Q20",
@@ -1834,7 +1848,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 22
+      "latencyMs": 53
     },
     {
       "questionId": "Q21",
@@ -1873,7 +1887,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 21
+      "latencyMs": 78
     },
     {
       "questionId": "Q22",
@@ -1908,11 +1922,14 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-POL-005"
+        "DOC-POL-005",
+        "DOC-HR-012",
+        "DOC-HR-021",
+        "DOC-HR-020"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 19
+      "latencyMs": 48
     },
     {
       "questionId": "Q23",
@@ -1951,7 +1968,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 30
+      "latencyMs": 28
     },
     {
       "questionId": "Q24",
@@ -1960,27 +1977,27 @@
       "strategy": "fixed",
       "topK": 5,
       "retrievedChunkIds": [
-        "0ca102b4-3ff1-4fe5-aa18-225085ac1997",
+        "333c761f-1f0c-4516-bf48-4ce97ca3ff1d",
         "d0d15643-2cee-4e9b-af9d-ad72bda1f59a",
         "8e9ae035-8629-401e-9804-a299f9d7dd0d",
-        "3e6ce449-6177-4292-a254-39877a30a874",
-        "92b02de9-77e7-435c-a4b2-e51c3c2d9393"
+        "d0b6596e-dee9-4b40-90a1-89d55ab8acf4",
+        "3e6ce449-6177-4292-a254-39877a30a874"
       ],
       "retrievedDocIds": [
         "DOC-REF-012",
         "DOC-REF-002",
         "DOC-PAY-013",
-        "DOC-REF-016",
-        "DOC-REF-029"
+        "DOC-REF-012",
+        "DOC-REF-016"
       ],
       "similarityScores": [
-        0.7143,
+        0.7163,
         0.6657,
         0.4843,
-        0.4453,
-        0.4423
+        0.4697,
+        0.4453
       ],
-      "topScore": 0.7143075125584072,
+      "topScore": 0.7162691568216434,
       "isHit": true,
       "hitRank": 1,
       "reciprocalRank": 1,
@@ -1991,7 +2008,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 87
+      "latencyMs": 24
     },
     {
       "questionId": "Q25",
@@ -2027,11 +2044,14 @@
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
         "DOC-SEC-ADV-999",
-        "DOC-REF-016"
+        "DOC-REF-001",
+        "DOC-REF-016",
+        "DOC-REF-029",
+        "DOC-REF-030"
       ],
       "citationCorrectness": true,
-      "synthesizerCorrect": true,
-      "latencyMs": 104
+      "synthesizerCorrect": false,
+      "latencyMs": 38
     },
     {
       "questionId": "Q26",
@@ -2042,23 +2062,23 @@
       "retrievedChunkIds": [
         "16878e30-88fd-4846-980c-68c989bf92c1",
         "d5e8aee3-d5f6-4ac6-8df6-0fe85b0fb466",
+        "cdc0d331-a707-4fe1-b432-bf801a087003",
         "939ae543-8cf4-43f4-b073-4647ff0c2286",
-        "1abb1e2d-9f10-4522-b778-5ea914f9f3e4",
-        "3af7d23f-5ffb-4af5-b8fd-b4636e7e9bfd"
+        "1abb1e2d-9f10-4522-b778-5ea914f9f3e4"
       ],
       "retrievedDocIds": [
         "DOC-PAY-019",
         "DOC-REF-022",
+        "DOC-PAY-002",
         "DOC-HR-003",
-        "DOC-PAY-012",
-        "DOC-PAY-007"
+        "DOC-PAY-012"
       ],
       "similarityScores": [
         0.4518,
         0.401,
+        0.3932,
         0.3762,
-        0.3709,
-        0.355
+        0.3709
       ],
       "topScore": 0.45183835691394547,
       "isHit": false,
@@ -2068,7 +2088,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 46
+      "latencyMs": 36
     },
     {
       "questionId": "Q27",
@@ -2105,7 +2125,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 84
+      "latencyMs": 32
     },
     {
       "questionId": "Q28",
@@ -2142,7 +2162,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 35
+      "latencyMs": 32
     },
     {
       "questionId": "Q29",
@@ -2179,7 +2199,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 68
+      "latencyMs": 29
     },
     {
       "questionId": "Q30",
@@ -2249,7 +2269,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 168
+      "latencyMs": 20
     },
     {
       "questionId": "Q02",
@@ -2278,11 +2298,12 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-SUP-014"
+        "DOC-SUP-014",
+        "DOC-ACC-026"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 102
+      "latencyMs": 48
     },
     {
       "questionId": "Q03",
@@ -2315,7 +2336,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 127
+      "latencyMs": 40
     },
     {
       "questionId": "Q04",
@@ -2348,7 +2369,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 66
+      "latencyMs": 37
     },
     {
       "questionId": "Q05",
@@ -2377,11 +2398,13 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-ACC-011"
+        "DOC-ACC-011",
+        "DOC-ACC-002",
+        "DOC-ACC-016"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 31
+      "latencyMs": 22
     },
     {
       "questionId": "Q06",
@@ -2410,11 +2433,12 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-ACC-019"
+        "DOC-ACC-019",
+        "DOC-SUP-022"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 63
+      "latencyMs": 39
     },
     {
       "questionId": "Q07",
@@ -2423,9 +2447,9 @@
       "strategy": "structure_aware",
       "topK": 3,
       "retrievedChunkIds": [
-        "051a368b-5d5b-48ec-bb00-b9b3d0ac8ad5",
-        "14246d9c-8334-40d0-a3f1-c049c0f72aea",
-        "5ce10ace-3da0-41e7-8dff-0689869f887a"
+        "f4309d2b-f11d-47e4-8b0d-fb0887b0310a",
+        "227df2b4-07d5-4aee-a294-eae9ae834e2e",
+        "215979f7-b8e9-499e-a7fb-11c7edc39f94"
       ],
       "retrievedDocIds": [
         "DOC-PAY-002",
@@ -2435,7 +2459,7 @@
       "similarityScores": [
         0.711,
         0.6423,
-        0.6295
+        0.6377
       ],
       "topScore": 0.7109521469048979,
       "isHit": true,
@@ -2447,7 +2471,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 54
+      "latencyMs": 104
     },
     {
       "questionId": "Q08",
@@ -2480,7 +2504,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 30
+      "latencyMs": 46
     },
     {
       "questionId": "Q09",
@@ -2513,7 +2537,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 24
+      "latencyMs": 29
     },
     {
       "questionId": "Q10",
@@ -2522,9 +2546,9 @@
       "strategy": "structure_aware",
       "topK": 3,
       "retrievedChunkIds": [
-        "3d7581f2-472a-4d18-978f-fa42dc133c2a",
-        "325bacde-d0c8-4820-9876-89781d7a13dd",
-        "15812ee2-d254-4e2d-b3f4-8fe99fc5752a"
+        "665eb82f-f246-41fd-b1b2-56a139d80bcf",
+        "7c83b711-ed68-4b8e-b00f-ab95366080cf",
+        "05cfd36d-4b1e-4338-b502-bfed94a56149"
       ],
       "retrievedDocIds": [
         "DOC-REF-012",
@@ -2532,11 +2556,11 @@
         "DOC-REF-012"
       ],
       "similarityScores": [
+        0.6909,
         0.6571,
-        0.6466,
         0.5911
       ],
-      "topScore": 0.6571252567469649,
+      "topScore": 0.6909018429821568,
       "isHit": true,
       "hitRank": 1,
       "reciprocalRank": 1,
@@ -2546,7 +2570,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 41
+      "latencyMs": 38
     },
     {
       "questionId": "Q11",
@@ -2579,7 +2603,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 45
+      "latencyMs": 28
     },
     {
       "questionId": "Q12",
@@ -2612,7 +2636,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 26
+      "latencyMs": 46
     },
     {
       "questionId": "Q13",
@@ -2622,7 +2646,7 @@
       "topK": 3,
       "retrievedChunkIds": [
         "552c5717-669f-4dd2-bc6f-1b5d1121df66",
-        "15812ee2-d254-4e2d-b3f4-8fe99fc5752a",
+        "05cfd36d-4b1e-4338-b502-bfed94a56149",
         "3bf81a30-0580-49e3-9476-01e230adbc71"
       ],
       "retrievedDocIds": [
@@ -2641,11 +2665,12 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
+        "DOC-REF-012",
         "DOC-REF-020"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 19
+      "latencyMs": 22
     },
     {
       "questionId": "Q14",
@@ -2678,7 +2703,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 22
+      "latencyMs": 20
     },
     {
       "questionId": "Q15",
@@ -2711,7 +2736,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 29
+      "latencyMs": 30
     },
     {
       "questionId": "Q16",
@@ -2740,11 +2765,13 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-SEC-015"
+        "DOC-SEC-015",
+        "DOC-ACC-029",
+        "DOC-ACC-007"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 45
+      "latencyMs": 43
     },
     {
       "questionId": "Q17",
@@ -2777,7 +2804,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 51
+      "latencyMs": 46
     },
     {
       "questionId": "Q18",
@@ -2810,7 +2837,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 28
+      "latencyMs": 31
     },
     {
       "questionId": "Q19",
@@ -2843,7 +2870,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 36
+      "latencyMs": 30
     },
     {
       "questionId": "Q20",
@@ -2876,7 +2903,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 20
+      "latencyMs": 27
     },
     {
       "questionId": "Q21",
@@ -2909,7 +2936,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 23
+      "latencyMs": 33
     },
     {
       "questionId": "Q22",
@@ -2942,7 +2969,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 26
+      "latencyMs": 91
     },
     {
       "questionId": "Q23",
@@ -2971,11 +2998,12 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-POL-009"
+        "DOC-POL-009",
+        "DOC-HR-003"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 20
+      "latencyMs": 69
     },
     {
       "questionId": "Q24",
@@ -2984,7 +3012,7 @@
       "strategy": "structure_aware",
       "topK": 3,
       "retrievedChunkIds": [
-        "3d7581f2-472a-4d18-978f-fa42dc133c2a",
+        "7c83b711-ed68-4b8e-b00f-ab95366080cf",
         "4404dac7-9bc9-4cde-a535-eaddb7fb9a3f",
         "37befc5c-b8e4-40f5-9969-c547037d813b"
       ],
@@ -3009,7 +3037,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 42
+      "latencyMs": 71
     },
     {
       "questionId": "Q25",
@@ -3042,8 +3070,8 @@
         "DOC-REF-016"
       ],
       "citationCorrectness": true,
-      "synthesizerCorrect": true,
-      "latencyMs": 54
+      "synthesizerCorrect": false,
+      "latencyMs": 61
     },
     {
       "questionId": "Q26",
@@ -3074,7 +3102,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 22
+      "latencyMs": 42
     },
     {
       "questionId": "Q27",
@@ -3105,7 +3133,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 28
+      "latencyMs": 31
     },
     {
       "questionId": "Q28",
@@ -3136,7 +3164,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 23
+      "latencyMs": 25
     },
     {
       "questionId": "Q29",
@@ -3167,7 +3195,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 28
+      "latencyMs": 23
     },
     {
       "questionId": "Q30",
@@ -3198,7 +3226,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 19
+      "latencyMs": 25
     },
     {
       "questionId": "Q01",
@@ -3237,7 +3265,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 24
+      "latencyMs": 31
     },
     {
       "questionId": "Q02",
@@ -3272,7 +3300,8 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-SUP-014"
+        "DOC-SUP-014",
+        "DOC-ACC-026"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
@@ -3315,7 +3344,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 23
+      "latencyMs": 38
     },
     {
       "questionId": "Q04",
@@ -3354,7 +3383,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 18
+      "latencyMs": 42
     },
     {
       "questionId": "Q05",
@@ -3389,11 +3418,12 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-ACC-011"
+        "DOC-ACC-011",
+        "DOC-ACC-004"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 18
+      "latencyMs": 59
     },
     {
       "questionId": "Q06",
@@ -3432,7 +3462,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 15
+      "latencyMs": 61
     },
     {
       "questionId": "Q07",
@@ -3441,10 +3471,10 @@
       "strategy": "structure_aware",
       "topK": 5,
       "retrievedChunkIds": [
-        "051a368b-5d5b-48ec-bb00-b9b3d0ac8ad5",
-        "14246d9c-8334-40d0-a3f1-c049c0f72aea",
-        "5ce10ace-3da0-41e7-8dff-0689869f887a",
-        "a3ee12a1-748a-4c8c-a480-5cff16dd46e7",
+        "f4309d2b-f11d-47e4-8b0d-fb0887b0310a",
+        "227df2b4-07d5-4aee-a294-eae9ae834e2e",
+        "215979f7-b8e9-499e-a7fb-11c7edc39f94",
+        "bfb3b3e3-ed72-4feb-a409-794d6f6d90b1",
         "a080d16a-ef23-4909-b929-275139b2cadc"
       ],
       "retrievedDocIds": [
@@ -3457,8 +3487,8 @@
       "similarityScores": [
         0.711,
         0.6423,
+        0.6377,
         0.6295,
-        0.6099,
         0.5589
       ],
       "topScore": 0.7109521469048979,
@@ -3471,7 +3501,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 20
+      "latencyMs": 25
     },
     {
       "questionId": "Q08",
@@ -3510,7 +3540,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 30
+      "latencyMs": 56
     },
     {
       "questionId": "Q09",
@@ -3549,7 +3579,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 31
+      "latencyMs": 87
     },
     {
       "questionId": "Q10",
@@ -3558,9 +3588,9 @@
       "strategy": "structure_aware",
       "topK": 5,
       "retrievedChunkIds": [
-        "3d7581f2-472a-4d18-978f-fa42dc133c2a",
-        "325bacde-d0c8-4820-9876-89781d7a13dd",
-        "15812ee2-d254-4e2d-b3f4-8fe99fc5752a",
+        "665eb82f-f246-41fd-b1b2-56a139d80bcf",
+        "7c83b711-ed68-4b8e-b00f-ab95366080cf",
+        "05cfd36d-4b1e-4338-b502-bfed94a56149",
         "104d713d-995d-460f-8596-2f05f0611eab",
         "1316ee7d-b795-4012-95a0-fb4b1db5e1e0"
       ],
@@ -3572,13 +3602,13 @@
         "DOC-REF-003"
       ],
       "similarityScores": [
+        0.6909,
         0.6571,
-        0.6466,
         0.5911,
         0.5361,
         0.5203
       ],
-      "topScore": 0.6571252567469649,
+      "topScore": 0.6909018429821568,
       "isHit": true,
       "hitRank": 1,
       "reciprocalRank": 1,
@@ -3588,7 +3618,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 25
+      "latencyMs": 52
     },
     {
       "questionId": "Q11",
@@ -3627,7 +3657,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 20
+      "latencyMs": 27
     },
     {
       "questionId": "Q12",
@@ -3666,7 +3696,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 19
+      "latencyMs": 66
     },
     {
       "questionId": "Q13",
@@ -3676,24 +3706,24 @@
       "topK": 5,
       "retrievedChunkIds": [
         "552c5717-669f-4dd2-bc6f-1b5d1121df66",
-        "15812ee2-d254-4e2d-b3f4-8fe99fc5752a",
+        "05cfd36d-4b1e-4338-b502-bfed94a56149",
         "3bf81a30-0580-49e3-9476-01e230adbc71",
-        "8c7ca3a1-7726-4f5c-8aac-4b15390f3747",
-        "325bacde-d0c8-4820-9876-89781d7a13dd"
+        "665eb82f-f246-41fd-b1b2-56a139d80bcf",
+        "8c7ca3a1-7726-4f5c-8aac-4b15390f3747"
       ],
       "retrievedDocIds": [
         "DOC-REF-020",
         "DOC-REF-012",
         "DOC-REF-020",
-        "DOC-REF-020",
-        "DOC-REF-012"
+        "DOC-REF-012",
+        "DOC-REF-020"
       ],
       "similarityScores": [
         0.6348,
         0.6282,
         0.5828,
-        0.5717,
-        0.5451
+        0.579,
+        0.5717
       ],
       "topScore": 0.6348419028709231,
       "isHit": true,
@@ -3701,11 +3731,12 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
+        "DOC-REF-012",
         "DOC-REF-020"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 17
+      "latencyMs": 35
     },
     {
       "questionId": "Q14",
@@ -3744,7 +3775,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 22
+      "latencyMs": 35
     },
     {
       "questionId": "Q15",
@@ -3783,7 +3814,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 21
+      "latencyMs": 59
     },
     {
       "questionId": "Q16",
@@ -3818,11 +3849,14 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-SEC-015"
+        "DOC-SEC-015",
+        "DOC-ACC-029",
+        "DOC-ACC-007",
+        "DOC-ACC-008"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 16
+      "latencyMs": 45
     },
     {
       "questionId": "Q17",
@@ -3861,7 +3895,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 19
+      "latencyMs": 49
     },
     {
       "questionId": "Q18",
@@ -3896,11 +3930,12 @@
       "reciprocalRank": 1,
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
-        "DOC-OPS-007"
+        "DOC-OPS-007",
+        "DOC-REF-021"
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 23
+      "latencyMs": 26
     },
     {
       "questionId": "Q19",
@@ -3939,7 +3974,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 28
+      "latencyMs": 25
     },
     {
       "questionId": "Q20",
@@ -3978,7 +4013,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 18
+      "latencyMs": 43
     },
     {
       "questionId": "Q21",
@@ -4017,7 +4052,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 19
+      "latencyMs": 22
     },
     {
       "questionId": "Q22",
@@ -4056,7 +4091,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 22
+      "latencyMs": 80
     },
     {
       "questionId": "Q23",
@@ -4095,7 +4130,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 22
+      "latencyMs": 43
     },
     {
       "questionId": "Q24",
@@ -4104,25 +4139,25 @@
       "strategy": "structure_aware",
       "topK": 5,
       "retrievedChunkIds": [
-        "3d7581f2-472a-4d18-978f-fa42dc133c2a",
+        "7c83b711-ed68-4b8e-b00f-ab95366080cf",
         "4404dac7-9bc9-4cde-a535-eaddb7fb9a3f",
         "37befc5c-b8e4-40f5-9969-c547037d813b",
         "43612540-aa92-4607-a5ea-af4bbbd18b6e",
-        "884f614d-ddff-4741-bbe1-f5e1b1f4099c"
+        "665eb82f-f246-41fd-b1b2-56a139d80bcf"
       ],
       "retrievedDocIds": [
         "DOC-REF-012",
         "DOC-REF-002",
         "DOC-REF-002",
         "DOC-REF-002",
-        "DOC-REF-029"
+        "DOC-REF-012"
       ],
       "similarityScores": [
         0.7706,
         0.5659,
         0.5582,
         0.5548,
-        0.4549
+        0.5226
       ],
       "topScore": 0.7706285069874728,
       "isHit": true,
@@ -4135,7 +4170,7 @@
       ],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 22
+      "latencyMs": 33
     },
     {
       "questionId": "Q25",
@@ -4171,11 +4206,12 @@
       "refusalOutcome": "CORRECT_ACCEPTANCE",
       "citationsEmitted": [
         "DOC-SEC-ADV-999",
-        "DOC-REF-016"
+        "DOC-REF-016",
+        "DOC-REF-001"
       ],
       "citationCorrectness": true,
-      "synthesizerCorrect": true,
-      "latencyMs": 22
+      "synthesizerCorrect": false,
+      "latencyMs": 52
     },
     {
       "questionId": "Q26",
@@ -4188,21 +4224,21 @@
         "11efabf7-c435-4071-a981-74337d93676c",
         "348effa4-2d6f-4f40-af04-58c46b36012c",
         "4fdcad8f-aa08-4237-8ae3-cb6e9c4c98cf",
-        "6267a8e4-64eb-44e7-9c4a-8907227cc92f"
+        "227df2b4-07d5-4aee-a294-eae9ae834e2e"
       ],
       "retrievedDocIds": [
         "DOC-PAY-019",
         "DOC-REF-022",
         "DOC-SUP-003",
         "DOC-PAY-019",
-        "DOC-REF-018"
+        "DOC-PAY-002"
       ],
       "similarityScores": [
         0.4447,
         0.3798,
         0.3797,
         0.3758,
-        0.3646
+        0.3617
       ],
       "topScore": 0.44467637944570115,
       "isHit": false,
@@ -4212,7 +4248,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 21
+      "latencyMs": 41
     },
     {
       "questionId": "Q27",
@@ -4249,7 +4285,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 19
+      "latencyMs": 40
     },
     {
       "questionId": "Q28",
@@ -4286,7 +4322,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 20
+      "latencyMs": 41
     },
     {
       "questionId": "Q29",
@@ -4323,7 +4359,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 18
+      "latencyMs": 29
     },
     {
       "questionId": "Q30",
@@ -4360,7 +4396,7 @@
       "citationsEmitted": [],
       "citationCorrectness": true,
       "synthesizerCorrect": true,
-      "latencyMs": 27
+      "latencyMs": 17
     }
   ]
 }

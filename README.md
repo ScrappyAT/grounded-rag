@@ -24,9 +24,10 @@ Key capabilities:
 - **Vector Storage:** PostgreSQL 16 with `pgvector` (HNSW indexing with cosine distance)
 - **Background Jobs & Cache:** Redis 7 + BullMQ (`ioredis`) running in a dedicated worker process
 - **AI Models:**
-  - **Embeddings:** Google Gemini `gemini-embedding-001` (configured to 768 dimensions via MRL)
-  - **Generation:** Google Gemini `gemini-2.5-flash` (low-latency, 1M context)
-  - **Local Fallback:** Transformers.js (`@xenova/transformers` with `all-MiniLM-L6-v2`, 384 dimensions)
+  - **Generation:** DeepSeek `deepseek-flash` (via official OpenAI-compatible endpoint `https://api.deepseek.com`, configured with non-thinking mode for rapid, cost-effective grounded synthesis)
+  - **Embeddings:** Hugging Face `Xenova/all-MiniLM-L6-v2` (384 dimensions, local semantic embedding pipeline via `@xenova/transformers`)
+  - **Offline Fallback:** `DeterministicGroundedSynthesizer` (`grounded-local-synthesizer-v1`) for isolated offline CI/CD and regression tests
+  - **Alternative Adapter:** Google Gemini `gemini-2.5-flash` via `@google/genai` (configurable via `LLM_PROVIDER=gemini`)
 - **Validation:** Zod v3
 - **Testing & Evaluation:** Custom 30-question evaluation harness (25 answerable, 5 unanswerable)
 
@@ -47,7 +48,7 @@ flowchart LR
     I --> J[pgvector Cosine Retrieval]
     J --> K{Similarity >= Calibrated Threshold?}
     K -- No --> L[Grounded Refusal]
-    K -- Yes --> M[Structured Data Fencing & gemini-2.5-flash]
+    K -- Yes --> M[Structured Data Fencing & DeepSeek deepseek-flash]
     M --> N[Answer + Verifiable Citations + Cost Logs]
 ```
 
@@ -60,7 +61,7 @@ Detailed technical specifications, worker process designs, and schema layouts ar
 ### Prerequisites
 - Node.js v20+ (tested on Node.js v24.16.0)
 - Docker Desktop (for local PostgreSQL with pgvector and Redis)
-- Google AI Studio API key (obtainable for prototyping from [aistudio.google.com](https://aistudio.google.com/))
+- DeepSeek API key (obtainable from [platform.deepseek.com](https://platform.deepseek.com/)) or Google AI Studio API key
 
 ### Step 1: Clone and Install Dependencies
 ```bash
@@ -74,7 +75,13 @@ Copy `.env.example` to `.env`:
 ```bash
 cp .env.example .env
 ```
-Fill in your `GEMINI_API_KEY` from Google AI Studio.
+Fill in your `DEEPSEEK_API_KEY` (or `GEMINI_API_KEY` if using Google Gemini):
+```env
+LLM_PROVIDER=deepseek
+LLM_MODEL=deepseek-flash
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_API_KEY=sk-...
+```
 
 ### Step 3: Start Infrastructure (PostgreSQL + pgvector & Redis)
 ```bash
