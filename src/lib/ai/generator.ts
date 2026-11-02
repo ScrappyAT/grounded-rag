@@ -96,14 +96,20 @@ export class DeterministicGroundedSynthesizer implements ILlmProvider {
 
       // Clean breadcrumb header if present
       let cleanContent = primary.content.replace(/\[DOCUMENT:.*?\]\s*/g, '').replace(/\[SECTION:.*?\]\s*/g, '').trim();
-      const firstSentence = cleanContent.split(/(?<=[.!?])\s+/)[0] || cleanContent.slice(0, 180);
+      
+      let excerpt = cleanContent;
+      if (cleanContent.length > 950) {
+        const truncated = cleanContent.slice(0, 950);
+        const lastBoundary = Math.max(truncated.lastIndexOf('.\n'), truncated.lastIndexOf('\n'), truncated.lastIndexOf('. '));
+        excerpt = lastBoundary > 150 ? truncated.slice(0, lastBoundary + 1).trim() : truncated.trim() + '...';
+      }
 
       // Check if this supersedes a deprecated chunk also retrieved
       if (deprecatedChunks.length > 0 && deprecatedChunks.some(d => d.doc_id === 'DOC-REF-002')) {
-        answerText = `Under active policy [${primary.doc_id}], ${firstSentence} Note that this strictly supersedes deprecated policy [DOC-REF-002].`;
+        answerText = `Under active policy [${primary.doc_id}], ${excerpt} Note that this strictly supersedes deprecated policy [DOC-REF-002].`;
         citedDocIds.push('DOC-REF-002');
       } else {
-        answerText = `According to official ApexPay documentation [${primary.doc_id}], ${firstSentence}`;
+        answerText = `According to official ApexPay documentation [${primary.doc_id}], ${excerpt}`;
       }
     } else {
       const fallback = contextChunks[0];
@@ -257,10 +263,15 @@ CRITICAL SECURITY INVARIANTS:
 export function createLlmProvider(): ILlmProvider {
   const apiKey = process.env.GEMINI_API_KEY;
   const modelId = process.env.LLM_MODEL || 'gemini-2.5-flash';
-  const provider = process.env.LLM_PROVIDER || 'mock';
+  const provider = process.env.LLM_PROVIDER || 'gemini';
 
-  if (provider === 'gemini' && apiKey && !apiKey.includes('your_') && apiKey.trim() !== '') {
-    return new GeminiLlmProvider(apiKey, modelId);
+  if (provider === 'gemini') {
+    if (apiKey && !apiKey.includes('your_') && apiKey.trim() !== '') {
+      return new GeminiLlmProvider(apiKey, modelId);
+    } else {
+      console.warn('[AI Gateway] LLM_PROVIDER is configured for "gemini", but GEMINI_API_KEY is not set. Falling back to offline DeterministicGroundedSynthesizer test mode.');
+      return new DeterministicGroundedSynthesizer();
+    }
   }
 
   return new DeterministicGroundedSynthesizer();
