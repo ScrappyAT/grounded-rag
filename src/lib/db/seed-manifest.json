@@ -1,0 +1,33 @@
+{
+  "exportedAt": "2026-11-03T08:55:40.634Z",
+  "modelId": "Xenova/all-MiniLM-L6-v2",
+  "dimensions": 384,
+  "documentCount": 220,
+  "chunkCount": 1517,
+  "cacheCount": 1185,
+  "chunksByStrategy": {
+    "fixed": 637,
+    "structure_aware": 880
+  },
+  "documentsByCategory": {
+    "02-accounts-identity": 28,
+    "General": 10,
+    "07-hr-people": 24,
+    "06-product-operations": 25,
+    "03-payments-settlements": 28,
+    "08-internal-policies": 25,
+    "04-refunds-disputes": 28,
+    "05-security-compliance": 24,
+    "01-customer-support": 28
+  },
+  "documentsByDepartment": {
+    "Accounts & KYC": 30,
+    "People Operations": 25,
+    "Product Operations": 25,
+    "Payments & Settlements": 30,
+    "Legal & Governance": 25,
+    "Merchant Operations": 30,
+    "Security & Compliance": 25,
+    "Customer Support": 30
+  }
+}

@@ -6,7 +6,7 @@ Grounded is an enterprise-grade Retrieval-Augmented Generation (RAG) assistant t
 
 ## The Problem It Solves
 
-Large language models deployed in corporate environments are prone to hallucinations, outdated assertions, and silent confabulations. Grounded solves this by strictly anchoring all answers in authoritative, versioned company policies for fictional fintech **ApexPay Technologies**. 
+Large language models deployed in corporate environments are prone to hallucinations, outdated assertions, and silent confabulations. Grounded solves this by strictly anchoring all answers in authoritative, versioned company policies for fictional fintech **ApexPay Technologies**.
 
 Key capabilities:
 - **Verifiable Citations:** Every factual statement links directly to an underlying document chunk, section title, and similarity score.
@@ -101,6 +101,41 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
+## Production Deployment (Phase 5 Target Architecture)
+
+For cost-effective public deployment and bootcamp demonstration:
+
+- **Web & Embedding Inference:** Render Free Docker Web Service (512 MB RAM, running Next.js 15 + native ONNX MiniLM query embedding inference).
+- **Relational & Vector Database:** Neon Free PostgreSQL with `pgvector` (0.5 GB storage, HNSW cosine indexes).
+- **Rate Limiting & Cost Safeguards:** Upstash Free Redis (10,000 commands/day, handles sliding-window chat rate limits and daily DeepSeek API budget caps).
+- **Generation Provider:** DeepSeek `deepseek-flash` (non-thinking mode, OpenAI-compatible API).
+- **Zero-Worker Architecture:** Corpus of 220 documents (1,517 chunks) is pre-seeded into Neon PostgreSQL before launch using `src/lib/db/seed-data.sql`, eliminating the need for a continuously running BullMQ worker process.
+
+### Production Docker Build & Run
+```bash
+# 1. Build the production Docker image (pre-caches MiniLM weights during build)
+docker build -t grounded-rag:production .
+
+# 2. Run container locally or push to Render
+docker run -p 3000:3000 \
+  -e DATABASE_URL="postgresql://user:pass@ep-xyz.neon.tech/grounded_rag?sslmode=require" \
+  -e REDIS_URL="rediss://default:token@xyz.upstash.io:6379" \
+  -e DEEPSEEK_API_KEY="sk-..." \
+  -e ADMIN_API_KEY="your-admin-secret" \
+  -e READ_ONLY_MODE="true" \
+  -e DAILY_BUDGET_USD="2.00" \
+  -e DAILY_REQUEST_LIMIT="500" \
+  grounded-rag:production
+```
+
+### Production Database Migration & Seeding
+To populate a remote cloud database (Neon) with the 220 documents and 1,517 verified MiniLM embeddings:
+```bash
+TARGET_ENV=production DATABASE_URL="postgresql://user:pass@ep-xyz.neon.tech/grounded_rag?sslmode=require" npx tsx scripts/migrate-production.ts
+```
+
+---
+
 ## Realistic Cost Scenarios & Infrastructure Limits
 
 1. **Local Development (Current Baseline):** $0.00 cash outlay via local Docker and Google AI Studio free tier. Subject to free tier API rate limits (15 RPM) requiring client-side request pacing during ingestion and evaluation.
@@ -114,5 +149,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - [x] **Phase 1: Architecture, Research & Evaluation Design** (Completed & Revised)
 - [x] **Phase 2: Corpus Generation (220 docs), Ingestion Engine & Vector Indexing** (Completed & Verified)
 - [x] **Phase 3: Retrieval Pipeline, Refusal Gate, Web Chat UI & Citations** (Completed & Verified)
-- [x] **Phase 4: 30-Question 2x2 Evaluation Matrix & Prompt Injection Defense Verification** (Completed & Verified)
-- [ ] **Phase 5: Deployment, Demo Video & Graduation Deliverables**
+- [x] **Phase 4: 120-Case Retrieval Benchmark & DeepSeek Generation Verification** (Completed & Verified)
+- [x] **Phase 5A: Production Deployment Readiness & Architecture Plan** (Completed & Verified)
+- [x] **Phase 5B: Deployment Implementation Preparation & Docker Packaging** (Completed & Verified)

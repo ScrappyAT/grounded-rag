@@ -1,7 +1,30 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db/client';
+import { verifyAdminAuth, unauthorizedResponse } from '@/lib/auth/adminAuth';
+
+function maskIp(ip: string | null | undefined): string {
+  if (!ip) return 'anonymous';
+  if (ip === '127.0.0.1' || ip === '::1') return 'localhost';
+  // Mask last octet of IPv4
+  if (ip.includes('.')) {
+    return ip.replace(/\.\d+$/, '.xxx');
+  }
+  // Mask IPv6 suffix
+  if (ip.includes(':')) {
+    const parts = ip.split(':');
+    return parts.slice(0, 3).join(':') + ':xxxx:xxxx';
+  }
+  return 'masked';
+}
 
 export async function GET(req: Request) {
+  // In production or when ADMIN_API_KEY is configured, restrict audit logs to administrators
+  if (process.env.NODE_ENV === 'production' || process.env.ADMIN_API_KEY) {
+    if (!verifyAdminAuth(req)) {
+      return unauthorizedResponse('Valid ADMIN_API_KEY required to inspect audit logs.');
+    }
+  }
+
   try {
     const url = new URL(req.url);
     const limit = Math.min(100, parseInt(url.searchParams.get('limit') || '20', 10));
@@ -30,6 +53,12 @@ export async function GET(req: Request) {
       LIMIT $1
     `, [limit]);
 
+    // Anonymize user IP addresses for privacy compliance
+    const sanitizedRows = rows.map((r: any) => ({
+      ...r,
+      user_ip: maskIp(r.user_ip),
+    }));
+
     const stats = await query(`
       SELECT 
         COUNT(*)::int AS total_queries,
@@ -42,7 +71,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       summary: stats[0] || {},
-      logs: rows,
+      logs: sanitizedRows,
     });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });

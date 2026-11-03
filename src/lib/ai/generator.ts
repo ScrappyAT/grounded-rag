@@ -1,4 +1,10 @@
 import { verifyCitationGrounding } from '../rag/security';
+import {
+  reserveDeepSeekCapacity,
+  releaseDeepSeekReservation,
+  reconcileDeepSeekConsumption,
+  retainUncertainReservation,
+} from '../rag/budgetLimiter';
 
 export interface GeneratedAnswer {
   answer: string;
@@ -96,7 +102,7 @@ export class DeterministicGroundedSynthesizer implements ILlmProvider {
 
       // Clean breadcrumb header if present
       let cleanContent = primary.content.replace(/\[DOCUMENT:.*?\]\s*/g, '').replace(/\[SECTION:.*?\]\s*/g, '').trim();
-      
+
       let excerpt = cleanContent;
       if (cleanContent.length > 950) {
         const truncated = cleanContent.slice(0, 950);
@@ -339,6 +345,21 @@ CRITICAL SECURITY AND GROUNDING INVARIANTS:
     });
 
     const endpoint = `${this.baseUrl}/chat/completions`;
+
+    // Atomically reserve request slot and provisional cost capacity under concurrent execution
+    const reservation = await reserveDeepSeekCapacity();
+    if (!reservation.allowed) {
+      return {
+        answer: `I do not have sufficient authoritative documentation in the ApexPay knowledge base to answer this question.\n\n[Budget Policy]: Neural generation is temporarily unavailable (${reservation.reason}).`,
+        citedDocumentIds: [],
+        refused: true,
+        refusalReason: reservation.reason,
+        promptTokens: 0,
+        completionTokens: 0,
+        latencyMs: Date.now() - startTime,
+        estimatedCostUsd: 0.0,
+      };
+    }
     let res: Response;
     try {
       res = await fetch(endpoint, {
@@ -359,13 +380,23 @@ CRITICAL SECURITY AND GROUNDING INVARIANTS:
         }),
       });
     } catch (networkErr: any) {
-      const sanitizedMsg = networkErr?.message 
-        ? networkErr.message.replace(/sk-[a-zA-Z0-9_\-]+/g, '[REDACTED]') 
+      // Uncertain provider outcome: network timeout or dropped socket may have occurred after upstream execution.
+      // Retain provisional reservation so budget limiter does not under-account spending.
+      await retainUncertainReservation(reservation, 'network_timeout_or_disconnect').catch(() => {});
+      const sanitizedMsg = networkErr?.message
+        ? networkErr.message.replace(/sk-[a-zA-Z0-9_\-]+/g, '[REDACTED]')
         : 'Network connection error';
       throw new Error(`[DeepSeek API Error] Upstream communication failed: ${sanitizedMsg}`);
     }
 
     if (!res.ok) {
+      // Definitive zero-cost failure (400, 401, 402, 403, 404, 429) releases reservation safely.
+      // Uncertain upstream error (500, 502, 503, 504) retains provisional reservation to protect against uncounted billing.
+      if ([400, 401, 402, 403, 404, 429].includes(res.status)) {
+        await releaseDeepSeekReservation(reservation).catch(() => {});
+      } else {
+        await retainUncertainReservation(reservation, `HTTP ${res.status}`).catch(() => {});
+      }
       // Safely inspect response without exposing raw sensitive bodies, API tokens, or HTML error pages
       let safeErrorDetail = '';
       try {
@@ -408,6 +439,9 @@ CRITICAL SECURITY AND GROUNDING INVARIANTS:
     try {
       data = await res.json();
     } catch {
+      // Uncertain provider outcome: network timeout or dropped socket may have occurred after upstream execution.
+      // Retain provisional reservation so budget limiter does not under-account spending.
+      await retainUncertainReservation(reservation, 'network_timeout_or_disconnect').catch(() => {});
       throw new Error(`[DeepSeek API Error] Failed to parse upstream JSON completion payload safely.`);
     }
 
@@ -429,8 +463,14 @@ CRITICAL SECURITY AND GROUNDING INVARIANTS:
     const completionTokens = data.usage?.completion_tokens ?? 0;
     // deepseek-flash pricing: $0.15/1M input, $0.60/1M output
     const estimatedCostUsd = (promptTokens * 0.00000015) + (completionTokens * 0.00000060);
+    await reconcileDeepSeekConsumption(
+      reservation,
+      promptTokens,
+      completionTokens,
+      estimatedCostUsd
+    );
 
-    const refused = answerText.toLowerCase().includes('not have sufficient') || 
+    const refused = answerText.toLowerCase().includes('not have sufficient') ||
                     verification.sanitizedAnswer.toLowerCase().includes('not have sufficient') ||
                     answerText.toLowerCase().includes('do not have sufficient');
 

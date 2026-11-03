@@ -93,10 +93,23 @@ export class LocalSemanticEmbeddingProvider implements IEmbeddingProvider {
     if (!LocalSemanticEmbeddingProvider.loadingPromise) {
       LocalSemanticEmbeddingProvider.loadingPromise = (async () => {
         const { pipeline, env } = await import('@xenova/transformers');
-        // Configure local cache
-        env.allowLocalModels = false;
+        const path = await import('path');
+        const fs = await import('fs');
+
+        // Configure deterministic local cache
+        const cacheDir = process.env.HF_CACHE_DIR || path.resolve(process.cwd(), '.cache');
+        env.cacheDir = cacheDir;
+        env.allowLocalModels = true;
         env.useBrowserCache = false;
-        const pipe = await pipeline('feature-extraction', this.modelId);
+
+        // Detect if pre-cached model weights are present locally
+        const localModelExists = fs.existsSync(path.join(cacheDir, 'Xenova', 'all-MiniLM-L6-v2')) ||
+                                 fs.existsSync(path.join(cacheDir, this.modelId));
+
+        const pipe = await pipeline('feature-extraction', this.modelId, {
+          cache_dir: cacheDir,
+          local_files_only: Boolean(localModelExists && process.env.NODE_ENV === 'production'),
+        });
         LocalSemanticEmbeddingProvider.pipelineInstance = pipe;
         return pipe;
       })();

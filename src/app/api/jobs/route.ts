@@ -1,8 +1,16 @@
 import { NextResponse } from 'next/server';
 import { getQueueMetrics, ingestionQueue } from '@/lib/queue/ingestionQueue';
 import { query } from '@/lib/db/client';
+import { verifyAdminAuth, unauthorizedResponse } from '@/lib/auth/adminAuth';
 
-export async function GET() {
+export async function GET(req: Request) {
+  // In production or when ADMIN_API_KEY is configured, restrict queue and job telemetry to administrators
+  if (process.env.NODE_ENV === 'production' || process.env.ADMIN_API_KEY) {
+    if (!verifyAdminAuth(req)) {
+      return unauthorizedResponse('Valid ADMIN_API_KEY required to inspect ingestion jobs and queue metrics.');
+    }
+  }
+
   try {
     const queueMetrics = await getQueueMetrics();
 
