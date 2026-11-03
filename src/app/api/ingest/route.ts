@@ -42,7 +42,15 @@ export async function POST(req: Request) {
       forceReingest,
     });
   } catch (err: any) {
-    return NextResponse.json({ status: 'error', message: err.message }, { status: 500 });
+    const rawMsg = err?.message || 'Unknown internal error';
+    const safeLogMsg = rawMsg
+      .replace(/sk-[a-zA-Z0-9_\-]+/g, '[REDACTED]')
+      .replace(/postgres(ql)?:\/\/[^@\s]+@/g, 'postgresql://[REDACTED]@');
+    console.error('[Ingest API Error]', safeLogMsg);
+
+    return NextResponse.json(
+      { error: 'An internal error occurred while processing ingestion request.' },
+      { status: 500 }
+    );
   }
 }
-

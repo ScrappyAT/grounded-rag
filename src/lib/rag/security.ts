@@ -139,3 +139,24 @@ export function verifyCitationGrounding(
   };
 }
 
+/**
+ * IP Anonymization & Privacy Guard
+ * Masks user IP addresses before logging or database insertion to ensure privacy compliance.
+ * - IPv4: Replaces the last octet with 'xxx' (e.g. 192.168.1.xxx)
+ * - IPv6: Truncates and masks the host portion (e.g. 2001:db8:85a3:xxxx:xxxx)
+ * - Localhost: Returns '127.0.0.1'
+ */
+export function maskIp(ip: string | null | undefined): string {
+  if (!ip) return 'anonymous';
+  const trimmed = ip.trim();
+  if (trimmed === '127.0.0.1' || trimmed === '::1' || trimmed === 'localhost') return '127.0.0.1';
+  if (trimmed.includes('.')) {
+    return trimmed.replace(/\.\d+$/, '.xxx');
+  }
+  if (trimmed.includes(':')) {
+    const parts = trimmed.split(':');
+    return parts.slice(0, 3).join(':') + ':xxxx:xxxx';
+  }
+  return 'masked';
+}
+

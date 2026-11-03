@@ -17,7 +17,7 @@ export async function GET(req: Request) {
     // Query database ingestion counts
     const [docStats, chunkStats, cacheStats] = await Promise.all([
       query(`
-        SELECT 
+        SELECT
           COUNT(*)::int AS total,
           COUNT(*) FILTER (WHERE ingestion_status = 'PROCESSED')::int AS processed,
           COUNT(*) FILTER (WHERE ingestion_status = 'FAILED')::int AS failed,
@@ -25,7 +25,7 @@ export async function GET(req: Request) {
         FROM documents
       `),
       query(`
-        SELECT 
+        SELECT
           COUNT(*)::int AS total_chunks,
           COUNT(*) FILTER (WHERE strategy = 'fixed')::int AS fixed_chunks,
           COUNT(*) FILTER (WHERE strategy = 'structure_aware')::int AS structure_chunks
@@ -55,10 +55,15 @@ export async function GET(req: Request) {
       activeJobs: activeProgress,
     });
   } catch (err: any) {
+    const rawMsg = err?.message || 'Unknown internal error';
+    const safeLogMsg = rawMsg
+      .replace(/sk-[a-zA-Z0-9_\-]+/g, '[REDACTED]')
+      .replace(/postgres(ql)?:\/\/[^@\s]+@/g, 'postgresql://[REDACTED]@');
+    console.error('[Jobs API Error]', safeLogMsg);
+
     return NextResponse.json(
-      { status: 'error', message: err.message },
+      { error: 'An internal error occurred while retrieving job status.' },
       { status: 500 }
     );
   }
 }
-

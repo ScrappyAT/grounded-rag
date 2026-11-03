@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
+import { REQUIRED_MINILM_ARTIFACTS, auditModelArtifacts } from '../src/lib/ai/embeddings';
 
 async function precacheModel() {
   console.log('======================================================');
@@ -35,9 +36,16 @@ async function precacheModel() {
   console.log(`Output dimension: ${vec.length} (expected 384)`);
 
   const modelDir = path.join(cacheDir, 'Xenova', 'all-MiniLM-L6-v2');
-  if (fs.existsSync(modelDir)) {
-    const files = fs.readdirSync(modelDir, { recursive: true });
-    console.log(`Cached files in ${modelDir}: ${files.length} items`);
+  const audit = auditModelArtifacts(modelDir);
+
+  if (!audit.complete) {
+    console.error(`FATAL: Pre-caching finished but missing required artifacts: ${audit.missingFiles.join(', ')}`);
+    process.exit(1);
+  }
+
+  console.log(`All ${REQUIRED_MINILM_ARTIFACTS.length} required model artifacts verified in ${modelDir}:`);
+  for (const art of REQUIRED_MINILM_ARTIFACTS) {
+    console.log(`  ✓ ${art}`);
   }
 
   process.exit(0);

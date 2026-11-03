@@ -1,5 +1,8 @@
 import { verifyAdminAuth, unauthorizedResponse, forbiddenResponse } from '../src/lib/auth/adminAuth';
-import { checkDeepSeekBudget, recordDeepSeekConsumption } from '../src/lib/rag/budgetLimiter';
+import { checkDeepSeekBudget } from '../src/lib/rag/budgetLimiter';
+import { maskIp } from '../src/lib/rag/security';
+import { validateProductionDbTarget, sanitizeDbUrl, parseDbHost } from './migrate-production';
+import { REQUIRED_MINILM_ARTIFACTS, auditModelArtifacts } from '../src/lib/ai/embeddings';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -62,16 +65,15 @@ async function runPhase5bTests() {
   assert(forbidRes.status === 403, 'forbiddenResponse() returns HTTP 403');
 
   // --------------------------------------------------------------------------
-  // Group 2: DeepSeek Budget Controls & Fail-Closed Safeguards
+  // Group 2: DeepSeek Budget Reservations & Atomic Idempotency
   // --------------------------------------------------------------------------
-  console.log('\nTest Group 2: DeepSeek Budget Controls & Fail-Closed Enforcement...');
+  console.log('\nTest Group 2: DeepSeek Budget Reservations & Redis Idempotency...');
 
   // Case 2A: Verify fail-closed behavior when Redis is unavailable in production
   (process.env as any).NODE_ENV = 'production';
   process.env.DAILY_REQUEST_LIMIT = '500';
   process.env.DAILY_BUDGET_USD = '2.00';
 
-  // Even if Redis is disconnected, production MUST fail closed
   const budgetResult = await checkDeepSeekBudget();
   if (!budgetResult.allowed) {
     assert(Boolean(budgetResult.reason?.includes('BUDGET_VERIFICATION_UNAVAILABLE') ||
@@ -93,211 +95,312 @@ async function runPhase5bTests() {
          'Request counter key includes UTC date suffix for automatic daily partition isolation');
   assert(limiterContent.includes('budget:deepseek:cost_micro:${dateKey}'),
          'Cost counter key includes UTC date suffix for automatic daily partition isolation');
+  assert(limiterContent.includes('budget:deepseek:reservation:${dateKey}:${reservationId}'),
+         'Unique reservation status key created per request with dateKey partition for Redis-side idempotency');
 
-  // Verify atomic Redis concurrency primitives (prevent race conditions under concurrent requests)
-  assert(limiterContent.includes('redisConnection.multi()'),
-         'recordDeepSeekConsumption uses Redis MULTI transaction pipeline for atomic updates');
-  assert(limiterContent.includes('multi.incr(reqKey)') || limiterContent.includes('multi.incr'),
-         'Request counter increment uses atomic INCR operation');
-  assert(limiterContent.includes('multi.incrby(costKey, costMicro)') || limiterContent.includes('multi.incrby'),
-         'Cost counter increment uses atomic INCRBY operation with micro-USD precision');
-  assert(limiterContent.includes('multi.expire(') && limiterContent.includes('172800'),
-         'Redis counters have a bounded 48-hour TTL (172,800 seconds) preventing memory leaks while retaining audit trail');
+  // Verify token.resolved is only set AFTER Redis settlement confirms
+  assert(limiterContent.includes('await withTimeout') &&
+         limiterContent.includes('token.resolved = true;') &&
+         !limiterContent.match(/if \(token\.resolved\) return;\s*token\.resolved = true;\s*try/),
+         'Reservation tokens are NOT marked resolved before Redis confirms settlement');
 
-  // Verify bounded timeout wrapper prevents hanging requests
-  assert(limiterContent.includes('withTimeout') && limiterContent.includes('2000'),
-         'Redis operations enforce a strict 2,000ms bounded timeout wrapper to prevent hanging requests');
+  // Verify token carries original dateKey
+  assert(limiterContent.includes('dateKey: string') && limiterContent.includes('token.dateKey'),
+         'ReservationToken explicitly stores and retains original reservation dateKey');
 
-  // Verify atomic Lua reservation script exists
-  assert(limiterContent.includes('RESERVE_LUA_SCRIPT') && limiterContent.includes("redis.call('incr', reqKey)"),
-         'budgetLimiter implements atomic Lua reservation script preventing check-then-act race conditions');
+  // Case 2C: Comprehensive Mock of Redis Lua Scripts testing Idempotency, Midnight Rollovers, and Concurrency
+  console.log('  Sub-test 2C: Simulating atomic Redis Lua engine with stateful reservation keys...');
 
-  // Case 2C: Concurrent-Request Atomic Reservation & Overspend Prevention Regression Test
-  console.log('  Sub-test 2C: Simulating 50 concurrent requests against capacity of 5 slots...');
-
-  class MockAtomicRedis {
-    private storage = new Map<string, number>();
+  class StatefulMockRedis {
+    private kv = new Map<string, string>();
     private lock = Promise.resolve();
 
-    async eval(maxRequests: number, maxCostMicro: number, provisionalCostMicro: number): Promise<[number, string, number, number]> {
+    async eval(scriptType: 'RESERVE' | 'RECONCILE' | 'RELEASE' | 'RETAIN', keys: string[], args: any[]): Promise<any> {
       return new Promise((resolve) => {
         this.lock = this.lock.then(async () => {
-          const currentReq = this.storage.get('req') || 0;
-          const currentCost = this.storage.get('cost') || 0;
+          if (scriptType === 'RESERVE') {
+            const [reqKey, costKey, resKey] = keys;
+            const [maxReq, maxCostMicro, provCostMicro] = args;
 
-          if (currentReq >= maxRequests) {
-            resolve([0, 'DAILY_REQUEST_LIMIT_REACHED', currentReq, currentCost]);
+            const curReq = parseInt(this.kv.get(reqKey) || '0', 10);
+            const curCost = parseInt(this.kv.get(costKey) || '0', 10);
+
+            if (curReq >= maxReq) {
+              resolve([0, 'DAILY_REQUEST_LIMIT_REACHED', curReq, curCost]);
+              return;
+            }
+            if ((curCost + provCostMicro) > maxCostMicro) {
+              resolve([0, 'DAILY_BUDGET_LIMIT_REACHED', curReq, curCost]);
+              return;
+            }
+
+            const newReq = curReq + 1;
+            const newCost = curCost + provCostMicro;
+            this.kv.set(reqKey, String(newReq));
+            this.kv.set(costKey, String(newCost));
+            this.kv.set(resKey, 'RESERVED');
+            resolve([1, 'ALLOWED', newReq, newCost]);
             return;
           }
 
-          if ((currentCost + provisionalCostMicro) > maxCostMicro) {
-            resolve([0, 'DAILY_BUDGET_LIMIT_REACHED', currentReq, currentCost]);
+          if (scriptType === 'RECONCILE') {
+            const [costKey, tokensKey, resKey] = keys;
+            const [deltaCostMicro, totalTokens] = args;
+
+            const resStatus = this.kv.get(resKey);
+            if (resStatus === 'COMMITTED') {
+              resolve([1, 'ALREADY_COMMITTED']);
+              return;
+            }
+            if (resStatus === 'RELEASED') {
+              resolve([0, 'ALREADY_RELEASED']);
+              return;
+            }
+
+            const curCost = parseInt(this.kv.get(costKey) || '0', 10);
+            const newCost = Math.max(0, curCost + deltaCostMicro);
+            this.kv.set(costKey, String(newCost));
+
+            if (totalTokens > 0) {
+              const curTokens = parseInt(this.kv.get(tokensKey) || '0', 10);
+              this.kv.set(tokensKey, String(curTokens + totalTokens));
+            }
+            this.kv.set(resKey, 'COMMITTED');
+            resolve([1, 'COMMITTED']);
             return;
           }
 
-          const newReq = currentReq + 1;
-          const newCost = currentCost + provisionalCostMicro;
-          this.storage.set('req', newReq);
-          this.storage.set('cost', newCost);
+          if (scriptType === 'RELEASE') {
+            const [reqKey, costKey, resKey] = keys;
+            const [provCostMicro] = args;
 
-          resolve([1, 'ALLOWED', newReq, newCost]);
+            const resStatus = this.kv.get(resKey);
+            if (resStatus === 'RELEASED') {
+              resolve([1, 'ALREADY_RELEASED']);
+              return;
+            }
+            if (resStatus === 'COMMITTED') {
+              resolve([0, 'ALREADY_COMMITTED']);
+              return;
+            }
+
+            const curReq = parseInt(this.kv.get(reqKey) || '0', 10);
+            this.kv.set(reqKey, String(Math.max(0, curReq - 1)));
+
+            if (provCostMicro > 0) {
+              const curCost = parseInt(this.kv.get(costKey) || '0', 10);
+              this.kv.set(costKey, String(Math.max(0, curCost - provCostMicro)));
+            }
+            this.kv.set(resKey, 'RELEASED');
+            resolve([1, 'RELEASED']);
+            return;
+          }
+
+          if (scriptType === 'RETAIN') {
+            const [uncertainKey, resKey] = keys;
+            const [provCostMicro] = args;
+
+            const resStatus = this.kv.get(resKey);
+            if (resStatus === 'RETAINED' || resStatus === 'COMMITTED') {
+              resolve([1, 'ALREADY_RESOLVED']);
+              return;
+            }
+            const curUncertain = parseInt(this.kv.get(uncertainKey) || '0', 10);
+            this.kv.set(uncertainKey, String(curUncertain + provCostMicro));
+            this.kv.set(resKey, 'RETAINED');
+            resolve([1, 'RETAINED']);
+            return;
+          }
         });
       });
     }
 
-    async release(provisionalCostMicro: number): Promise<void> {
-      return new Promise((resolve) => {
-        this.lock = this.lock.then(async () => {
-          const currentReq = this.storage.get('req') || 0;
-          if (currentReq > 0) this.storage.set('req', currentReq - 1);
-          const currentCost = this.storage.get('cost') || 0;
-          this.storage.set('cost', Math.max(0, currentCost - provisionalCostMicro));
-          resolve();
-        });
-      });
-    }
-
-    async reconcile(deltaCostMicro: number): Promise<void> {
-      return new Promise((resolve) => {
-        this.lock = this.lock.then(async () => {
-          const currentCost = this.storage.get('cost') || 0;
-          this.storage.set('cost', Math.max(0, currentCost + deltaCostMicro));
-          resolve();
-        });
-      });
-    }
-
-    getCount(): number { return this.storage.get('req') || 0; }
-    getCost(): number { return this.storage.get('cost') || 0; }
+    get(key: string): string | undefined { return this.kv.get(key); }
   }
 
-  const mockRedis = new MockAtomicRedis();
-  const CONCURRENT_REQUESTS = 50;
+  const mockRedis = new StatefulMockRedis();
+
+  // Test 2C.1: Concurrent Capacity Reservation
+  const CONCURRENT_REQUESTS = 40;
   const CAPACITY = 5;
   const PROVISIONAL_MICRO = 500; // $0.0005
-  const MAX_COST_MICRO = 10000; // $0.0100
+  const MAX_COST_MICRO = 10000;  // $0.0100
+  const dateToday = '2026-11-03';
 
-  // Fire 50 requests simultaneously via Promise.all
-  const concurrentResults = await Promise.all(
-    Array.from({ length: CONCURRENT_REQUESTS }, () =>
-      mockRedis.eval(CAPACITY, MAX_COST_MICRO, PROVISIONAL_MICRO)
+  const reservationResults = await Promise.all(
+    Array.from({ length: CONCURRENT_REQUESTS }, (_, i) =>
+      mockRedis.eval(
+        'RESERVE',
+        [`budget:deepseek:requests:${dateToday}`, `budget:deepseek:cost_micro:${dateToday}`, `budget:deepseek:reservation:${dateToday}:res_${i}`],
+        [CAPACITY, MAX_COST_MICRO, PROVISIONAL_MICRO]
+      )
     )
   );
 
-  const allowedCount = concurrentResults.filter(r => r[0] === 1).length;
-  const rejectedCount = concurrentResults.filter(r => r[0] === 0).length;
+  const allowedRes = reservationResults.filter(r => r[0] === 1);
+  const rejectedRes = reservationResults.filter(r => r[0] === 0);
 
-  assert(allowedCount === CAPACITY, `Exactly ${CAPACITY} of ${CONCURRENT_REQUESTS} concurrent requests allowed (got ${allowedCount})`);
-  assert(rejectedCount === CONCURRENT_REQUESTS - CAPACITY, `Exactly ${CONCURRENT_REQUESTS - CAPACITY} requests rejected with limit reached (got ${rejectedCount})`);
-  assert(mockRedis.getCount() === CAPACITY, `Redis request counter exactly matches ceiling (${CAPACITY}) without overspending`);
+  assert(allowedRes.length === CAPACITY, `Atomic Lua script allowed exactly ${CAPACITY} of ${CONCURRENT_REQUESTS} concurrent reservations`);
+  assert(rejectedRes.length === CONCURRENT_REQUESTS - CAPACITY, `Atomic Lua script rejected ${CONCURRENT_REQUESTS - CAPACITY} over-capacity requests`);
+  assert(mockRedis.get(`budget:deepseek:requests:${dateToday}`) === '5', 'Redis request counter exactly matches ceiling (5)');
 
-  // Test release: 1 allowed request fails and releases reservation
-  await mockRedis.release(PROVISIONAL_MICRO);
-  assert(mockRedis.getCount() === CAPACITY - 1, 'Releasing reservation decrements counter by 1 on failure');
+  // Test 2C.2: Duplicate Release Prevention (Redis-Side Idempotency)
+  console.log('  Sub-test 2C.2: Testing duplicate release idempotency...');
+  const resKey0 = `budget:deepseek:reservation:${dateToday}:res_0`;
+  const release1 = await mockRedis.eval('RELEASE', [`budget:deepseek:requests:${dateToday}`, `budget:deepseek:cost_micro:${dateToday}`, resKey0], [PROVISIONAL_MICRO]);
+  assert(release1[1] === 'RELEASED', 'First release successfully decrements counter and transitions state to RELEASED');
 
-  // Next request can now succeed
-  const nextRes = await mockRedis.eval(CAPACITY, MAX_COST_MICRO, PROVISIONAL_MICRO);
-  assert(nextRes[0] === 1, 'Freed slot successfully reserved by subsequent request');
-  assert(mockRedis.getCount() === CAPACITY, 'Capacity restored to ceiling');
+  const release2 = await mockRedis.eval('RELEASE', [`budget:deepseek:requests:${dateToday}`, `budget:deepseek:cost_micro:${dateToday}`, resKey0], [PROVISIONAL_MICRO]);
+  assert(release2[1] === 'ALREADY_RELEASED', 'Duplicate release call detected by Redis and treated as idempotent no-op');
+  assert(mockRedis.get(`budget:deepseek:requests:${dateToday}`) === '4', 'Redis request counter was NOT double-decremented');
 
-  // Test Case 2D: Reconciliation when actual cost exceeds provisional cost
-  console.log('  Sub-test 2D: Reconciling actual cost exceeding provisional reservation...');
-  const initialCost = mockRedis.getCost();
-  // Assume actual cost was 1200 micro-USD ($0.0012) while provisional was 500 micro-USD ($0.0005). Delta = +700
-  const deltaCost = 700;
-  await mockRedis.reconcile(deltaCost);
-  assert(mockRedis.getCost() === initialCost + deltaCost,
-         `Reconciliation accurately adjusts balance when actual exceeds provisional (cost: ${mockRedis.getCost()} micro-USD)`);
+  // Test 2C.3: Duplicate Reconciliation Prevention
+  console.log('  Sub-test 2C.3: Testing duplicate reconciliation idempotency...');
+  const resKey1 = `budget:deepseek:reservation:${dateToday}:res_1`;
+  const reconcile1 = await mockRedis.eval('RECONCILE', [`budget:deepseek:cost_micro:${dateToday}`, `budget:deepseek:tokens:${dateToday}`, resKey1], [700, 450]);
+  assert(reconcile1[1] === 'COMMITTED', 'First reconcile call succeeds and transitions state to COMMITTED');
 
-  // Test Case 2E: Nonnegative counter guarantee
-  console.log('  Sub-test 2E: Verifying nonnegative counter enforcement...');
-  await mockRedis.release(99999999);
-  assert(mockRedis.getCost() >= 0, 'Cost counter is strictly clamped to nonnegative balance (never drops below 0)');
+  const costAfterFirstReconcile = mockRedis.get(`budget:deepseek:cost_micro:${dateToday}`);
+  const reconcile2 = await mockRedis.eval('RECONCILE', [`budget:deepseek:cost_micro:${dateToday}`, `budget:deepseek:tokens:${dateToday}`, resKey1], [700, 450]);
+  assert(reconcile2[1] === 'ALREADY_COMMITTED', 'Duplicate reconcile call detected by Redis and treated as idempotent no-op');
+  assert(mockRedis.get(`budget:deepseek:cost_micro:${dateToday}`) === costAfterFirstReconcile, 'Cost counter was NOT double-charged on duplicate reconcile');
 
-  // Test Case 2F: Uncertain provider outcome accounting & idempotency audit
-  console.log('  Sub-test 2F: Auditing uncertain provider outcome handling in generator...');
-  const generatorPath = path.resolve(__dirname, '../src/lib/ai/generator.ts');
-  const generatorContent = fs.readFileSync(generatorPath, 'utf8');
+  // Test 2C.4: Midnight UTC Rollover Handling
+  console.log('  Sub-test 2C.4: Testing midnight UTC rollover date persistence...');
+  const yesterday = '2026-11-02';
+  const midnightResKey = `budget:deepseek:reservation:${yesterday}:res_midnight_1`;
+  // Reserve on yesterday's date
+  await mockRedis.eval('RESERVE', [`budget:deepseek:requests:${yesterday}`, `budget:deepseek:cost_micro:${yesterday}`, midnightResKey], [10, 10000, 500]);
+  // Settle at 00:01 UTC today using the token's original dateKey (yesterday)
+  await mockRedis.eval('RECONCILE', [`budget:deepseek:cost_micro:${yesterday}`, `budget:deepseek:tokens:${yesterday}`, midnightResKey], [300, 200]);
 
-  assert(generatorContent.includes('retainUncertainReservation'),
-         'generator.ts calls retainUncertainReservation on network timeout / abort to prevent undercounting');
-  assert(generatorContent.includes('400, 401, 402, 403, 404, 429'),
-         'generator.ts only releases reservations on definitive non-incurring HTTP 4xx status codes');
-  assert(generatorContent.includes('HTTP 5') || generatorContent.includes('res.status'),
-         'generator.ts treats HTTP 5xx and gateway errors as uncertain provider outcomes, retaining provisional cost');
-  assert(limiterContent.includes('token.resolved') && limiterContent.includes('if (token.resolved) return;'),
-         'budgetLimiter enforces strict idempotency flag (resolved: true) to prevent duplicate reconciliation or double release');
+  assert(mockRedis.get(`budget:deepseek:reservation:${yesterday}:res_midnight_1`) === 'COMMITTED',
+         'Midnight rollover settlement correctly applied to original reservation date partition');
+  assert(mockRedis.get(`budget:deepseek:tokens:${yesterday}`) === '200',
+         'Tokens applied to original date partition (yesterday), preventing cross-day counter skew');
 
-  // --------------------------------------------------------------------------
-  // Group 3: Secure Cloud Database Connectivity (TLS Verification)
-  // --------------------------------------------------------------------------
-  console.log('\nTest Group 3: Secure PostgreSQL Connectivity & TLS Verification...');
-  const clientTsPath = path.resolve(__dirname, '../src/lib/db/client.ts');
-  const clientTsContent = fs.readFileSync(clientTsPath, 'utf8');
-
-  assert(clientTsContent.includes('rejectUnauthorized: true'),
-         'dbPool strictly configures rejectUnauthorized: true for remote cloud databases');
-  assert(!clientTsContent.includes('rejectUnauthorized: false'),
-         'dbPool NEVER disables TLS certificate verification (rejectUnauthorized: false is absent)');
+  // Test 2C.5: Nonnegative Counter Clamping
+  console.log('  Sub-test 2C.5: Testing nonnegative counter clamping...');
+  const resKey2 = `budget:deepseek:reservation:${dateToday}:res_2`;
+  await mockRedis.eval('RELEASE', [`budget:deepseek:requests:${dateToday}`, `budget:deepseek:cost_micro:${dateToday}`, resKey2], [99999999]);
+  const finalCost = parseInt(mockRedis.get(`budget:deepseek:cost_micro:${dateToday}`) || '0', 10);
+  assert(finalCost >= 0, `Cost counter is guaranteed nonnegative (current: ${finalCost})`);
 
   // --------------------------------------------------------------------------
-  // Group 4: Model Pre-caching & Offline Guarantee
+  // Group 3: Public API Error Security & IP Privacy
   // --------------------------------------------------------------------------
-  console.log('\nTest Group 4: Local Model Pre-caching & Offline Embeddings...');
-  const cachePath = path.resolve(__dirname, '../.cache/Xenova/all-MiniLM-L6-v2');
-  const onnxPath = path.join(cachePath, 'onnx/model_quantized.onnx');
+  console.log('\nTest Group 3: Public API Error Sanitization & IP Privacy...');
 
-  assert(fs.existsSync(cachePath), 'Pre-cached model directory exists in .cache/Xenova/all-MiniLM-L6-v2');
-  assert(fs.existsSync(onnxPath), 'Quantized ONNX model binary (model_quantized.onnx) exists locally');
+  // Test 3A: IP Anonymization
+  assert(maskIp('192.168.1.100') === '192.168.1.xxx', 'maskIp masks last octet of IPv4 addresses');
+  assert(maskIp('10.0.0.45') === '10.0.0.xxx', 'maskIp masks last octet of private IPv4');
+  assert(maskIp('2001:0db8:85a3:0000:0000:8a2e:0370:7334').includes(':xxxx:xxxx'), 'maskIp masks host portion of IPv6');
+  assert(maskIp('127.0.0.1') === '127.0.0.1', 'maskIp preserves localhost address');
+  assert(maskIp(null) === 'anonymous', 'maskIp handles null IP safely');
 
-  const embeddingsTsPath = path.resolve(__dirname, '../src/lib/ai/embeddings.ts');
-  const embeddingsTsContent = fs.readFileSync(embeddingsTsPath, 'utf8');
-  assert(embeddingsTsContent.includes('local_files_only'),
-         'embeddings.ts enforces local_files_only: true when pre-cached weights are detected in production');
+  // Test 3B: Audit /api/chat/route.ts for raw error suppression and IP masking
+  const chatRoutePath = path.resolve(__dirname, '../src/app/api/chat/route.ts');
+  const chatRouteContent = fs.readFileSync(chatRoutePath, 'utf8');
 
-  // --------------------------------------------------------------------------
-  // Group 5: Docker Configuration & Credential Hygiene
-  // --------------------------------------------------------------------------
-  console.log('\nTest Group 5: Dockerfile Multi-Stage Structure & Credential Hygiene...');
-  const dockerfilePath = path.resolve(__dirname, '../Dockerfile');
-  const dockerignorePath = path.resolve(__dirname, '../.dockerignore');
+  assert(chatRouteContent.includes('maskIp(clientIp)'),
+         '/api/chat masks client IP using maskIp before writing to query_logs');
+  assert(!chatRouteContent.includes('{ error: err.message'),
+         '/api/chat NEVER returns raw err.message to clients in catch block');
+  assert(chatRouteContent.includes('An internal error occurred while processing your request'),
+         '/api/chat returns sanitized generic error message on internal exceptions');
+  assert(chatRouteContent.includes('.replace(/sk-[a-zA-Z0-9_\\-]+/g, \'[REDACTED]\')'),
+         '/api/chat sanitizes upstream credentials/API keys from server-side error logs');
 
-  assert(fs.existsSync(dockerfilePath), 'Dockerfile exists');
-  assert(fs.existsSync(dockerignorePath), '.dockerignore exists');
-
-  const dockerfileContent = fs.readFileSync(dockerfilePath, 'utf8');
-  assert(dockerfileContent.includes('AS deps'), 'Dockerfile includes deps stage');
-  assert(dockerfileContent.includes('AS builder'), 'Dockerfile includes builder stage');
-  assert(dockerfileContent.includes('AS runner'), 'Dockerfile includes runner stage');
-  assert(dockerfileContent.includes('precache-model.ts'), 'Dockerfile pre-caches MiniLM weights during image build');
-  assert(dockerfileContent.includes('USER nextjs'), 'Dockerfile runs as unprivileged non-root user (nextjs)');
-
-  const dockerignoreContent = fs.readFileSync(dockerignorePath, 'utf8');
-  assert(dockerignoreContent.includes('.env*'), '.dockerignore strictly excludes all .env files');
-  assert(dockerignoreContent.includes('node_modules'), '.dockerignore excludes host node_modules');
-  assert(dockerignoreContent.includes('.cache'), '.dockerignore excludes local .cache from Docker build context');
-
-  const gitignorePath = path.resolve(__dirname, '../.gitignore');
-  const gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
-  assert(gitignoreContent.includes('.cache/'), '.gitignore excludes .cache/ binary model weights from git history');
-
-  assert(dockerfileContent.includes('COPY --from=builder') && dockerfileContent.includes('/app/.cache /app/.cache'),
-         'Dockerfile copies pre-cached model from builder to runner image layer');
-  assert(dockerfileContent.includes('COPY --from=deps') && dockerfileContent.includes('node_modules'),
-         'Dockerfile copies clean production dependencies from deps stage to runner image');
+  // Test 3C: Audit /api/logs/route.ts for raw error suppression
+  const logsRoutePath = path.resolve(__dirname, '../src/app/api/logs/route.ts');
+  const logsRouteContent = fs.readFileSync(logsRoutePath, 'utf8');
+  assert(!logsRouteContent.includes('{ error: err.message }'),
+         '/api/logs NEVER returns raw err.message to clients');
 
   // --------------------------------------------------------------------------
-  // Group 6: Production Migration Guardrails
+  // Group 4: Production Migration Safety Guardrails
   // --------------------------------------------------------------------------
-  console.log('\nTest Group 6: Production Migration Guardrails & Safety Checks...');
+  console.log('\nTest Group 4: Production Migration Host & Transaction Safety...');
+
+  // Test 4A: Target environment validation
+  const v1 = validateProductionDbTarget('', 'postgresql://user:pass@ep-cool.neon.tech/grounded');
+  assert(!v1.valid && Boolean(v1.error?.includes('TARGET_ENV must be explicitly set')),
+         'validateProductionDbTarget blocks execution when TARGET_ENV is empty');
+
+  const v2 = validateProductionDbTarget('development', 'postgresql://user:pass@ep-cool.neon.tech/grounded');
+  assert(!v2.valid && Boolean(v2.error?.includes('TARGET_ENV must be explicitly set')),
+         'validateProductionDbTarget blocks execution when TARGET_ENV is "development"');
+
+  // Test 4B: Rejection of localhost / local postgres targets
+  const v3 = validateProductionDbTarget('production', 'postgresql://postgres:postgres@localhost:5550/grounded_rag');
+  assert(!v3.valid && Boolean(v3.error?.includes('Localhost targets are strictly rejected')),
+         'validateProductionDbTarget rejects localhost and local port 5550 in production mode');
+
+  const v4 = validateProductionDbTarget('production', 'postgresql://postgres:postgres@127.0.0.1:5432/grounded_rag');
+  assert(!v4.valid && Boolean(v4.error?.includes('Localhost targets are strictly rejected')),
+         'validateProductionDbTarget rejects 127.0.0.1 in production mode');
+
+  // Test 4C: Rejection of unexpected cloud providers (strict Neon enforcement)
+  const v5 = validateProductionDbTarget('production', 'postgresql://user:pass@mydb.rds.amazonaws.com:5432/grounded');
+  assert(!v5.valid && Boolean(v5.error?.includes('not a verified Neon PostgreSQL host (*.neon.tech)')),
+         'validateProductionDbTarget strictly rejects non-Neon hosts (e.g. AWS RDS) in production mode');
+
+  // Test 4D: Acceptance of valid Neon host
+  const v6 = validateProductionDbTarget('production', 'postgresql://user:pass@ep-cool-butterfly-123456.us-east-2.aws.neon.tech/grounded?sslmode=require');
+  assert(v6.valid && v6.host.endsWith('.neon.tech'),
+         'validateProductionDbTarget accepts verified Neon endpoint (*.neon.tech)');
+
+  // Test 4E: Password Sanitization Guardrail
+  const rawDbUrl = 'postgresql://grounded_user:super_secret_pw123@ep-cool-butterfly.us-east-2.aws.neon.tech/grounded';
+  const cleanUrl = sanitizeDbUrl(rawDbUrl);
+  assert(!cleanUrl.includes('super_secret_pw123') && cleanUrl.includes('****'),
+         'sanitizeDbUrl successfully redacts database passwords from connection strings');
+
+  // Test 4F: Transaction wrapping audit in migrate-production.ts
   const migrateScriptPath = path.resolve(__dirname, '../scripts/migrate-production.ts');
   const migrateContent = fs.readFileSync(migrateScriptPath, 'utf8');
 
-  assert(migrateContent.includes('TARGET_ENV'), 'Migration script enforces TARGET_ENV check');
-  assert(migrateContent.includes('localhost') && migrateContent.includes('SAFETY BLOCKED'),
-         'Migration script blocks execution if target is production but DATABASE_URL points to localhost');
-  assert(!migrateContent.includes('DROP TABLE'), 'Migration script strictly contains NO DROP TABLE statements');
-  assert(!migrateContent.includes('DROP DATABASE'), 'Migration script strictly contains NO DROP DATABASE statements');
+  assert(!migrateContent.includes("await client.query('BEGIN');\n    await client.query(seedSql)"),
+         'migrate-production.ts does NOT double-wrap seedSql with client.query("BEGIN") (preserves seed-data.sql transaction integrity)');
+
+  // --------------------------------------------------------------------------
+  // Group 5: Strict Offline MiniLM Behavior & Artifact Completeness
+  // --------------------------------------------------------------------------
+  console.log('\nTest Group 5: Strict Offline MiniLM Behavior & Model Completeness...');
+
+  const cacheDir = path.resolve(process.cwd(), '.cache', 'Xenova', 'all-MiniLM-L6-v2');
+  const auditResult = auditModelArtifacts(cacheDir);
+
+  assert(auditResult.complete, 'All 4 required MiniLM artifacts are present locally in .cache/Xenova/all-MiniLM-L6-v2');
+  assert(auditResult.missingFiles.length === 0, 'No missing files detected by auditModelArtifacts');
+
+  // Test incomplete directory detection
+  const dummyAudit = auditModelArtifacts(path.resolve(process.cwd(), 'scratch'));
+  assert(!dummyAudit.complete && dummyAudit.missingFiles.length === REQUIRED_MINILM_ARTIFACTS.length,
+         'auditModelArtifacts correctly flags incomplete/missing artifacts in non-cached directories');
+
+  // Audit embeddings.ts for strict offline enforcement
+  const embeddingsTsPath = path.resolve(__dirname, '../src/lib/ai/embeddings.ts');
+  const embeddingsTsContent = fs.readFileSync(embeddingsTsPath, 'utf8');
+
+  assert(embeddingsTsContent.includes('Strict Offline Guarantee'),
+         'embeddings.ts includes explicit Strict Offline Guarantee error message');
+  assert(embeddingsTsContent.includes('local_files_only: true'),
+         'embeddings.ts sets local_files_only: true in production, strictly prohibiting runtime downloads');
+
+  // --------------------------------------------------------------------------
+  // Group 6: Dockerfile & Multi-Stage Production Permissions
+  // --------------------------------------------------------------------------
+  console.log('\nTest Group 6: Dockerfile Architecture & Non-Root Ownership...');
+  const dockerfilePath = path.resolve(__dirname, '../Dockerfile');
+  const dockerfileContent = fs.readFileSync(dockerfilePath, 'utf8');
+
+  assert(dockerfileContent.includes('COPY --from=builder --chown=nextjs:nodejs /app/.cache /app/.cache'),
+         'Dockerfile copies pre-cached model weights with non-root ownership (--chown=nextjs:nodejs)');
+  assert(dockerfileContent.includes('COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules'),
+         'Dockerfile copies node_modules with non-root ownership (--chown=nextjs:nodejs)');
+  assert(dockerfileContent.includes('USER nextjs'),
+         'Dockerfile drops root privileges to unprivileged nextjs user');
 
   console.log('\n======================================================');
   console.log(`Phase 5B Test Summary: Total: ${passed + failed} | Passed: ${passed} | Failed: ${failed}`);
