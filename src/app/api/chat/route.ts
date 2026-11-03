@@ -5,6 +5,7 @@ import { createLlmProvider } from '@/lib/ai/generator';
 import { checkRateLimit } from '@/lib/rag/rateLimiter';
 import { query } from '@/lib/db/client';
 import { getEmbeddingConfig } from '@/lib/ai/embeddings';
+import { maskIp } from '@/lib/rag/security';
 
 const ChatRequestSchema = z.object({
   message: z.string().min(1).max(2000),
@@ -61,7 +62,6 @@ export async function POST(req: Request) {
     });
 
     const topScore = retrievedChunks.length > 0 ? retrievedChunks[0].similarity : 0;
-    const isBelowThreshold = topScore < similarityThreshold;
 
     // 4. Generate Grounded Answer or Refusal
     const llm = createLlmProvider();
@@ -92,8 +92,10 @@ export async function POST(req: Request) {
     });
 
     // 6. Persist query observability and token/cost metrics into query_logs
+    // CRITICAL PRIVACY: Store anonymized/masked IP address rather than raw user IP
     const chunkIds = retrievedChunks.map(c => c.id);
     const scores = retrievedChunks.map(c => c.similarity);
+    const maskedUserIp = maskIp(clientIp);
 
     await query(
       `INSERT INTO query_logs (
@@ -117,7 +119,7 @@ export async function POST(req: Request) {
         result.promptTokens,
         result.completionTokens,
         result.estimatedCostUsd,
-        clientIp,
+        maskedUserIp,
       ]
     ).catch(err => console.error('[QueryLogs] Failed to record query log:', err));
 
@@ -145,11 +147,16 @@ export async function POST(req: Request) {
       },
     });
   } catch (err: any) {
-    console.error('Chat endpoint error:', err);
+    // CRITICAL SECURITY: Never return raw exception messages, provider payloads, or stack traces to public callers
+    const rawMsg = err?.message || 'Unknown internal error';
+    const safeLogMsg = rawMsg
+      .replace(/sk-[a-zA-Z0-9_\-]+/g, '[REDACTED]')
+      .replace(/postgres(ql)?:\/\/[^@\s]+@/g, 'postgresql://[REDACTED]@');
+    console.error('[Chat API Internal Error]', safeLogMsg);
+
     return NextResponse.json(
-      { error: err.message || 'Internal server error' },
+      { error: 'An internal error occurred while processing your request. Please try again later.' },
       { status: 500 }
     );
   }
 }
-

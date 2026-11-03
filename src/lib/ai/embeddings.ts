@@ -1,4 +1,6 @@
 import * as crypto from 'crypto';
+import * as path from 'path';
+import * as fs from 'fs';
 import { query } from '../db/client';
 
 export interface IEmbeddingProvider {
@@ -14,6 +16,27 @@ export interface EmbeddingConfig {
   modelId: string;
   dimensions: number;
   apiKey?: string;
+}
+
+export const REQUIRED_MINILM_ARTIFACTS = [
+  'config.json',
+  'tokenizer.json',
+  'tokenizer_config.json',
+  path.join('onnx', 'model_quantized.onnx'),
+];
+
+export function auditModelArtifacts(modelDir: string): { complete: boolean; missingFiles: string[] } {
+  const missingFiles: string[] = [];
+  for (const artifact of REQUIRED_MINILM_ARTIFACTS) {
+    const fullPath = path.join(modelDir, artifact);
+    if (!fs.existsSync(fullPath)) {
+      missingFiles.push(artifact);
+    }
+  }
+  return {
+    complete: missingFiles.length === 0,
+    missingFiles,
+  };
 }
 
 export function getEmbeddingConfig(): EmbeddingConfig {
@@ -43,7 +66,7 @@ export class DeterministicMockEmbeddingProvider implements IEmbeddingProvider {
   async generateEmbedding(text: string): Promise<number[]> {
     const vector = new Array<number>(this.dimensions);
     const hash = crypto.createHash('sha256').update(text).digest();
-    
+
     let norm = 0;
     for (let i = 0; i < this.dimensions; i++) {
       const byte1 = hash[i % hash.length];
@@ -93,10 +116,43 @@ export class LocalSemanticEmbeddingProvider implements IEmbeddingProvider {
     if (!LocalSemanticEmbeddingProvider.loadingPromise) {
       LocalSemanticEmbeddingProvider.loadingPromise = (async () => {
         const { pipeline, env } = await import('@xenova/transformers');
-        // Configure local cache
-        env.allowLocalModels = false;
+
+        // Configure deterministic local cache
+        const cacheDir = process.env.HF_CACHE_DIR || path.resolve(process.cwd(), '.cache');
+        env.cacheDir = cacheDir;
+        env.allowLocalModels = true;
         env.useBrowserCache = false;
-        const pipe = await pipeline('feature-extraction', this.modelId);
+
+        // Resolve model directory
+        const modelSubdir = this.modelId.includes('/') ? this.modelId : path.join('Xenova', this.modelId);
+        const modelDir = path.join(cacheDir, modelSubdir);
+
+        // Audit all 4 required model artifacts
+        const { complete, missingFiles } = auditModelArtifacts(modelDir);
+        const isProduction = process.env.NODE_ENV === 'production' || process.env.STRICT_OFFLINE === 'true';
+
+        // STRICT OFFLINE GUARANTEE:
+        // In production mode, all 4 artifacts must be present.
+        // Never silently download weights from the internet at runtime.
+        if (isProduction) {
+          if (!complete) {
+            throw new Error(
+              `[Strict Offline Guarantee] Incomplete model artifacts for ${this.modelId} in ${modelDir}. Missing: [${missingFiles.join(', ')}]. ` +
+              `Runtime downloads are strictly disabled in production. Ensure pre-caching succeeded during build.`
+            );
+          }
+          const pipe = await pipeline('feature-extraction', this.modelId, {
+            cache_dir: cacheDir,
+            local_files_only: true, // Strictly prohibit network access
+          });
+          LocalSemanticEmbeddingProvider.pipelineInstance = pipe;
+          return pipe;
+        }
+
+        const pipe = await pipeline('feature-extraction', this.modelId, {
+          cache_dir: cacheDir,
+          local_files_only: complete,
+        });
         LocalSemanticEmbeddingProvider.pipelineInstance = pipe;
         return pipe;
       })();
@@ -222,7 +278,7 @@ export async function getOrGenerateEmbedding(
 
   // 1. Check cache table with compound key (content_hash, model_id, dimensions)
   const cachedRows = await query(
-    `SELECT ${colName} AS embedding FROM embedding_cache 
+    `SELECT ${colName} AS embedding FROM embedding_cache
      WHERE content_hash = $1 AND model_id = $2 AND dimensions = $3`,
     [contentHash, provider.modelId, provider.dimensions]
   );
@@ -250,7 +306,7 @@ export async function getOrGenerateEmbedding(
   await query(
     `INSERT INTO embedding_cache (content_hash, model_id, dimensions, ${colName})
      VALUES ($1, $2, $3, $4::vector)
-     ON CONFLICT (content_hash, model_id, dimensions) 
+     ON CONFLICT (content_hash, model_id, dimensions)
      DO UPDATE SET ${colName} = EXCLUDED.${colName}`,
     [contentHash, provider.modelId, provider.dimensions, vectorString]
   );

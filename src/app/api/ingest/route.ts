@@ -2,8 +2,21 @@ import { NextResponse } from 'next/server';
 import * as path from 'path';
 import * as fs from 'fs';
 import { enqueueBatch } from '@/lib/queue/ingestionQueue';
+import { verifyAdminAuth, unauthorizedResponse, forbiddenResponse } from '@/lib/auth/adminAuth';
 
 export async function POST(req: Request) {
+  // In production web mode or explicit read-only mode, document ingestion is disabled
+  if (process.env.READ_ONLY_MODE === 'true') {
+    return forbiddenResponse('Document ingestion is disabled in production read-only mode.');
+  }
+
+  // Require administrative authentication in production or if ADMIN_API_KEY is configured
+  if (process.env.NODE_ENV === 'production' || process.env.ADMIN_API_KEY) {
+    if (!verifyAdminAuth(req)) {
+      return unauthorizedResponse('Valid ADMIN_API_KEY required to trigger document ingestion.');
+    }
+  }
+
   try {
     const body = await req.json().catch(() => ({}));
     const forceReingest = Boolean(body.force);
@@ -29,7 +42,15 @@ export async function POST(req: Request) {
       forceReingest,
     });
   } catch (err: any) {
-    return NextResponse.json({ status: 'error', message: err.message }, { status: 500 });
+    const rawMsg = err?.message || 'Unknown internal error';
+    const safeLogMsg = rawMsg
+      .replace(/sk-[a-zA-Z0-9_\-]+/g, '[REDACTED]')
+      .replace(/postgres(ql)?:\/\/[^@\s]+@/g, 'postgresql://[REDACTED]@');
+    console.error('[Ingest API Error]', safeLogMsg);
+
+    return NextResponse.json(
+      { error: 'An internal error occurred while processing ingestion request.' },
+      { status: 500 }
+    );
   }
 }
-
