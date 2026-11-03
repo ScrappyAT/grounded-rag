@@ -16,6 +16,11 @@ export interface ReservationToken extends BudgetCheckResult {
   resolved: boolean;
 }
 
+export interface SettlementResult {
+  success: boolean;
+  status: string;
+}
+
 function withTimeout<T>(promise: Promise<T>, timeoutMs = 2000): Promise<T> {
   let timer: NodeJS.Timeout;
   const timeoutPromise = new Promise<never>((_, reject) => {
@@ -71,7 +76,11 @@ return {1, 'ALLOWED', newReq, newCost}
 /**
  * Atomic reconciliation Lua script.
  * Reconciles the delta between actual generation cost and provisional reservation.
- * Verifies and transitions reservation state to 'COMMITTED', strictly preventing duplicate reconciliation.
+ *
+ * State Invariant:
+ * Strictly mutates counters ONLY when reservation state is exactly 'RESERVED'.
+ * Rejects missing/expired keys and invalid states (RELEASED, RETAINED).
+ * Idempotent: repeated calls on 'COMMITTED' return ALREADY_COMMITTED without double-counting.
  */
 const RECONCILE_LUA_SCRIPT = `
 local costKey = KEYS[1]
@@ -82,11 +91,17 @@ local totalTokens = tonumber(ARGV[2])
 local ttl = tonumber(ARGV[3])
 
 local resStatus = redis.call('get', resKey)
+
+if not resStatus then
+    return {0, 'RESERVATION_NOT_FOUND_OR_EXPIRED'}
+end
+
 if resStatus == 'COMMITTED' then
     return {1, 'ALREADY_COMMITTED'}
 end
-if resStatus == 'RELEASED' then
-    return {0, 'ALREADY_RELEASED'}
+
+if resStatus ~= 'RESERVED' then
+    return {0, 'INVALID_RESERVATION_STATE_' .. resStatus}
 end
 
 local currentCost = tonumber(redis.call('get', costKey) or '0')
@@ -109,7 +124,11 @@ return {1, 'COMMITTED'}
 /**
  * Atomic release Lua script.
  * Releases provisional cost and decrements the request counter when a request fails before incurring provider cost.
- * Verifies and transitions reservation state to 'RELEASED', strictly preventing duplicate releases.
+ *
+ * State Invariant:
+ * Strictly mutates counters ONLY when reservation state is exactly 'RESERVED'.
+ * Rejects missing/expired keys and invalid states (COMMITTED, RETAINED).
+ * Idempotent: repeated calls on 'RELEASED' return ALREADY_RELEASED without double-reduction.
  * Guaranteed to maintain nonnegative counters.
  */
 const RELEASE_LUA_SCRIPT = `
@@ -120,11 +139,17 @@ local provisionalCostMicro = tonumber(ARGV[1])
 local ttl = tonumber(ARGV[2])
 
 local resStatus = redis.call('get', resKey)
+
+if not resStatus then
+    return {0, 'RESERVATION_NOT_FOUND_OR_EXPIRED'}
+end
+
 if resStatus == 'RELEASED' then
     return {1, 'ALREADY_RELEASED'}
 end
-if resStatus == 'COMMITTED' then
-    return {0, 'ALREADY_COMMITTED'}
+
+if resStatus ~= 'RESERVED' then
+    return {0, 'INVALID_RESERVATION_STATE_' .. resStatus}
 end
 
 local currentReq = tonumber(redis.call('get', reqKey) or '0')
@@ -150,7 +175,11 @@ return {1, 'RELEASED'}
 /**
  * Atomic retain Lua script for uncertain provider outcomes.
  * Retains provisional reservation and records to uncertain bucket when an upstream outcome cannot be confirmed.
- * Verifies and transitions reservation state to 'RETAINED'.
+ *
+ * State Invariant:
+ * Strictly mutates counters ONLY when reservation state is exactly 'RESERVED'.
+ * Rejects missing/expired keys and invalid states (COMMITTED, RELEASED).
+ * Idempotent: repeated calls on 'RETAINED' return ALREADY_RETAINED without double-recording.
  */
 const RETAIN_LUA_SCRIPT = `
 local uncertainKey = KEYS[1]
@@ -159,11 +188,17 @@ local provisionalCostMicro = tonumber(ARGV[1])
 local ttl = tonumber(ARGV[2])
 
 local resStatus = redis.call('get', resKey)
-if resStatus == 'RETAINED' or resStatus == 'COMMITTED' then
-    return {1, 'ALREADY_RESOLVED'}
+
+if not resStatus then
+    return {0, 'RESERVATION_NOT_FOUND_OR_EXPIRED'}
 end
-if resStatus == 'RELEASED' then
-    return {0, 'ALREADY_RELEASED'}
+
+if resStatus == 'RETAINED' then
+    return {1, 'ALREADY_RETAINED'}
+end
+
+if resStatus ~= 'RESERVED' then
+    return {0, 'INVALID_RESERVATION_STATE_' .. resStatus}
 end
 
 redis.call('incrby', uncertainKey, provisionalCostMicro)
@@ -295,20 +330,22 @@ export async function reserveDeepSeekCapacity(
 /**
  * Reconciles provisionally reserved cost with actual token consumption and costs once generation completes.
  * Anchored to the original token's dateKey to correctly handle requests crossing midnight UTC.
- * Redis-side and client-side idempotency strictly prevent duplicate reconciliation.
- * Token is only marked resolved AFTER Redis confirms settlement.
+ * Strictly mutates counters ONLY if reservation state in Redis is exactly 'RESERVED'.
+ * Token is marked resolved ONLY after Redis confirms successful settlement (flag === 1).
  */
 export async function reconcileDeepSeekConsumption(
   token: ReservationToken,
   promptTokens: number,
   completionTokens: number,
   actualCostUsd: number
-): Promise<void> {
-  if (token.resolved) return;
+): Promise<SettlementResult> {
+  if (!token.reservationId || !token.allowed) {
+    return { success: false, status: 'NO_VALID_RESERVATION' };
+  }
 
   // Use original reservation dateKey to prevent midnight UTC rollover misattribution
   const dateKey = token.dateKey || new Date().toISOString().split('T')[0];
-  const reservationId = token.reservationId || 'default';
+  const reservationId = token.reservationId;
   const costKey = `budget:deepseek:cost_micro:${dateKey}`;
   const tokensKey = `budget:deepseek:tokens:${dateKey}`;
   const resKey = `budget:deepseek:reservation:${dateKey}:${reservationId}`;
@@ -320,7 +357,7 @@ export async function reconcileDeepSeekConsumption(
   const ttlSeconds = 172800; // 48 hours
 
   try {
-    await withTimeout(
+    const rawResult = await withTimeout(
       redisConnection.eval(
         RECONCILE_LUA_SCRIPT,
         3,
@@ -332,12 +369,21 @@ export async function reconcileDeepSeekConsumption(
         ttlSeconds
       ),
       2000
-    );
-    // Mark resolved only after Redis settlement succeeds
-    token.resolved = true;
+    ) as [number, string];
+
+    const [allowedFlag, statusReason] = rawResult || [0, 'UNKNOWN_ERROR'];
+
+    if (allowedFlag === 1) {
+      // Mark resolved only after Redis confirms successful transition or safe idempotency
+      token.resolved = true;
+      return { success: true, status: statusReason };
+    } else {
+      console.warn(`[BudgetLimiter] Reconciliation rejected for ${reservationId}: ${statusReason}`);
+      return { success: false, status: statusReason };
+    }
   } catch (err: any) {
     console.error('[BudgetLimiter] Failed to reconcile consumption in Redis:', err.message);
-    // Do NOT mark token.resolved = true so settlement retry is possible
+    return { success: false, status: `REDIS_ERROR: ${err.message}` };
   }
 }
 
@@ -345,15 +391,17 @@ export async function reconcileDeepSeekConsumption(
  * Releases a provisional reservation when a request definitely incurred NO provider costs
  * (e.g. pre-call refusal, HTTP 400 Bad Request, HTTP 401 Unauthorized, HTTP 429 Provider Rate Limit).
  * Anchored to original token dateKey (handles midnight rollover).
- * Redis-side and client-side idempotency strictly prevent duplicate release.
- * Token is only marked resolved AFTER Redis confirms settlement.
+ * Strictly mutates counters ONLY if reservation state in Redis is exactly 'RESERVED'.
+ * Token is marked resolved ONLY after Redis confirms successful settlement (flag === 1).
  */
-export async function releaseDeepSeekReservation(token: ReservationToken): Promise<void> {
-  if (token.resolved) return;
+export async function releaseDeepSeekReservation(token: ReservationToken): Promise<SettlementResult> {
+  if (!token.reservationId || !token.allowed) {
+    return { success: false, status: 'NO_VALID_RESERVATION' };
+  }
 
   // Use original reservation dateKey to prevent midnight UTC rollover misattribution
   const dateKey = token.dateKey || new Date().toISOString().split('T')[0];
-  const reservationId = token.reservationId || 'default';
+  const reservationId = token.reservationId;
   const reqKey = `budget:deepseek:requests:${dateKey}`;
   const costKey = `budget:deepseek:cost_micro:${dateKey}`;
   const resKey = `budget:deepseek:reservation:${dateKey}:${reservationId}`;
@@ -361,7 +409,7 @@ export async function releaseDeepSeekReservation(token: ReservationToken): Promi
   const ttlSeconds = 172800; // 48 hours
 
   try {
-    await withTimeout(
+    const rawResult = await withTimeout(
       redisConnection.eval(
         RELEASE_LUA_SCRIPT,
         3,
@@ -372,12 +420,21 @@ export async function releaseDeepSeekReservation(token: ReservationToken): Promi
         ttlSeconds
       ),
       2000
-    );
-    // Mark resolved only after Redis settlement succeeds
-    token.resolved = true;
+    ) as [number, string];
+
+    const [allowedFlag, statusReason] = rawResult || [0, 'UNKNOWN_ERROR'];
+
+    if (allowedFlag === 1) {
+      // Mark resolved only after Redis confirms successful transition or safe idempotency
+      token.resolved = true;
+      return { success: true, status: statusReason };
+    } else {
+      console.warn(`[BudgetLimiter] Release rejected for ${reservationId}: ${statusReason}`);
+      return { success: false, status: statusReason };
+    }
   } catch (err: any) {
     console.error('[BudgetLimiter] Failed to release reservation in Redis:', err.message);
-    // Do NOT mark token.resolved = true so retry is possible
+    return { success: false, status: `REDIS_ERROR: ${err.message}` };
   }
 }
 
@@ -385,23 +442,26 @@ export async function releaseDeepSeekReservation(token: ReservationToken): Promi
  * Retains provisional reservation when an upstream provider outcome is UNCERTAIN
  * (e.g. network timeout, connection abort mid-transmission, HTTP 504 Gateway Timeout, HTTP 500 error).
  * Anchored to original token dateKey (handles midnight rollover).
- * Token is only marked resolved AFTER Redis confirms settlement.
+ * Strictly mutates counters ONLY if reservation state in Redis is exactly 'RESERVED'.
+ * Token is marked resolved ONLY after Redis confirms successful settlement (flag === 1).
  */
 export async function retainUncertainReservation(
   token: ReservationToken,
   reason: string
-): Promise<void> {
-  if (token.resolved) return;
+): Promise<SettlementResult> {
+  if (!token.reservationId || !token.allowed) {
+    return { success: false, status: 'NO_VALID_RESERVATION' };
+  }
 
   const dateKey = token.dateKey || new Date().toISOString().split('T')[0];
-  const reservationId = token.reservationId || 'default';
+  const reservationId = token.reservationId;
   const uncertainKey = `budget:deepseek:uncertain_cost_micro:${dateKey}`;
   const resKey = `budget:deepseek:reservation:${dateKey}:${reservationId}`;
   const provisionalCostMicro = Math.round(token.provisionalCostUsd * 1_000_000);
   const ttlSeconds = 172800; // 48 hours
 
   try {
-    await withTimeout(
+    const rawResult = await withTimeout(
       redisConnection.eval(
         RETAIN_LUA_SCRIPT,
         2,
@@ -411,11 +471,21 @@ export async function retainUncertainReservation(
         ttlSeconds
       ),
       2000
-    );
-    token.resolved = true;
-    console.warn(`[BudgetLimiter] Retained provisional reservation of $${token.provisionalCostUsd.toFixed(4)} due to uncertain provider outcome: ${reason}`);
+    ) as [number, string];
+
+    const [allowedFlag, statusReason] = rawResult || [0, 'UNKNOWN_ERROR'];
+
+    if (allowedFlag === 1) {
+      token.resolved = true;
+      console.warn(`[BudgetLimiter] Retained provisional reservation of $${token.provisionalCostUsd.toFixed(4)} due to uncertain provider outcome: ${reason} (status: ${statusReason})`);
+      return { success: true, status: statusReason };
+    } else {
+      console.warn(`[BudgetLimiter] Retain rejected for ${reservationId}: ${statusReason}`);
+      return { success: false, status: statusReason };
+    }
   } catch (err: any) {
     console.error('[BudgetLimiter] Failed to record uncertain reservation in Redis:', err.message);
+    return { success: false, status: `REDIS_ERROR: ${err.message}` };
   }
 }
 

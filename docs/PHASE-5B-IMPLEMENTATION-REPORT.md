@@ -212,9 +212,16 @@ export function validateProductionDbTarget(targetEnv: string, dbUrl: string) {
 
 ### Atomic Lua Scripts & Redis-Side Idempotency
 - **Reservation Key:** `budget:deepseek:reservation:${dateKey}:${reservationId}`
-- **State Machine:** `RESERVED` -> `COMMITTED` (via reconcile) or `RELEASED` (via release) or `RETAINED` (via retain).
+- **State Machine Invariant:** Financial and request counters mutate ONLY when the reservation state is exactly `RESERVED`.
+  - `RESERVED` -> `COMMITTED` (via reconcile)
+  - `RESERVED` -> `RELEASED` (via release)
+  - `RESERVED` -> `RETAINED` (via retain)
+- **Rejection of Invalid Transitions:**
+  - Non-existent or expired reservation keys return `RESERVATION_NOT_FOUND_OR_EXPIRED` (status code 0). Zero counters touched.
+  - Invalid transitions (`reconcile` on `RELEASED`, `release` on `COMMITTED`, `retain` on `COMMITTED` or `RELEASED`) return `INVALID_RESERVATION_STATE_...` (status code 0). Zero counters touched.
+  - Safe idempotency: repeated calls (`reconcile` on `COMMITTED`, `release` on `RELEASED`, `retain` on `RETAINED`) return `ALREADY_...` (status code 1) without double-mutating counters.
+- **Strict Return Status Inspection:** `token.resolved = true` is set ONLY when Redis confirms `allowedFlag === 1`. A rejected transition (`allowedFlag === 0`) or network fault leaves `token.resolved = false`, enabling safe retries.
 - **Midnight UTC Rollover:** Every token retains its creation `dateKey`. Settle calls pass `token.dateKey`, ensuring cross-midnight requests update the original day's partition without skewing the new day's counter.
-- **Fail-Closed on Network Failure:** `token.resolved` is only set to `true` AFTER Redis confirms settlement. If Redis times out or fails, `token.resolved` remains `false`, allowing callers to retry.
 - **Provider Overage Bounds:** Strict pre-allocation check prevents dispatching requests if provisional cost exceeds budget. Immediate post-generation reconciliation blocks subsequent queries if the actual token cost crosses the ceiling. Strict `max_tokens: 1024` bounds the single-request maximum overshoot to under $0.001. Complete streaming hard caps require provider-side account balance limits.
 
 ---
@@ -223,10 +230,11 @@ export function validateProductionDbTarget(targetEnv: string, dbUrl: string) {
 
 ### Suite 1: Phase 5B Production Controls (`scripts/test-phase5b-controls.ts`)
 - **Command:** `cmd /c npx tsx scripts/test-phase5b-controls.ts`
-- **Result:** **52 / 52 Passed (Exit Code 0)**
-- **Coverage:**
+- **Result:** **75 / 75 Passed (Exit Code 0)**
+- **Redis Environment Audit:** Real Redis connection offline on host (`127.0.0.1:6395` - Docker Desktop stopped). Test suite cleanly audits the offline socket and runs against an in-memory deterministic stateful Redis engine simulating the exact Lua script logic.
+- **Coverage Breakdown:**
   - Group 1: Admin Auth protection, bearer tokens, custom headers, 401/403 responses (7 tests)
-  - Group 2: Budget reservations, Redis idempotency, concurrent reservations (40 requests against 5 slots), duplicate release prevention, duplicate reconcile prevention, midnight UTC rollover, nonnegative clamping, uncertain outcome retention (18 tests)
+  - Group 2: Budget reservations, Redis idempotency, concurrent reservations (40 requests against 5 slots), missing key rejection, expired key rejection, duplicate reconciliation idempotency, duplicate release idempotency, reconcile-after-release rejection, release-after-reconciliation rejection, retain-after-settlement rejection, network timeout followed by retry resolution, midnight UTC rollover, nonnegative clamping (31 tests)
   - Group 3: Public API error sanitization, credential redaction, IP anonymization (10 tests)
   - Group 4: Migration host validation, localhost rejection, Neon enforcement, password sanitization, transaction wrapping (8 tests)
   - Group 5: Strict offline MiniLM model completeness, 4 required files, local_files_only enforcement (5 tests)
@@ -284,7 +292,8 @@ export function validateProductionDbTarget(targetEnv: string, dbUrl: string) {
 - [x] No cloud services were provisioned or modified.
 - [x] No cloud migrations were executed.
 - [x] PR #2 PR review corrections verified and covered by tests.
-- [x] All 52 Phase 5B controls assertions passed.
+- [x] Redis settlement lifecycle integrity enforced across all Lua transitions.
+- [x] All 75 Phase 5B controls assertions passed.
 - [x] All 15 seed data assertions passed.
 - [x] TypeScript typecheck passed with zero errors (`tsc --noEmit`).
 - [x] Production build succeeded with zero errors (`npm run build`).
