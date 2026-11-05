@@ -1,3 +1,4 @@
+
 # ==============================================================================
 # Grounded RAG — Production Multi-Stage Dockerfile
 # Optimized for Render, Railway, or standalone container deployment
@@ -61,7 +62,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.cache /app/.cache
 # Copy built Next.js application & runtime dependencies
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 # Copy database schema and seed data for migration operations
@@ -74,6 +74,6 @@ USER nextjs
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/', (res) => { if (res.statusCode !== 200) process.exit(1); })"
+  CMD node -e "const http=require('http');const req=http.get('http://127.0.0.1:3000/',{timeout:3000},(res)=>{res.resume();process.exit(res.statusCode===200?0:1);});req.on('error',()=>process.exit(1));req.on('timeout',()=>{req.destroy();process.exit(1);});"
 
 CMD ["npm", "start"]

@@ -33,7 +33,7 @@ export const ChunkSchema = z.object({
   page_number: z.number().optional(),
   token_count: z.number().int().positive(),
   content_hash: z.string().length(64),
-  metadata: z.record(z.any()),
+  metadata: z.record(z.string(), z.any()),
 });
 
 export function estimateTokenCount(text: string): number {

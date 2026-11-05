@@ -6,6 +6,7 @@ import { REQUIRED_MINILM_ARTIFACTS, auditModelArtifacts } from '../src/lib/ai/em
 import * as fs from 'fs';
 import * as path from 'path';
 import Redis from 'ioredis';
+import { resolveDbSslConfig, isRemoteDatabaseHost, parseDbHost } from '../src/lib/db/client';
 
 async function runPhase5bTests() {
   console.log('======================================================');
@@ -586,6 +587,146 @@ async function runPhase5bTests() {
          'Dockerfile copies node_modules with non-root ownership (--chown=nextjs:nodejs)');
   assert(dockerfileContent.includes('USER nextjs'),
          'Dockerfile drops root privileges to unprivileged nextjs user');
+
+  // --------------------------------------------------------------------------
+  // Group 7: PostgreSQL SSL Configuration & Security Invariants
+  // --------------------------------------------------------------------------
+  console.log('\nTest Group 7: PostgreSQL SSL Configuration & Security Invariants...');
+
+  // Test 7A: Local Docker container host (e.g. grounded-postgres) with PGSSLMODE=disable
+  const localDockerDisabled = resolveDbSslConfig(
+    'postgresql://postgres:postgres@grounded-postgres:5432/grounded_rag',
+    'disable'
+  );
+  assert(localDockerDisabled === false, 'resolveDbSslConfig returns false (SSL disabled) for local Docker container with PGSSLMODE=disable');
+
+  // Test 7B: Local Docker container host default without sslmode
+  const localDockerDefault = resolveDbSslConfig(
+    'postgresql://postgres:postgres@grounded-postgres:5432/grounded_rag',
+    undefined
+  );
+  assert(localDockerDefault === false, 'resolveDbSslConfig returns false (SSL disabled) by default for local Docker container');
+
+  // Test 7C: Local loopback and localhost connections
+  const loopbackSsl = resolveDbSslConfig('postgresql://postgres:postgres@127.0.0.1:5550/grounded_rag');
+  assert(loopbackSsl === false, 'resolveDbSslConfig returns false for 127.0.0.1 host');
+
+  const localhostSsl = resolveDbSslConfig('postgresql://postgres:postgres@localhost:5432/grounded_rag');
+  assert(localhostSsl === false, 'resolveDbSslConfig returns false for localhost host');
+
+  // Test 7D: Local container with query param ?sslmode=disable
+  const localQueryDisable = resolveDbSslConfig(
+    'postgresql://postgres:postgres@grounded-postgres:5432/grounded_rag?sslmode=disable',
+    undefined
+  );
+  assert(localQueryDisable === false, 'resolveDbSslConfig returns false for local container with ?sslmode=disable query parameter');
+
+  // Test 7E: Local container with explicit PGSSLMODE=require
+  const localRequire = resolveDbSslConfig(
+    'postgresql://postgres:postgres@grounded-postgres:5432/grounded_rag',
+    'require'
+  );
+  assert(
+    typeof localRequire === 'object' && localRequire.rejectUnauthorized === true,
+    'resolveDbSslConfig returns { rejectUnauthorized: true } when SSL is explicitly required locally'
+  );
+
+  // Test 7F: Remote Neon database default with verified TLS
+  const neonDefault = resolveDbSslConfig(
+    'postgresql://user:pass@ep-cool-butterfly.us-east-2.aws.neon.tech/grounded_rag',
+    undefined
+  );
+  assert(
+    typeof neonDefault === 'object' && neonDefault.rejectUnauthorized === true,
+    'resolveDbSslConfig returns { rejectUnauthorized: true } for remote Neon database by default'
+  );
+
+  // Test 7G: Remote Neon database with ?sslmode=require
+  const neonRequire = resolveDbSslConfig(
+    'postgresql://user:pass@ep-cool-butterfly.us-east-2.aws.neon.tech/grounded_rag?sslmode=require',
+    undefined
+  );
+  assert(
+    typeof neonRequire === 'object' && neonRequire.rejectUnauthorized === true,
+    'resolveDbSslConfig returns { rejectUnauthorized: true } for remote Neon database with ?sslmode=require'
+  );
+
+  // Test 7H: Security rejection of PGSSLMODE=disable on remote Neon host
+  let neonEnvDisableBlocked = false;
+  try {
+    resolveDbSslConfig(
+      'postgresql://user:pass@ep-cool-butterfly.us-east-2.aws.neon.tech/grounded_rag',
+      'disable'
+    );
+  } catch (err: any) {
+    neonEnvDisableBlocked = err.message.includes('[Database Security] Insecure SSL override') &&
+                            err.message.includes('strictly prohibited');
+  }
+  assert(neonEnvDisableBlocked, 'resolveDbSslConfig strictly throws on PGSSLMODE=disable for remote Neon database');
+
+  // Test 7I: Security rejection of ?sslmode=disable on remote Neon host
+  let neonUrlDisableBlocked = false;
+  try {
+    resolveDbSslConfig(
+      'postgresql://user:pass@ep-cool-butterfly.us-east-2.aws.neon.tech/grounded_rag?sslmode=disable',
+      undefined
+    );
+  } catch (err: any) {
+    neonUrlDisableBlocked = err.message.includes('[Database Security] Insecure SSL override') &&
+                            err.message.includes('strictly prohibited');
+  }
+  assert(neonUrlDisableBlocked, 'resolveDbSslConfig strictly throws on ?sslmode=disable for remote Neon database');
+
+  // Test 7J: Security rejection of ?sslmode=no-verify on remote Neon host
+  let neonNoVerifyBlocked = false;
+  try {
+    resolveDbSslConfig(
+      'postgresql://user:pass@ep-cool-butterfly.us-east-2.aws.neon.tech/grounded_rag?sslmode=no-verify',
+      undefined
+    );
+  } catch (err: any) {
+    neonNoVerifyBlocked = err.message.includes('[Database Security] Insecure SSL override');
+  }
+  assert(neonNoVerifyBlocked, 'resolveDbSslConfig strictly throws on ?sslmode=no-verify for remote Neon database');
+
+  // Test 7K: Generic remote FQDN requires verified TLS
+  const remoteFqdn = resolveDbSslConfig('postgresql://user:pass@db.example.com:5432/grounded_rag');
+  assert(
+    typeof remoteFqdn === 'object' && remoteFqdn.rejectUnauthorized === true,
+    'resolveDbSslConfig enforces verified TLS for remote FQDN host (db.example.com)'
+  );
+
+  // Test 7L: Host classification tests
+  assert(!isRemoteDatabaseHost('grounded-postgres'), 'isRemoteDatabaseHost flags grounded-postgres as local');
+  assert(!isRemoteDatabaseHost('postgres'), 'isRemoteDatabaseHost flags postgres as local');
+  assert(!isRemoteDatabaseHost('127.0.0.1'), 'isRemoteDatabaseHost flags 127.0.0.1 as local');
+  assert(!isRemoteDatabaseHost('localhost'), 'isRemoteDatabaseHost flags localhost as local');
+  assert(!isRemoteDatabaseHost('api.internal'), 'isRemoteDatabaseHost flags api.internal as local');
+  assert(!isRemoteDatabaseHost('host.docker.internal'), 'isRemoteDatabaseHost flags host.docker.internal as local');
+  assert(isRemoteDatabaseHost('ep-cool.us-east-2.aws.neon.tech'), 'isRemoteDatabaseHost flags neon.tech as remote');
+  assert(isRemoteDatabaseHost('db.production.mycloud.com'), 'isRemoteDatabaseHost flags external FQDN as remote');
+  assert(isRemoteDatabaseHost('db.docker.example.com'), 'isRemoteDatabaseHost flags db.docker.example.com as remote despite containing docker');
+  assert(isRemoteDatabaseHost('pg-docker.mycloud.io'), 'isRemoteDatabaseHost flags pg-docker.mycloud.io as remote despite containing docker');
+  assert(parseDbHost('postgresql://u:p@grounded-postgres:5432/db') === 'grounded-postgres', 'parseDbHost correctly parses container hostname');
+
+  // Test 7M: Invariant: rejectUnauthorized: false is NEVER returned under any configuration
+  const testConfigurations = [
+    { url: 'postgresql://postgres:postgres@localhost:5432/db', mode: 'disable' },
+    { url: 'postgresql://postgres:postgres@127.0.0.1:5550/db', mode: undefined },
+    { url: 'postgresql://postgres:postgres@grounded-postgres:5432/db', mode: 'disable' },
+    { url: 'postgresql://user:pass@ep-cool.neon.tech/db', mode: 'require' },
+    { url: 'postgresql://user:pass@db.example.com/db', mode: undefined },
+  ];
+  const neverReturnsRejectUnauthorizedFalse = testConfigurations.every(cfg => {
+    try {
+      const res = resolveDbSslConfig(cfg.url, cfg.mode);
+      if (res === false) return true;
+      return res.rejectUnauthorized !== false;
+    } catch {
+      return true;
+    }
+  });
+  assert(neverReturnsRejectUnauthorizedFalse, 'Invariant confirmed: resolveDbSslConfig NEVER returns { rejectUnauthorized: false }');
 
   console.log('\n======================================================');
   console.log(`Phase 5B Test Summary: Total: ${passed + failed} | Passed: ${passed} | Failed: ${failed}`);
