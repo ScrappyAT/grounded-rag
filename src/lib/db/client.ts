@@ -36,11 +36,10 @@ export function isRemoteDatabaseHost(host: string): boolean {
     return false;
   }
 
-  // Local Docker or internal domain suffixes
+  // Local or internal domain suffixes (e.g. host.docker.internal, service.local)
   if (
     h.endsWith('.local') ||
-    h.endsWith('.internal') ||
-    h.includes('docker')
+    h.endsWith('.internal')
   ) {
     return false;
   }

@@ -702,8 +702,11 @@ async function runPhase5bTests() {
   assert(!isRemoteDatabaseHost('127.0.0.1'), 'isRemoteDatabaseHost flags 127.0.0.1 as local');
   assert(!isRemoteDatabaseHost('localhost'), 'isRemoteDatabaseHost flags localhost as local');
   assert(!isRemoteDatabaseHost('api.internal'), 'isRemoteDatabaseHost flags api.internal as local');
+  assert(!isRemoteDatabaseHost('host.docker.internal'), 'isRemoteDatabaseHost flags host.docker.internal as local');
   assert(isRemoteDatabaseHost('ep-cool.us-east-2.aws.neon.tech'), 'isRemoteDatabaseHost flags neon.tech as remote');
   assert(isRemoteDatabaseHost('db.production.mycloud.com'), 'isRemoteDatabaseHost flags external FQDN as remote');
+  assert(isRemoteDatabaseHost('db.docker.example.com'), 'isRemoteDatabaseHost flags db.docker.example.com as remote despite containing docker');
+  assert(isRemoteDatabaseHost('pg-docker.mycloud.io'), 'isRemoteDatabaseHost flags pg-docker.mycloud.io as remote despite containing docker');
   assert(parseDbHost('postgresql://u:p@grounded-postgres:5432/db') === 'grounded-postgres', 'parseDbHost correctly parses container hostname');
 
   // Test 7M: Invariant: rejectUnauthorized: false is NEVER returned under any configuration
