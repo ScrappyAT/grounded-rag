@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import seedManifest from '@/lib/db/seed-manifest.json';
 import { 
   Send, 
   FileText, 
@@ -69,6 +70,20 @@ interface ChatMessage {
     modelId?: string;
   };
   timestamp: string;
+}
+
+function renderFormattedContent(content: string) {
+  const parts = content.split(/(\*\*[^*]+?\*\*)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
+      return (
+        <strong key={index} className="font-semibold text-slate-100">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    return part;
+  });
 }
 
 export default function GroundedChatPage() {
@@ -306,7 +321,7 @@ export default function GroundedChatPage() {
         <div className="pt-4 border-t border-slate-800 text-[11px] text-slate-400 space-y-1">
           <div className="flex justify-between">
             <span>Corpus:</span>
-            <span className="text-slate-300 font-mono">220 Docs (1,515 Chunks)</span>
+            <span className="text-slate-300 font-mono">{seedManifest.documentCount} Docs ({seedManifest.chunkCount.toLocaleString()} Chunks)</span>
           </div>
           <div className="flex justify-between">
             <span>Embeddings:</span>
@@ -374,7 +389,7 @@ export default function GroundedChatPage() {
                 )}
 
                 {/* Message Body */}
-                <div className="whitespace-pre-wrap">{msg.content}</div>
+                <div className="whitespace-pre-wrap">{renderFormattedContent(msg.content)}</div>
 
                 {/* Citations Section */}
                 {msg.citations && msg.citations.length > 0 && (
