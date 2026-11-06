@@ -7,6 +7,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import Redis from 'ioredis';
 import { resolveDbSslConfig, isRemoteDatabaseHost, parseDbHost } from '../src/lib/db/client';
+import seedManifest from '../src/lib/db/seed-manifest.json';
+import { GET as diagnosticsHandler } from '../src/app/api/diagnostics/route';
+import { GET as adminDiagnosticsHandler } from '../src/app/api/admin/diagnostics/route';
 
 async function runPhase5bTests() {
   console.log('======================================================');
@@ -727,6 +730,66 @@ async function runPhase5bTests() {
     }
   });
   assert(neverReturnsRejectUnauthorizedFalse, 'Invariant confirmed: resolveDbSslConfig NEVER returns { rejectUnauthorized: false }');
+
+  // --------------------------------------------------------------------------
+  // Group 8: Phase 6.5 UI & Production Redis Observability Controls
+  // --------------------------------------------------------------------------
+  console.log('\nTest Group 8: Phase 6.5 UI & Production Redis Observability Controls...');
+
+  // Sub-test 8A: Canonical Seed Manifest Metadata
+  assert(seedManifest.chunkCount === 1517, 'Canonical seed manifest specifies exactly 1,517 chunks');
+  assert(seedManifest.documentCount === 220, 'Canonical seed manifest specifies exactly 220 documents');
+  assert(seedManifest.cacheCount === 1185, 'Canonical seed manifest specifies exactly 1,185 embedding-cache entries');
+  assert(seedManifest.modelId === 'Xenova/all-MiniLM-L6-v2', 'Canonical seed manifest uses Xenova/all-MiniLM-L6-v2');
+
+  // Sub-test 8B: UI Metadata Integration & Markdown Bold Formatting
+  const pageTsxPath = path.join(__dirname, '../src/app/page.tsx');
+  const pageTsxContent = fs.readFileSync(pageTsxPath, 'utf8');
+  assert(pageTsxContent.includes('seedManifest.chunkCount'), 'page.tsx dynamically derives chunk count from seed-manifest.json');
+  assert(pageTsxContent.includes('seedManifest.documentCount'), 'page.tsx dynamically derives document count from seed-manifest.json');
+  assert(!pageTsxContent.includes('1,515 Chunks'), 'page.tsx eliminates legacy hardcoded 1,515 chunk count');
+  assert(pageTsxContent.includes('renderFormattedContent'), 'page.tsx implements renderFormattedContent to parse markdown bold');
+
+  // Sub-test 8C: Redis Diagnostic Endpoint Authentication Gate
+  process.env.ADMIN_API_KEY = testKey;
+  const diagReqNoAuth = new Request('http://localhost:3000/api/diagnostics');
+  const diagResNoAuth = await diagnosticsHandler(diagReqNoAuth);
+  assert(diagResNoAuth.status === 401, '/api/diagnostics rejects unauthenticated request with HTTP 401');
+
+  const diagReqBadToken = new Request('http://localhost:3000/api/diagnostics', {
+    headers: { Authorization: 'Bearer bad_token_123' },
+  });
+  const diagResBadToken = await diagnosticsHandler(diagReqBadToken);
+  assert(diagResBadToken.status === 401, '/api/diagnostics rejects invalid token with HTTP 401');
+
+  // Sub-test 8D: Redis Diagnostic Endpoint Authorized Execution
+  const diagReqValid = new Request('http://localhost:3000/api/diagnostics', {
+    headers: { Authorization: `Bearer ${testKey}` },
+  });
+  const diagResValid = await diagnosticsHandler(diagReqValid);
+  assert(diagResValid.status === 200 || diagResValid.status === 503, '/api/diagnostics returns HTTP 200 (healthy) or 503 (degraded)');
+
+  const diagPayload = await diagResValid.json();
+  assert(typeof diagPayload.status === 'string', 'Diagnostic payload includes health status string');
+  assert(typeof diagPayload.timestamp === 'string', 'Diagnostic payload includes ISO timestamp');
+  assert(typeof diagPayload.redis === 'object' && diagPayload.redis !== null, 'Diagnostic payload includes redis status object');
+  assert(typeof diagPayload.redis.connected === 'boolean', 'Diagnostic payload includes redis.connected boolean');
+  assert(typeof diagPayload.redis.status === 'string', 'Diagnostic payload includes sanitized redis.status string');
+
+  // Sub-test 8E: Strict Sanitization (No credentials, keys, or URLs exposed)
+  const diagRawJson = JSON.stringify(diagPayload);
+  assert(!diagRawJson.includes('password'), 'Diagnostic payload never exposes password');
+  assert(!diagRawJson.includes(testKey), 'Diagnostic payload never leaks ADMIN_API_KEY');
+  assert(!diagRawJson.includes('redis://'), 'Diagnostic payload never leaks raw connection string');
+  assert(!diagRawJson.includes('grounded:'), 'Diagnostic payload never leaks Redis key names');
+  assert(!diagRawJson.includes('127.0.0.1:6395'), 'Diagnostic payload never leaks internal host/port');
+
+  // Sub-test 8F: Administrative Diagnostics Alias Route
+  const adminDiagReq = new Request('http://localhost:3000/api/admin/diagnostics', {
+    headers: { Authorization: `Bearer ${testKey}` },
+  });
+  const adminDiagRes = await adminDiagnosticsHandler(adminDiagReq);
+  assert(adminDiagRes.status === 200 || adminDiagRes.status === 503, '/api/admin/diagnostics route alias functions identically');
 
   console.log('\n======================================================');
   console.log(`Phase 5B Test Summary: Total: ${passed + failed} | Passed: ${passed} | Failed: ${failed}`);
