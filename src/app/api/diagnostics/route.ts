@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
  * Never exposes credentials, connection strings, key names, or financial data.
  */
 export async function GET(req: Request) {
-  // Enforce administrative authorization
+  // Enforce administrative authorization strictly before any Redis interaction
   if (!verifyAdminAuth(req)) {
     return unauthorizedResponse('Valid ADMIN_API_KEY required for administrative diagnostics.');
   }
@@ -20,12 +20,15 @@ export async function GET(req: Request) {
   let connected = false;
   let latencyMs = -1;
   let redisStatus = 'disconnected';
+  let timer: NodeJS.Timeout | undefined;
 
   try {
     const pingPromise = redisConnection.ping();
-    const timeoutPromise = new Promise<string>((_, reject) => {
-      const timer = setTimeout(() => reject(new Error('Redis ping timeout')), 2500);
-      pingPromise.finally(() => clearTimeout(timer));
+    // Attach passive catch handler to absorb late rejections if timeout triggers first
+    pingPromise.catch(() => {});
+
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('Redis ping timeout')), 2500);
     });
 
     const pingResponse = await Promise.race([pingPromise, timeoutPromise]);
@@ -36,6 +39,10 @@ export async function GET(req: Request) {
     }
   } catch {
     redisStatus = 'unreachable';
+  } finally {
+    if (timer) {
+      clearTimeout(timer);
+    }
   }
 
   const payload = {
@@ -52,4 +59,3 @@ export async function GET(req: Request) {
 
   return NextResponse.json(payload, { status: connected ? 200 : 503 });
 }
-

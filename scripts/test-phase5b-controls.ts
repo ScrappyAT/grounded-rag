@@ -10,6 +10,7 @@ import { resolveDbSslConfig, isRemoteDatabaseHost, parseDbHost } from '../src/li
 import seedManifest from '../src/lib/db/seed-manifest.json';
 import { GET as diagnosticsHandler } from '../src/app/api/diagnostics/route';
 import { GET as adminDiagnosticsHandler } from '../src/app/api/admin/diagnostics/route';
+import { redisConnection } from '../src/lib/queue/client';
 
 async function runPhase5bTests() {
   console.log('======================================================');
@@ -790,6 +791,56 @@ async function runPhase5bTests() {
   });
   const adminDiagRes = await adminDiagnosticsHandler(adminDiagReq);
   assert(adminDiagRes.status === 200 || adminDiagRes.status === 503, '/api/admin/diagnostics route alias functions identically');
+
+  // Sub-test 8G: Redis PING Lifecycle Resilience (Success, Rejection, Timeout & Zero Unhandled Rejections)
+  const originalPing = redisConnection.ping.bind(redisConnection);
+  let unhandledRejectionDetected = false;
+  const unhandledHandler = (reason: any) => {
+    unhandledRejectionDetected = true;
+    console.error('  [ALERT] Unhandled promise rejection captured:', reason);
+  };
+  process.on('unhandledRejection', unhandledHandler);
+
+  try {
+    // 8G.1: Mock Successful PING
+    redisConnection.ping = (async () => 'PONG' as const) as any;
+    const successReq = new Request('http://localhost:3000/api/diagnostics', {
+      headers: { Authorization: `Bearer ${testKey}` },
+    });
+    const successRes = await diagnosticsHandler(successReq);
+    assert(successRes.status === 200, 'Successful Redis PING returns HTTP 200');
+    const successBody = await successRes.json();
+    assert(successBody.status === 'healthy', 'Successful Redis PING payload has status: "healthy"');
+    assert(successBody.redis.connected === true, 'Successful Redis PING payload has connected: true');
+    assert(successBody.redis.status === 'connected', 'Successful Redis PING payload has redis.status: "connected"');
+    assert(typeof successBody.redis.latencyMs === 'number', 'Successful Redis PING records numeric latencyMs');
+
+    // 8G.2: Mock Immediate Rejection
+    redisConnection.ping = (async () => {
+      throw new Error('Simulated Redis network disconnection ECONNREFUSED');
+    }) as any;
+    const failReq = new Request('http://localhost:3000/api/diagnostics', {
+      headers: { Authorization: `Bearer ${testKey}` },
+    });
+    const failRes = await diagnosticsHandler(failReq);
+    assert(failRes.status === 503, 'Rejected Redis PING safely returns HTTP 503');
+    const failBody = await failRes.json();
+    assert(failBody.status === 'degraded', 'Rejected Redis PING payload has status: "degraded"');
+    assert(failBody.redis.connected === false, 'Rejected Redis PING payload has connected: false');
+    assert(failBody.redis.status === 'unreachable', 'Rejected Redis PING payload has redis.status: "unreachable"');
+
+    // 8G.3: Mock Delayed Rejection (simulating late network failure after timeout race)
+    redisConnection.ping = (() => new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Late delayed network drop')), 20);
+    })) as any;
+    await diagnosticsHandler(failReq);
+    await new Promise(r => setTimeout(r, 60));
+
+    assert(!unhandledRejectionDetected, 'Invariant confirmed: zero unhandled promise rejections during Redis PING failure or late rejection');
+  } finally {
+    redisConnection.ping = originalPing;
+    process.removeListener('unhandledRejection', unhandledHandler);
+  }
 
   console.log('\n======================================================');
   console.log(`Phase 5B Test Summary: Total: ${passed + failed} | Passed: ${passed} | Failed: ${failed}`);
