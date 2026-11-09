@@ -105,7 +105,7 @@ Running a continuous BullMQ worker in production would:
 3. Risk CPU spikes during user traffic if an ingestion job executes simultaneously.
 
 **Production Decision:**
-We will pre-generate a standalone, reproducible SQL seed script: [`src/lib/db/seed-data.sql`](file:///c:/Users/HP/Desktop/grounded-rag/src/lib/db/seed-data.sql).
+We will pre-generate a standalone, reproducible SQL seed script: [`src/lib/db/seed-data.sql`](../src/lib/db/seed-data.sql).
 - All 220 documents, 1,503 chunks, and 384-dimensional semantic vectors are dumped directly into standard SQL `INSERT ... ON CONFLICT DO NOTHING` statements.
 - Applying `schema.sql` followed by `seed-data.sql` to Neon provisions the entire vector database in **< 45 seconds**.
 - Ingestion worker and queue dependencies are decoupled from the public production runtime.
@@ -172,7 +172,7 @@ To prevent automated scripts or denial-of-wallet attacks from draining DeepSeek 
 To ensure zero-downtime, idempotent, and non-destructive database provisioning:
 
 ### Step 1: DDL Schema Provisioning
-Run the verified DDL script [`src/lib/db/schema.sql`](file:///c:/Users/HP/Desktop/grounded-rag/src/lib/db/schema.sql):
+Run the verified DDL script [`src/lib/db/schema.sql`](../src/lib/db/schema.sql):
 ```bash
 psql "$DATABASE_URL" -f src/lib/db/schema.sql
 ```
@@ -269,15 +269,15 @@ The following focused adjustments are identified for implementation prior to clo
 
 | File Path | Nature of Change | Justification |
 | :--- | :--- | :--- |
-| [`src/lib/db/client.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/lib/db/client.ts) | Add SSL support (`ssl: { rejectUnauthorized: false }` when connecting to cloud hosts) and configurable pool size. | Enables secure connection to Neon / remote PostgreSQL. |
-| [`src/app/api/ingest/route.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/app/api/ingest/route.ts) | Add `ADMIN_API_KEY` validation check at request entry point. | Prevents unauthorized public triggering of corpus re-ingestion. |
-| [`src/app/api/jobs/route.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/app/api/jobs/route.ts) | Add `ADMIN_API_KEY` validation check. | Prevents public inspection of internal queue states and file paths. |
-| [`src/app/api/logs/route.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/app/api/logs/route.ts) | Add `ADMIN_API_KEY` validation check and anonymize `user_ip` field. | Protects user query history and prevents PII leakage. |
-| [`src/lib/rag/rateLimiter.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/lib/rag/rateLimiter.ts) | Add in-memory sliding-window fallback when `REDIS_URL` is absent. | Guarantees per-IP rate limiting even in zero-cost deployments without Redis. |
-| [`src/lib/ai/generator.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/lib/ai/generator.ts) | Add daily generation query counter / spending circuit breaker. | Protects user from unbounded DeepSeek credit exhaustion. |
-| [`scripts/export-seed-sql.ts`](file:///c:/Users/HP/Desktop/grounded-rag/scripts/export-seed-sql.ts) | Create script to dump documents, chunks, and embeddings into SQL seed script. | Provides reproducible, instant seeding for cloud PostgreSQL. |
-| [`Dockerfile`](file:///c:/Users/HP/Desktop/grounded-rag/Dockerfile) & [`.dockerignore`](file:///c:/Users/HP/Desktop/grounded-rag/.dockerignore) | Multi-stage production container build with pre-cached ONNX model weights. | Eliminates runtime Hugging Face downloads and guarantees <1.5s cold starts. |
-| [`.env.example`](file:///c:/Users/HP/Desktop/grounded-rag/.env.example) | Update with DeepSeek, Neon, Upstash, and `ADMIN_API_KEY` variables. | Provides clear documentation for production environment configuration. |
+| [`src/lib/db/client.ts`](../src/lib/db/client.ts) | Add SSL support (`ssl: { rejectUnauthorized: false }` when connecting to cloud hosts) and configurable pool size. | Enables secure connection to Neon / remote PostgreSQL. |
+| [`src/app/api/ingest/route.ts`](../src/app/api/ingest/route.ts) | Add `ADMIN_API_KEY` validation check at request entry point. | Prevents unauthorized public triggering of corpus re-ingestion. |
+| [`src/app/api/jobs/route.ts`](../src/app/api/jobs/route.ts) | Add `ADMIN_API_KEY` validation check. | Prevents public inspection of internal queue states and file paths. |
+| [`src/app/api/logs/route.ts`](../src/app/api/logs/route.ts) | Add `ADMIN_API_KEY` validation check and anonymize `user_ip` field. | Protects user query history and prevents PII leakage. |
+| [`src/lib/rag/rateLimiter.ts`](../src/lib/rag/rateLimiter.ts) | Add in-memory sliding-window fallback when `REDIS_URL` is absent. | Guarantees per-IP rate limiting even in zero-cost deployments without Redis. |
+| [`src/lib/ai/generator.ts`](../src/lib/ai/generator.ts) | Add daily generation query counter / spending circuit breaker. | Protects user from unbounded DeepSeek credit exhaustion. |
+| [`scripts/export-seed-sql.ts`](../scripts/export-seed-sql.ts) | Create script to dump documents, chunks, and embeddings into SQL seed script. | Provides reproducible, instant seeding for cloud PostgreSQL. |
+| [`Dockerfile`](../Dockerfile) & [`.dockerignore`](../.dockerignore) | Multi-stage production container build with pre-cached ONNX model weights. | Eliminates runtime Hugging Face downloads and guarantees <1.5s cold starts. |
+| [`.env.example`](../.env.example) | Update with DeepSeek, Neon, Upstash, and `ADMIN_API_KEY` variables. | Provides clear documentation for production environment configuration. |
 
 ---
 

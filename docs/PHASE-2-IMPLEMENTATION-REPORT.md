@@ -1,11 +1,11 @@
 # Grounded RAG — Phase 2 Implementation Report: Corpus & Ingestion Engine
 
-**Project:** Grounded  
-**Author:** Samuel Chinaza Emmanuel  
-**Program:** Dev and Design HQ Product Design & Engineering Bootcamp (2026)  
-**Specification:** Final Graduation Task — Part 4 (Pages 30–33)  
-**Status:** Phase 2 Complete — Ready for Phase 3 Review  
-**Date:** November 2, 2026  
+**Project:** Grounded
+**Author:** Samuel Chinaza Emmanuel
+**Program:** Dev and Design HQ Product Design & Engineering Bootcamp (2026)
+**Specification:** Final Graduation Task — Part 4 (Pages 30–33)
+**Status:** Phase 2 Complete — Ready for Phase 3 Review
+**Date:** November 2, 2026
 
 ---
 
@@ -148,8 +148,8 @@ The PostgreSQL 16 database running in Docker container `grounded-postgres` (host
 - Indexed by compound index `(document_id, strategy)`, content hash `idx_chunks_hash`, and GIN index on `metadata`.
 - **Vector Index:** HNSW index using cosine distance:
   ```sql
-  CREATE INDEX idx_chunks_embedding_hnsw ON chunks 
-  USING hnsw (embedding vector_cosine_ops) 
+  CREATE INDEX idx_chunks_embedding_hnsw ON chunks
+  USING hnsw (embedding vector_cosine_ops)
   WITH (m = 16, ef_construction = 64);
   ```
 
@@ -176,7 +176,7 @@ The Phase 2 automated test suite (`scripts/run-phase2-tests.ts`) was executed ag
 
 ```
 ======================================================
-               Grounded RAG - Phase 2 Test Suite      
+               Grounded RAG - Phase 2 Test Suite
 ======================================================
 [Config] Database: postgresql://postgres:***@127.0.0.1:5550/grounded_rag
 [Config] Redis:    redis://127.0.0.1:6395
@@ -224,7 +224,7 @@ The Phase 2 automated test suite (`scripts/run-phase2-tests.ts`) was executed ag
        - Worker picked up job, emitted progress, and handled retries on simulated failure
 
 ======================================================
-                 Test Run Summary                     
+                 Test Run Summary
 ======================================================
 Total: 9 | Passed: 9 | Failed: 0 (100% Pass Rate)
 ```
@@ -236,7 +236,7 @@ Total: 9 | Passed: 9 | Failed: 0 (100% Pass Rate)
 - **Development Phase Cost Incurred:** **$0.00**
 - **Docker Containers:** Running locally (`grounded-postgres` on port 5550, `grounded-redis` on port 6395). Zero cloud infrastructure cost.
 - **AI Model Tokens:** Generated via deterministic local mock provider. Zero Gemini API spend.
-- **Estimated Production Cost:** Documented in [ARCHITECTURE.md](file:///c:/Users/HP/Desktop/grounded-rag/ARCHITECTURE.md) (~$35–$47/month for managed Neon/Supabase pgvector, persistent Redis, and worker hosting).
+- **Estimated Production Cost:** Documented in [ARCHITECTURE.md](../ARCHITECTURE.md) (~$35–$47/month for managed Neon/Supabase pgvector, persistent Redis, and worker hosting).
 
 ---
 

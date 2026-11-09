@@ -37,7 +37,7 @@ The goal of this evaluation framework is to rigorously measure whether Grounded 
 
 ## 3. Independent Threshold Calibration & Sensitivity Sweep
 
-To prevent data leakage, the refusal threshold $\tau^*$ was calibrated against an **independent 20-question calibration dataset** ([`evaluation/calibration-questions.json`](file:///c:/Users/HP/Desktop/grounded-rag/evaluation/calibration-questions.json)) before being tested on the official 30-question assessment dataset.
+To prevent data leakage, the refusal threshold $\tau^*$ was calibrated against an **independent 20-question calibration dataset** ([`evaluation/calibration-questions.json`](evaluation/calibration-questions.json)) before being tested on the official 30-question assessment dataset.
 
 ### A. Calibration Dataset Score Distributions ($N=20$)
 - **Answerable Questions ($N=15$):** Min: **0.4662**, Max: **0.7230**, Mean: **0.5809**
@@ -65,7 +65,7 @@ To prevent data leakage, the refusal threshold $\tau^*$ was calibrated against a
 | 0.65 | 12 | 0 | 12 | 80.0% | 0.0% | Unusable |
 
 ### C. Out-of-Sample Validation on Official Assessment Ground Truth ($N=30$)
-Applying the calibrated threshold $\tau^* = 0.47$ to the official 30-question assessment dataset ([`evaluation/ground-truth.json`](file:///c:/Users/HP/Desktop/grounded-rag/evaluation/ground-truth.json)):
+Applying the calibrated threshold $\tau^* = 0.47$ to the official 30-question assessment dataset ([`evaluation/ground-truth.json`](evaluation/ground-truth.json)):
 - **Answerable Questions ($N=25$):**
   - False Refusals: **0 / 25 (0.0%)**
   - Minimum Similarity: **0.5011** (Q06) $> 0.47$
@@ -119,7 +119,7 @@ Applying the calibrated threshold $\tau^* = 0.47$ to the official 30-question as
 
 ## 5. Mandatory 2x2 Benchmark Matrix Results (120 Cases)
 
-Executed via [`scripts/run-2x2-evaluation.ts`](file:///c:/Users/HP/Desktop/grounded-rag/scripts/run-2x2-evaluation.ts) across all 30 questions under four distinct configurations:
+Executed via [`scripts/run-2x2-evaluation.ts`](scripts/run-2x2-evaluation.ts) across all 30 questions under four distinct configurations:
 
 ```
 ========================================================================================
@@ -140,7 +140,7 @@ Executed via [`scripts/run-2x2-evaluation.ts`](file:///c:/Users/HP/Desktop/groun
 > [!NOTE]
 > **Component Boundary Notice:** The 120-case results above represent measured **retrieval quality and extractive pipeline evidence**. They evaluate semantic vector retrieval recall, rank accuracy (MRR), and citation precision using `Xenova/all-MiniLM-L6-v2`. They must NOT be cited as validated neural LLM generative accuracy, as live generative calls were disabled pending API key configuration.
 
-Raw per-case JSON logs are saved at [`evaluation/2x2-evaluation-results.json`](file:///c:/Users/HP/Desktop/grounded-rag/evaluation/2x2-evaluation-results.json).
+Raw per-case JSON logs are saved at [`evaluation/2x2-evaluation-results.json`](evaluation/2x2-evaluation-results.json).
 
 ---
 
