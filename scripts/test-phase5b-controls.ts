@@ -11,6 +11,7 @@ import seedManifest from '../src/lib/db/seed-manifest.json';
 import { GET as diagnosticsHandler } from '../src/app/api/diagnostics/route';
 import { GET as adminDiagnosticsHandler } from '../src/app/api/admin/diagnostics/route';
 import { redisConnection } from '../src/lib/queue/client';
+import { getRefusalBannerInfo } from '../src/lib/rag/refusalBanner';
 
 async function runPhase5bTests() {
   console.log('======================================================');
@@ -841,6 +842,113 @@ async function runPhase5bTests() {
     redisConnection.ping = originalPing;
     process.removeListener('unhandledRejection', unhandledHandler);
   }
+
+  // --------------------------------------------------------------------------
+  // Group 9: Phase 7.1 Refusal Banner Accuracy & Differentiation Controls
+  // --------------------------------------------------------------------------
+  console.log('\nTest Group 9: Phase 7.1 Refusal Banner Accuracy & Differentiation Controls...');
+
+  // Sub-test 9A: Calibrated Below-Threshold Refusal (< tau)
+  const belowThresholdInput = {
+    content: 'I do not have sufficient authoritative documentation in the ApexPay knowledge base to answer this question.',
+    refused: true,
+    refusalReason: 'SIMILARITY_BELOW_THRESHOLD (0.3860 < 0.47)',
+    topSimilarity: 0.386,
+    threshold: 0.47,
+  };
+  const belowInfo = getRefusalBannerInfo(belowThresholdInput);
+  assert(belowInfo.variant === 'below_threshold', 'Below-threshold refusal classified as below_threshold');
+  assert(belowInfo.isBelowThreshold === true, 'isBelowThreshold is true for below-threshold query');
+  assert(belowInfo.title === 'Calibrated Evidence Refusal Gate Triggered', 'Below-threshold title matches calibrated gate label');
+  assert(belowInfo.badge === 'Score 0.386 < τ 0.47', 'Below-threshold badge correctly displays < symbol (Score 0.386 < τ 0.47)');
+  assert(!belowInfo.badge?.includes('≥'), 'Below-threshold badge does not contain ≥ symbol');
+
+  // Sub-test 9B: Above-Threshold Security Override Refusal (e.g. DOC-SEC-ADV-999)
+  const securityOverrideInput = {
+    content: 'SECURITY NOTICE: An invalid security override attempt from an untrusted document was detected and blocked. Official ApexPay policy (DOC-REF-012) mandates 5 business days...',
+    refused: true,
+    refusalReason: 'ADVERSARIAL_INJECTION_OVERRIDE',
+    topSimilarity: 0.683,
+    threshold: 0.47,
+  };
+  const secInfo = getRefusalBannerInfo(securityOverrideInput);
+  assert(secInfo.variant === 'security', 'Security override refusal classified as security');
+  assert(secInfo.isBelowThreshold === false, 'isBelowThreshold is false when score (0.683) >= tau (0.47)');
+  assert(secInfo.title === 'Security Policy Gate Triggered: Injection Attempt Blocked', 'Security refusal title clearly indicates injection attempt blocked');
+  assert(secInfo.badge === 'Score 0.683 ≥ τ 0.47', 'Security refusal badge correctly displays ≥ symbol (Score 0.683 ≥ τ 0.47)');
+  assert(!secInfo.badge?.includes('<'), 'Security refusal above threshold strictly eliminates false "Score < τ" statement');
+
+  // Sub-test 9C: Above-Threshold Insufficient Evidence Refusal
+  const insufficientEvidenceInput = {
+    content: 'I do not have sufficient authoritative documentation in the ApexPay knowledge base to answer this question.',
+    refused: true,
+    refusalReason: 'NO_AUTHORITATIVE_DOCUMENTATION',
+    topSimilarity: 0.520,
+    threshold: 0.47,
+  };
+  const insuffInfo = getRefusalBannerInfo(insufficientEvidenceInput);
+  assert(insuffInfo.variant === 'insufficient_evidence', 'Above-threshold ungrounded query classified as insufficient_evidence');
+  assert(insuffInfo.isBelowThreshold === false, 'isBelowThreshold is false for 0.520 >= 0.47');
+  assert(insuffInfo.title === 'Authoritative Evidence Gate Triggered: Insufficient Grounding', 'Title clearly distinguishes grounding failure from score threshold');
+  assert(insuffInfo.badge === 'Score 0.520 ≥ τ 0.47', 'Badge displays Score 0.520 ≥ τ 0.47 without false less-than comparison');
+  assert(!insuffInfo.badge?.includes('<'), 'Ungrounded query above threshold strictly eliminates false "Score < τ" statement');
+
+  // Sub-test 9D: Operational Quota & Budget Enforcement
+  const reqLimitInput = {
+    content: 'I do not have sufficient authoritative documentation in the ApexPay knowledge base to answer this question.\n\n[Budget Policy]: Neural generation is temporarily unavailable (DAILY_REQUEST_LIMIT_REACHED: Daily ceiling of 500 requests reached).',
+    refused: true,
+    refusalReason: 'DAILY_REQUEST_LIMIT_REACHED: Daily ceiling of 500 requests reached',
+    topSimilarity: 0.710,
+    threshold: 0.47,
+  };
+  const budgetInfo1 = getRefusalBannerInfo(reqLimitInput);
+  assert(budgetInfo1.variant === 'budget', 'Daily request limit classified as budget variant');
+  assert(budgetInfo1.title === 'Operational Policy Gate Triggered: Resource Limit Enforced', 'Budget title indicates operational policy gate');
+  assert(budgetInfo1.badge === 'Daily Request Limit Reached', 'Badge indicates daily request limit reached');
+
+  const budgetFailClosedInput = {
+    content: 'I do not have sufficient authoritative documentation in the ApexPay knowledge base to answer this question.\n\n[Budget Policy]: Neural generation is temporarily unavailable (BUDGET_VERIFICATION_UNAVAILABLE).',
+    refused: true,
+    refusalReason: 'BUDGET_VERIFICATION_UNAVAILABLE: Shared Redis budget controls are unreachable.',
+    topSimilarity: 0.650,
+    threshold: 0.47,
+  };
+  const budgetInfo2 = getRefusalBannerInfo(budgetFailClosedInput);
+  assert(budgetInfo2.variant === 'budget', 'Fail-closed budget refusal classified as budget variant');
+  assert(budgetInfo2.badge === 'Budget Service Unavailable', 'Badge indicates budget service unavailable');
+
+  // Sub-test 9E: Zero Chunks Retrieved Refusal
+  const zeroChunksInput = {
+    content: 'I do not have sufficient authoritative documentation in the ApexPay knowledge base to answer this question.',
+    refused: true,
+    refusalReason: 'NO_CHUNKS_RETRIEVED',
+    retrievedChunks: [],
+  };
+  const zeroInfo = getRefusalBannerInfo(zeroChunksInput);
+  assert(zeroInfo.variant === 'insufficient_evidence', 'Zero chunks classified as insufficient_evidence');
+  assert(zeroInfo.badge === '0 Chunks Found', 'Zero chunks badge indicates 0 Chunks Found');
+
+  // Sub-test 9F: Mathematical Invariant Sweep Across Score Combinations
+  let falseLessThanDetected = false;
+  for (let s = 10; s <= 99; s += 2) {
+    const sim = s / 100;
+    const thresh = 0.47;
+    const testItem = {
+      content: 'I do not have sufficient documentation',
+      refused: true,
+      refusalReason: 'NO_AUTHORITATIVE_DOCUMENTATION',
+      topSimilarity: sim,
+      threshold: thresh,
+    };
+    const res = getRefusalBannerInfo(testItem);
+    if (sim >= thresh && res.badge?.includes('<')) {
+      falseLessThanDetected = true;
+    }
+    if (sim < thresh && res.badge?.includes('≥')) {
+      falseLessThanDetected = true;
+    }
+  }
+  assert(!falseLessThanDetected, 'Mathematical Invariant: "< τ" is NEVER emitted when similarity >= threshold, and "≥ τ" is never emitted when similarity < threshold');
 
   console.log('\n======================================================');
   console.log(`Phase 5B Test Summary: Total: ${passed + failed} | Passed: ${passed} | Failed: ${failed}`);
