@@ -34,7 +34,7 @@ All regression test suites and production builds completed with **Exit Code 0**:
 - **Thinking Mode Configuration:** Configured with `thinking: { type: "disabled" }` for high-throughput, deterministic grounded RAG responses, eliminating unwanted reasoning overhead and preventing multi-turn reasoning schema errors.
 
 ### B. Preflight Minimal Connection Test
-A minimal preflight check was executed via [`scripts/test-deepseek-connection.ts`](file:///c:/Users/HP/Desktop/grounded-rag/scripts/test-deepseek-connection.ts) with a bounded output limit (`max_tokens: 5`):
+A minimal preflight check was executed via [`scripts/test-deepseek-connection.ts`](../scripts/test-deepseek-connection.ts) with a bounded output limit (`max_tokens: 5`):
 - **HTTP Endpoint:** `POST https://api.deepseek.com/chat/completions`
 - **Payload Test:** `"Respond with Pong."`
 - **HTTP Status:** `200 OK`
@@ -50,19 +50,19 @@ A minimal preflight check was executed via [`scripts/test-deepseek-connection.ts
 
 | File Path | Description of Changes |
 | :--- | :--- |
-| [`src/lib/ai/generator.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/lib/ai/generator.ts) | Implemented `DeepSeekLlmProvider` using native `fetch` over the official OpenAI-compatible endpoint. Configured `thinking: { type: "disabled" }`, system instruction fences, citation verifier, and token/cost tracking. Updated `createLlmProvider()` to enforce explicit errors rather than silent fallbacks. |
-| [`src/lib/rag/retrieval.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/lib/rag/retrieval.ts) | Added `maxChunksPerDoc` parameter with safe backfilling to prevent redundant chunks of a single document from dominating top-$k$ while ensuring metadata filters and candidate availability are strictly preserved. |
-| [`knowledge-base/03-payments-settlements/DOC-PAY-002.md`](file:///c:/Users/HP/Desktop/grounded-rag/knowledge-base/03-payments-settlements/DOC-PAY-002.md) | Added explicit qualification criteria for accelerated same-day settlement exceptions in Section 3 and re-indexed into pgvector. |
-| [`knowledge-base/04-refunds-disputes/DOC-REF-012.md`](file:///c:/Users/HP/Desktop/grounded-rag/knowledge-base/04-refunds-disputes/DOC-REF-012.md) | Standardized industry terminology in Section 3 (`"standard refund period and processing execution window"`) while preserving legacy test assertions, and re-indexed into pgvector. |
-| [`knowledge-base/manifest.json`](file:///c:/Users/HP/Desktop/grounded-rag/knowledge-base/manifest.json) | Updated SHA-256 hashes for `DOC-PAY-002` and `DOC-REF-012`. |
-| [`.env`](file:///c:/Users/HP/Desktop/grounded-rag/.env) | Configured `LLM_PROVIDER=deepseek`, `LLM_MODEL=deepseek-flash`, and `DEEPSEEK_BASE_URL=https://api.deepseek.com`. |
-| [`src/app/api/chat/route.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/app/api/chat/route.ts) | Extended API response payload to include `llmProvider`, `llmModel`, and `isNeuralLLM` flag for transparent frontend observability. |
-| [`src/app/page.tsx`](file:///c:/Users/HP/Desktop/grounded-rag/src/app/page.tsx) | Updated Chat UI to display a dedicated neural badge (`DeepSeek (deepseek-flash · Neural)`) versus `Deterministic Fallback` in the message metrics bar. |
-| [`scripts/run-phase4-5-eval.ts`](file:///c:/Users/HP/Desktop/grounded-rag/scripts/run-phase4-5-eval.ts) | Updated evaluation script to log live DeepSeek execution metrics and export results to [`evaluation/deepseek-evaluation-results.json`](file:///c:/Users/HP/Desktop/grounded-rag/evaluation/deepseek-evaluation-results.json). |
-| [`scripts/run-2x2-evaluation.ts`](file:///c:/Users/HP/Desktop/grounded-rag/scripts/run-2x2-evaluation.ts) | Updated 120-case evaluation harness to preserve baseline v1 ([`evaluation/2x2-evaluation-results-baseline-v1.json`](file:///c:/Users/HP/Desktop/grounded-rag/evaluation/2x2-evaluation-results-baseline-v1.json)) and export v2 results. |
-| [`scripts/run-phase2-tests.ts`](file:///c:/Users/HP/Desktop/grounded-rag/scripts/run-phase2-tests.ts) | Added clean process termination (`process.exit(0)`) so the suite terminates with exit code 0. |
-| [`scripts/run-phase3-tests.ts`](file:///c:/Users/HP/Desktop/grounded-rag/scripts/run-phase3-tests.ts) | Added clean process termination (`process.exit(0)`) and aligned injection assertions with neural neutralization behavior. |
-| [`README.md`](file:///c:/Users/HP/Desktop/grounded-rag/README.md), [`ARCHITECTURE.md`](file:///c:/Users/HP/Desktop/grounded-rag/ARCHITECTURE.md), [`EVALUATION.md`](file:///c:/Users/HP/Desktop/grounded-rag/EVALUATION.md), [`LEARNING-LOG.md`](file:///c:/Users/HP/Desktop/grounded-rag/LEARNING-LOG.md) | Updated all project documentation and architecture specifications. |
+| [`src/lib/ai/generator.ts`](../src/lib/ai/generator.ts) | Implemented `DeepSeekLlmProvider` using native `fetch` over the official OpenAI-compatible endpoint. Configured `thinking: { type: "disabled" }`, system instruction fences, citation verifier, and token/cost tracking. Updated `createLlmProvider()` to enforce explicit errors rather than silent fallbacks. |
+| [`src/lib/rag/retrieval.ts`](../src/lib/rag/retrieval.ts) | Added `maxChunksPerDoc` parameter with safe backfilling to prevent redundant chunks of a single document from dominating top-$k$ while ensuring metadata filters and candidate availability are strictly preserved. |
+| [`knowledge-base/03-payments-settlements/DOC-PAY-002.md`](../knowledge-base/03-payments-settlements/DOC-PAY-002.md) | Added explicit qualification criteria for accelerated same-day settlement exceptions in Section 3 and re-indexed into pgvector. |
+| [`knowledge-base/04-refunds-disputes/DOC-REF-012.md`](../knowledge-base/04-refunds-disputes/DOC-REF-012.md) | Standardized industry terminology in Section 3 (`"standard refund period and processing execution window"`) while preserving legacy test assertions, and re-indexed into pgvector. |
+| [`knowledge-base/manifest.json`](../knowledge-base/manifest.json) | Updated SHA-256 hashes for `DOC-PAY-002` and `DOC-REF-012`. |
+| [`.env`](../.env) | Configured `LLM_PROVIDER=deepseek`, `LLM_MODEL=deepseek-flash`, and `DEEPSEEK_BASE_URL=https://api.deepseek.com`. |
+| [`src/app/api/chat/route.ts`](../src/app/api/chat/route.ts) | Extended API response payload to include `llmProvider`, `llmModel`, and `isNeuralLLM` flag for transparent frontend observability. |
+| [`src/app/page.tsx`](../src/app/page.tsx) | Updated Chat UI to display a dedicated neural badge (`DeepSeek (deepseek-flash · Neural)`) versus `Deterministic Fallback` in the message metrics bar. |
+| [`scripts/run-phase4-5-eval.ts`](../scripts/run-phase4-5-eval.ts) | Updated evaluation script to log live DeepSeek execution metrics and export results to [`evaluation/deepseek-evaluation-results.json`](../evaluation/deepseek-evaluation-results.json). |
+| [`scripts/run-2x2-evaluation.ts`](../scripts/run-2x2-evaluation.ts) | Updated 120-case evaluation harness to preserve baseline v1 ([`evaluation/2x2-evaluation-results-baseline-v1.json`](../evaluation/2x2-evaluation-results-baseline-v1.json)) and export v2 results. |
+| [`scripts/run-phase2-tests.ts`](../scripts/run-phase2-tests.ts) | Added clean process termination (`process.exit(0)`) so the suite terminates with exit code 0. |
+| [`scripts/run-phase3-tests.ts`](../scripts/run-phase3-tests.ts) | Added clean process termination (`process.exit(0)`) and aligned injection assertions with neural neutralization behavior. |
+| [`README.md`](../README.md), [`ARCHITECTURE.md`](../ARCHITECTURE.md), [`EVALUATION.md`](../EVALUATION.md), [`LEARNING-LOG.md`](../LEARNING-LOG.md) | Updated all project documentation and architecture specifications. |
 
 ---
 
@@ -73,7 +73,7 @@ In the preliminary draft of this report, an inconsistency existed regarding Scen
 - The text in Section 4B mentioned that `DOC-REF-012` appeared at rank 6/7, and Section 5 listed citations `[DOC-REF-012, DOC-REF-002]`.
 - Concurrently, the report stated that every scenario used the standard top-5 retrieved chunks.
 
-**Root Cause:** During the prompt-injection investigation, an exploratory probe was conducted using an experimental 7-chunk retrieval with document-diversity filtering to see if `DOC-REF-012` could be pulled into context. That experimental output was inadvertently placed into the narrative, creating a contradiction with the formal top-5 evaluation benchmark recorded in [`evaluation/deepseek-evaluation-results.json`](file:///c:/Users/HP/Desktop/grounded-rag/evaluation/deepseek-evaluation-results.json).
+**Root Cause:** During the prompt-injection investigation, an exploratory probe was conducted using an experimental 7-chunk retrieval with document-diversity filtering to see if `DOC-REF-012` could be pulled into context. That experimental output was inadvertently placed into the narrative, creating a contradiction with the formal top-5 evaluation benchmark recorded in [`evaluation/deepseek-evaluation-results.json`](../evaluation/deepseek-evaluation-results.json).
 
 ### B. Formal Benchmark Execution Details
 The formal evaluation benchmark was executed using standard configuration:
@@ -112,7 +112,7 @@ This proves the model and citation pipeline behave with absolute fidelity: citat
 ## 5. Granular Citation Verification & Grounding Audit
 
 ### A. Citation Validation Mechanism & Grounding Bounds
-The citation validation function `verifyCitationGrounding()` in [`src/lib/rag/security.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/lib/rag/security.ts) enforces strict provenance:
+The citation validation function `verifyCitationGrounding()` in [`src/lib/rag/security.ts`](../src/lib/rag/security.ts) enforces strict provenance:
 1. Extracts all bracketed citations matching `[DOC-XXX-YYY]` from the generated text.
 2. Compares each cited ID against `retrievedDocIds` (the set of document IDs actually passed to the LLM in the request prompt).
 3. If an ID is cited that was not in `retrievedDocIds`, it is categorized as a `hallucinatedCitation`, stripped from the sanitized answer, and omitted from `citedDocumentIds`.
@@ -143,7 +143,7 @@ The citation validation function `verifyCitationGrounding()` in [`src/lib/rag/se
 
 ## 6. Document-Diversity Filtering Verification
 
-To address dense boilerplate chunk saturation, [`src/lib/rag/retrieval.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/lib/rag/retrieval.ts) supports an optional `maxChunksPerDoc?: number` parameter. The implementation was audited to ensure it does not break metadata filters or discard relevant chunks:
+To address dense boilerplate chunk saturation, [`src/lib/rag/retrieval.ts`](../src/lib/rag/retrieval.ts) supports an optional `maxChunksPerDoc?: number` parameter. The implementation was audited to ensure it does not break metadata filters or discard relevant chunks:
 
 1. **Database-Level Metadata Enforcement:**
    All SQL `WHERE` clauses (`c.strategy = $4`, `d.department = $5`, `d.category = $6`, `d.status = $7`, `c.corpus_version = $8`) are executed by PostgreSQL **before** candidate chunks are returned. Diversity filtering operates strictly on pre-filtered records.
@@ -222,8 +222,8 @@ npm run build
 
 ### A. Preserved 120-Case 2x2 Matrix Results (v1 Baseline vs v2 Rerun)
 Both evaluation datasets are preserved on disk:
-- Baseline: [`evaluation/2x2-evaluation-results-baseline-v1.json`](file:///c:/Users/HP/Desktop/grounded-rag/evaluation/2x2-evaluation-results-baseline-v1.json)
-- Regenerated: [`evaluation/2x2-evaluation-results-v2.json`](file:///c:/Users/HP/Desktop/grounded-rag/evaluation/2x2-evaluation-results-v2.json)
+- Baseline: [`evaluation/2x2-evaluation-results-baseline-v1.json`](../evaluation/2x2-evaluation-results-baseline-v1.json)
+- Regenerated: [`evaluation/2x2-evaluation-results-v2.json`](../evaluation/2x2-evaluation-results-v2.json)
 
 | Configuration | Baseline v1 Recall@k | Updated v2 Recall@k | Baseline v1 MRR | Updated v2 MRR | False Refusal Rate | Refusal Accuracy |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |

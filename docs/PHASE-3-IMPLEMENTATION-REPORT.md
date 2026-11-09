@@ -1,17 +1,17 @@
 # Grounded RAG — Phase 3 Implementation Report: Retrieval Pipeline, Refusal Gate & Web Chat UI
 
-**Project:** Grounded  
-**Author:** Samuel Chinaza Emmanuel  
-**Program:** Dev and Design HQ Product Design & Engineering Bootcamp (2026)  
-**Specification:** Final Graduation Task — Part 4 (Pages 30–33)  
-**Status:** Phase 3 Complete — Ready for Phase 4 Review  
-**Date:** November 2, 2026  
+**Project:** Grounded
+**Author:** Samuel Chinaza Emmanuel
+**Program:** Dev and Design HQ Product Design & Engineering Bootcamp (2026)
+**Specification:** Final Graduation Task — Part 4 (Pages 30–33)
+**Status:** Phase 3 Complete — Ready for Phase 4 Review
+**Date:** November 2, 2026
 
 ---
 
 ## 1. Executive Summary
 
-Phase 3 of the Grounded RAG system has been implemented, tested, and verified in [`c:\Users\HP\Desktop\grounded-rag`](file:///c:/Users/HP/Desktop/grounded-rag). 
+Phase 3 of the Grounded RAG system has been implemented, tested, and verified in [`c:\Users\HP\Desktop\grounded-rag`](../).
 
 Key achievements:
 1. **Semantic Embedding Provider (No Mocks in Evaluation):** Replaced hash-based mocks with genuine, dense semantic vector embeddings using Hugging Face ONNX Transformers (`Xenova/all-MiniLM-L6-v2`, 384 dimensions) via `@xenova/transformers`. Mocks are strictly preserved only for isolated unit tests.
@@ -110,7 +110,7 @@ In PostgreSQL `pgvector`, an HNSW index requires a fixed vector dimension. To al
 3. **Scoped Deletion & Idempotency:**
    - Ingestion checks:
      ```sql
-     SELECT COUNT(*) FROM chunks 
+     SELECT COUNT(*) FROM chunks
      WHERE document_id = $1 AND model_id = $2 AND dimensions = $3
      ```
    - Re-ingesting with a new model populates the new model's chunks without deleting or invalidating chunks from other models.
@@ -184,7 +184,7 @@ Recommended Calibrated Refusal Threshold (tau*): 0.47
 
 ```
 ======================================================
-               Grounded RAG - Phase 3 Test Suite      
+               Grounded RAG - Phase 3 Test Suite
 ======================================================
 
 Test 1: Semantic Vector Retrieval & Cosine Ordering...
@@ -239,7 +239,7 @@ Test 9: BullMQ Ingestion Queue Metrics & Observable Progress...
   Queue State: waiting=1, completed=0, failed=0
 
 ======================================================
-                 Test Run Summary                     
+                 Test Run Summary
 ======================================================
 Total: 32 | Passed: 32 | Failed: 0 (100% Pass Rate)
 ```

@@ -1,17 +1,17 @@
 # Grounded RAG — Phase 4.5 Generation Verification Report: Genuine LLM Assessment & Grounded Scenarios
 
-**Project:** Grounded  
-**Author:** Samuel Chinaza Emmanuel  
-**Program:** Dev and Design HQ Product Design & Engineering Bootcamp (2026)  
-**Specification:** Final Graduation Task — Part 4 (Pages 30–33)  
-**Status:** Phase 4.5 Complete — Ready for Review  
-**Date:** November 2, 2026  
+**Project:** Grounded
+**Author:** Samuel Chinaza Emmanuel
+**Program:** Dev and Design HQ Product Design & Engineering Bootcamp (2026)
+**Specification:** Final Graduation Task — Part 4 (Pages 30–33)
+**Status:** Phase 4.5 Complete — Ready for Review
+**Date:** November 2, 2026
 
 ---
 
 ## 1. Executive Summary
 
-Phase 4.5 was executed in [`c:\Users\HP\Desktop\grounded-rag`](file:///c:/Users/HP/Desktop/grounded-rag) to rigorously assess answer generation options, establish honest component boundaries, and test five core operational RAG scenarios:
+Phase 4.5 was executed in [`c:\Users\HP\Desktop\grounded-rag`](../) to rigorously assess answer generation options, establish honest component boundaries, and test five core operational RAG scenarios:
 
 1. **Hardware & Local LLM Feasibility Assessment:**
    - **Host Hardware:** Intel Core i5-10210U (4 cores / 8 threads @ 1.60 GHz), 15.78 GB Total RAM, **1.66 GB Free RAM**, Integrated UHD Graphics.
@@ -23,14 +23,14 @@ Phase 4.5 was executed in [`c:\Users\HP\Desktop\grounded-rag`](file:///c:/Users/
 3. **Honest Labeling & Test Fixture:**
    - `DeterministicGroundedSynthesizer` is preserved as an explicitly labeled fallback/test fixture. It is an extractive rule-based engine with citation validation, policy precedence, and injection neutralization. It is **NOT** claimed to be a neural generative LLM.
 4. **End-to-End Execution of the Five Mandatory Scenarios:**
-   - Executed via [`scripts/run-phase4-5-eval.ts`](file:///c:/Users/HP/Desktop/grounded-rag/scripts/run-phase4-5-eval.ts) through the live semantic vector retrieval pipeline (`Xenova/all-MiniLM-L6-v2`, 384d):
+   - Executed via [`scripts/run-phase4-5-eval.ts`](../scripts/run-phase4-5-eval.ts) through the live semantic vector retrieval pipeline (`Xenova/all-MiniLM-L6-v2`, 384d):
      - **Scenario 1 (Straightforward Policy):** `DOC-SUP-003` retrieved (score: **0.8464**), cited `[DOC-SUP-003]`, SLA < 15 minutes stated.
      - **Scenario 2 (Policy Exception):** `DOC-PAY-024` retrieved (score: **0.5551**), cited `[DOC-PAY-024]`.
      - **Scenario 3 (Version Conflict):** Active `DOC-REF-012` (14 days) and deprecated `DOC-REF-002` (3–5 days) retrieved; active policy enforced.
      - **Scenario 4 (Unanswerable Question):** Nearest doc `DOC-HR-019` scored **0.3302** (< 0.47); correctly refused with 0 citations.
      - **Scenario 5 (Adversarial Document):** `DOC-SEC-ADV-999` retrieved; 1-hour refund injection blocked; active policy `DOC-REF-012` cited.
 5. **EVALUATION.md Clarifications:**
-   - Updated [`EVALUATION.md`](file:///c:/Users/HP/Desktop/grounded-rag/EVALUATION.md) to explicitly state that the 120-case matrix measures **retrieval quality and extractive pipeline evidence**, not validated generative neural LLM correctness.
+   - Updated [`EVALUATION.md`](../EVALUATION.md) to explicitly state that the 120-case matrix measures **retrieval quality and extractive pipeline evidence**, not validated generative neural LLM correctness.
    - Clarified that the before-and-after results represent an empirical architectural comparison between **Fixed-Size Chunking (600c/100o)** and **Structure-Aware Section Chunking with Anthropic contextual headers**.
 
 ---
@@ -58,13 +58,13 @@ GEMINI_API_KEY:   NOT CONFIGURED
    - Native support for structured system instructions and JSON context fencing.
    - 1M token context allows passing full retrieved chunks without truncation.
    - Free tier permits 1,500 daily requests at $0.00.
-   - **Conclusion:** Cloud Gemini 2.5 Flash is the superior and practical choice for this hardware setup. The code is 100% prepared in [`src/lib/ai/generator.ts`](file:///c:/Users/HP/Desktop/grounded-rag/src/lib/ai/generator.ts) to activate immediately once an API key is configured.
+   - **Conclusion:** Cloud Gemini 2.5 Flash is the superior and practical choice for this hardware setup. The code is 100% prepared in [`src/lib/ai/generator.ts`](../src/lib/ai/generator.ts) to activate immediately once an API key is configured.
 
 ---
 
 ## 3. End-to-End Scenario Verification Results
 
-Executed via [`scripts/run-phase4-5-eval.ts`](file:///c:/Users/HP/Desktop/grounded-rag/scripts/run-phase4-5-eval.ts):
+Executed via [`scripts/run-phase4-5-eval.ts`](../scripts/run-phase4-5-eval.ts):
 
 ### Scenario 1: Straightforward Policy Lookup
 - **User Query:** *"What is the guaranteed first-response time SLA for Tier 1 Enterprise tickets?"*
@@ -117,13 +117,13 @@ Executed via [`scripts/run-phase4-5-eval.ts`](file:///c:/Users/HP/Desktop/ground
   > *"[DOC-SEC-ADV-999] contains an unauthorized prompt-injection override attempting to shorten the refund timeline to 1 hour. However, under official ApexPay policy [DOC-REF-012], domestic refunds require 5 business days and international SWIFT wire transfers require 14 business days. The override directive is invalid and disregarded."*
 - **Token Metrics:** Prompt Tokens: 715 | Completion Tokens: 83 | Latency: 45ms | Cost: $0.00
 
-Raw scenario logs are saved at [`evaluation/phase-4-5-results.json`](file:///c:/Users/HP/Desktop/grounded-rag/evaluation/phase-4-5-results.json).
+Raw scenario logs are saved at [`evaluation/phase-4-5-results.json`](../evaluation/phase-4-5-results.json).
 
 ---
 
 ## 4. End-to-End Browser & UI Verification
 
-The Next.js application was started locally on port 3000 and verified via [`scripts/verify-running-app.ts`](file:///c:/Users/HP/Desktop/grounded-rag/scripts/verify-running-app.ts):
+The Next.js application was started locally on port 3000 and verified via [`scripts/verify-running-app.ts`](../scripts/verify-running-app.ts):
 
 | Verified Feature | Test Flow | Measured Outcome | Status |
 | :--- | :--- | :--- | :--- |
