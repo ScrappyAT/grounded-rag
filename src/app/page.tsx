@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import seedManifest from '@/lib/db/seed-manifest.json';
+import { getRefusalBannerInfo } from '@/lib/rag/refusalBanner';
 import { 
   Send, 
   FileText, 
@@ -376,17 +377,24 @@ export default function GroundedChatPage() {
                 }`}
               >
                 {/* Refusal Banner if Refused */}
-                {msg.refused && (
-                  <div className="flex items-center gap-2 text-xs font-semibold text-amber-300 mb-2 pb-2 border-b border-amber-800/40">
-                    <AlertTriangle className="h-4 w-4 text-amber-400" />
-                    <span>Calibrated Evidence Refusal Gate Triggered</span>
-                    {msg.topSimilarity !== undefined && msg.threshold !== undefined && (
-                      <span className="ml-auto font-mono text-[11px] text-amber-400/80">
-                        Score {msg.topSimilarity.toFixed(3)} &lt; τ {msg.threshold.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-                )}
+                {msg.refused && (() => {
+                  const info = getRefusalBannerInfo(msg);
+                  return (
+                    <div className="flex items-center gap-2 text-xs font-semibold text-amber-300 mb-2 pb-2 border-b border-amber-800/40">
+                      {info.variant === 'security' ? (
+                        <ShieldAlert className="h-4 w-4 text-amber-400 shrink-0" />
+                      ) : (
+                        <AlertTriangle className="h-4 w-4 text-amber-400 shrink-0" />
+                      )}
+                      <span>{info.title}</span>
+                      {info.badge && (
+                        <span className="ml-auto font-mono text-[11px] text-amber-400/80 shrink-0">
+                          {info.badge}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* Message Body */}
                 <div className="whitespace-pre-wrap">{renderFormattedContent(msg.content)}</div>
